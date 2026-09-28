@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ไปจีนกัน</title>
+<meta name="theme-color" content="#0F5A4F">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="ไปจีนกัน">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500&family=Prompt:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#F3F6F4;--card:#FFFFFF;--ink:#17211F;--muted:#5C6B67;--jade:#0F5A4F;--jade-soft:#DDEDE7;--seal:#C2362B;--line:#DCE3E0;--on-jade:#FFFFFF;--gold:#C98F12;--warn-bg:#FFF4D6;--warn:#7A5300;--map-bg:#EAF3EC;--map-park:#D3E8DC;--map-water:#CFE3EE;--map-tree:#8FC2A4;
+ box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--paper:#0F1614;--map-bg:#15221E;--map-park:#1C352D;--map-water:#18303B;--map-tree:#2F5A48;--card:#18221F;--ink:#E8EFEC;--muted:#9AABA6;--jade:#5FC2AE;--jade-soft:#1E332E;--seal:#E5594C;--line:#2A3733;--on-jade:#0F1614;--gold:#E7B84A;--warn-bg:#3A3014;--warn:#F2CF7A}}
+:root[data-theme="dark"]{--paper:#0F1614;--map-bg:#15221E;--map-park:#1C352D;--map-water:#18303B;--map-tree:#2F5A48;--card:#18221F;--ink:#E8EFEC;--muted:#9AABA6;--jade:#5FC2AE;--jade-soft:#1E332E;--seal:#E5594C;--line:#2A3733;--on-jade:#0F1614;--gold:#E7B84A;--warn-bg:#3A3014;--warn:#F2CF7A}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"IBM Plex Sans Thai",Tahoma,system-ui,sans-serif;font-size:16px;line-height:1.55}
+h1,h2,h3{font-family:Prompt,"IBM Plex Sans Thai",Tahoma,sans-serif;font-weight:600;margin:0;line-height:1.25}
+h1{font-size:26px}h2{font-size:18px}h3{font-size:17px}
+.app{max-width:460px;margin:0 auto;padding:16px 16px 100px}
+button,input,select{font:inherit;color:inherit}button{cursor:pointer}
+:focus-visible{outline:2px solid var(--jade);outline-offset:2px}
+.top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:16px}
+.top small{color:var(--muted);font-size:13px;display:block}
+.icon-btn{background:var(--card);border:1px solid var(--line);border-radius:12px;width:42px;height:42px;display:grid;place-items:center;font-size:18px;flex:none}
+.pill{display:inline-flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:5px 12px;font-size:13px;color:var(--muted)}
+.pill b{color:var(--jade);font-weight:500}
+.ticket{position:relative;background:var(--jade);color:var(--on-jade);border-radius:18px;padding:20px 20px 16px;overflow:hidden}
+.ticket .lbl{font-size:13px;opacity:.85}
+.ticket .big{font-family:Prompt,sans-serif;font-size:40px;font-weight:600;line-height:1.1;margin:2px 0 10px}
+.perf{position:relative;border-top:2px dashed color-mix(in srgb,var(--on-jade) 35%,transparent);margin:14px -20px 12px}
+.perf::before,.perf::after{content:"";position:absolute;top:-11px;width:20px;height:20px;border-radius:50%;background:var(--paper)}
+.perf::before{left:-10px}.perf::after{right:-10px}
+.row{display:flex;justify-content:space-between;gap:8px;font-size:14px}
+.seal{position:absolute;right:16px;top:18px;width:78px;height:78px;border:3px solid var(--seal);border-radius:14px;transform:rotate(-8deg);display:grid;place-items:center;text-align:center;font-family:Prompt,sans-serif;font-weight:600;font-size:15px;line-height:1.15;color:var(--seal);background:color-mix(in srgb,var(--card) 92%,transparent)}
+.meter{height:6px;border-radius:3px;background:color-mix(in srgb,var(--on-jade) 25%,transparent);overflow:hidden}
+.meter i{display:block;height:100%;background:var(--on-jade);border-radius:3px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-top:14px}
+.sec-h{display:flex;justify-content:space-between;align-items:baseline;margin:24px 0 8px}
+.sec-h span{font-size:13px;color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.scroll{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
+.chip{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:6px 14px;font-size:14px;white-space:nowrap}
+.chip[aria-pressed="true"]{background:var(--jade);border-color:var(--jade);color:var(--on-jade)}
+.city-card{display:block;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden;margin-top:12px;padding:0}
+.city-card svg{display:block;width:100%;height:120px}
+.city-card .b{padding:12px 16px 14px;display:flex;justify-content:space-between;align-items:flex-end;gap:10px}
+.city-card .cn{color:var(--muted);font-size:14px;margin-left:6px;font-family:"IBM Plex Sans Thai",sans-serif;font-weight:400}
+.city-card p{margin:2px 0 0;font-size:14px;color:var(--muted)}
+.city-card .n{font-size:13px;color:var(--jade);white-space:nowrap}
+.place{position:relative;background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden;margin-top:14px}
+.place .open{display:block;width:100%;text-align:left;background:none;border:none;padding:0}
+.place svg{display:block;width:100%;height:140px}
+.place .b{padding:12px 16px 14px}
+.place .cn{font-size:13px;color:var(--muted)}
+.place .m{font-size:14px;color:var(--muted);margin:6px 0 8px}
+.fav{position:absolute;top:10px;right:10px;width:40px;height:40px;border-radius:50%;border:none;background:rgba(255,255,255,.92);font-size:19px;display:grid;place-items:center;color:#C2362B;z-index:1}
+.tag{display:inline-block;font-size:12px;background:var(--jade-soft);color:var(--jade);border-radius:999px;padding:2px 10px;margin-left:6px;vertical-align:2px;font-family:"IBM Plex Sans Thai",sans-serif;font-weight:500}
+.status{display:inline-block;font-size:12px;border-radius:6px;padding:2px 8px;background:var(--warn-bg);color:var(--warn)}
+.status.ok{background:var(--jade-soft);color:var(--jade)}
+.scores{display:flex;gap:14px;font-size:13px;color:var(--muted);align-items:center;flex-wrap:wrap}
+.scores b{color:var(--ink);font-weight:500}.star{color:var(--gold)}
+.filters{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin-top:10px;font-size:14px}
+.tog{display:flex;align-items:center;gap:6px}.tog input{width:18px;height:18px;accent-color:var(--jade)}
+.filters select{margin-left:auto;border:1px solid var(--line);background:var(--card);border-radius:10px;padding:7px 10px;font-size:14px}
+.note{font-size:12px;color:var(--muted);margin:8px 0 0}
+.empty{color:var(--muted);font-size:14px;padding:10px 0}
+.conv{display:flex;align-items:center;gap:10px}
+.conv input{flex:1;min-width:0;border:none;background:transparent;font-family:Prompt,sans-serif;font-size:34px;font-weight:600;padding:0;outline:none}
+.conv .cur{font-family:Prompt,sans-serif;font-size:28px;color:var(--muted)}
+.baht{font-size:15px;color:var(--muted);margin:4px 0 12px}.baht b{color:var(--jade);font-weight:500;font-size:20px}
+.field{display:flex;gap:8px;margin-top:12px}
+.field input,.field select,.sel{flex:1;min-width:0;border:1px solid var(--line);background:var(--paper);border-radius:10px;padding:10px 12px;font-size:15px}
+.field select{flex:0 0 110px}
+.primary{width:100%;margin-top:12px;border:none;border-radius:12px;background:var(--jade);color:var(--on-jade);padding:13px;font-size:16px;font-weight:500}
+.ghost{width:100%;background:transparent;border:1px solid var(--line);border-radius:12px;padding:11px;font-size:15px;margin-top:10px;color:var(--ink)}
+.err{color:var(--seal);font-size:13px;margin:6px 0 0}
+.exp{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
+.exp:last-child{border-bottom:none}
+.exp .ic{width:38px;height:38px;border-radius:10px;background:var(--jade-soft);display:grid;place-items:center;font-size:18px;flex:none}
+.exp .t{flex:1;min-width:0}.exp .t p{margin:0;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.exp .t small{color:var(--muted);font-size:12px}
+.exp .amt{text-align:right;font-size:15px;font-weight:500}.exp .amt small{display:block;color:var(--muted);font-weight:400;font-size:12px}
+.del{border:none;background:transparent;color:var(--muted);font-size:20px;padding:4px 8px}
+.bars div{display:flex;align-items:center;gap:10px;font-size:13px;margin:6px 0}
+.bars span:first-child{width:80px}.bars .tr{flex:1;height:8px;border-radius:4px;background:var(--jade-soft)}.bars .tr i{display:block;height:100%;border-radius:4px;background:var(--jade)}
+.bars span:last-child{width:62px;text-align:right;color:var(--muted)}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);background:var(--card);border:1px solid var(--line);border-radius:12px;padding:4px;margin-bottom:14px}
+.seg button{border:none;background:transparent;border-radius:9px;padding:8px;font-size:14px;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--jade);color:var(--on-jade);font-weight:500}
+.item{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-top:8px}
+.item .dot{width:10px;height:10px;border-radius:50%;background:var(--jade);flex:none}
+.item .go{flex:1;text-align:left;background:none;border:none;padding:0;font-size:15px}
+.item small{color:var(--muted);font-size:12px;display:block}
+.route{display:block;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 16px;margin-top:10px}
+.route .ft{font-size:16px;font-weight:500}.route .ft span{color:var(--muted);font-weight:400}
+.route .meta{display:flex;gap:14px;font-size:13px;color:var(--muted);margin-top:6px;flex-wrap:wrap}
+.tl{margin-top:16px;position:relative}
+.step{display:grid;grid-template-columns:44px 1fr;gap:12px;position:relative;padding-bottom:18px}
+.step:not(:last-child)::before{content:"";position:absolute;left:21px;top:44px;bottom:0;width:2px;background:var(--line)}
+.step .ico{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-size:20px;background:var(--jade-soft)}
+.step .tx{padding-top:2px}.step p{margin:0;font-size:15px}
+.step .ln{display:inline-block;color:#fff;font-size:12px;font-weight:500;border-radius:6px;padding:2px 8px;margin-right:6px;vertical-align:1px}
+.step small{display:block;color:var(--muted);font-size:13px;margin-top:2px}
+.sum{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:14px}
+.sum div{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px}
+.sum small{display:block;font-size:12px;color:var(--muted)}.sum b{font-family:Prompt,sans-serif;font-size:22px;font-weight:600}
+.back{display:inline-flex;align-items:center;gap:6px;border:none;background:none;color:var(--jade);font-size:15px;padding:4px 0;margin-bottom:8px}
+.detail{position:fixed;inset:0;background:var(--paper);overflow-y:auto;z-index:20;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+.detail .hero{position:relative}.detail .hero svg{display:block;width:100%;height:220px}
+.detail .close{position:absolute;top:12px;left:12px;width:42px;height:42px;border-radius:50%;border:none;background:rgba(255,255,255,.92);font-size:20px;color:#17211F}
+.detail .in{max-width:460px;margin:0 auto;padding:16px 16px 40px}
+.info{margin-top:14px}.info div{display:flex;justify-content:space-between;gap:16px;padding:9px 0;border-bottom:1px solid var(--line);font-size:14px}
+.info div span:first-child{color:var(--muted);flex:none}.info div span:last-child{text-align:right}
+.cnbox{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-top:12px}
+.cnbox .big{font-size:22px;font-weight:500}
+.small-btn{border:1px solid var(--jade);background:transparent;color:var(--jade);border-radius:10px;padding:8px 12px;font-size:14px;font-weight:500;white-space:nowrap}
+.mine{display:flex;gap:4px}.mine button{border:none;background:transparent;font-size:30px;padding:0 2px;color:var(--line);line-height:1}.mine button.on{color:var(--gold)}
+.acts{display:grid;gap:10px;margin-top:14px}
+.acts a{display:block;text-align:center;text-decoration:none;border:1px solid var(--line);border-radius:12px;padding:12px;color:var(--ink);background:var(--card)}
+.add{display:flex;gap:8px}.add select{flex:0 0 120px}
+.driver{position:fixed;inset:0;z-index:30;background:#101614;color:#fff;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:24px;padding-top:calc(24px + env(safe-area-inset-top,0px))}
+.driver .ask{font-size:22px;opacity:.8;margin-bottom:12px}
+.driver .name{font-size:44px;font-weight:600;line-height:1.3;word-break:break-all}
+.driver .th{margin-top:18px;opacity:.7;font-size:15px}
+.driver button{margin-top:32px;border:1px solid rgba(255,255,255,.4);background:none;color:#fff;border-radius:12px;padding:10px 22px;font-size:15px}
+.settings{display:none}.settings.open{display:block}
+.settings label{display:block;font-size:13px;color:var(--muted);margin-top:10px}
+.settings input{width:100%;border:1px solid var(--line);background:var(--paper);border-radius:10px;padding:10px 12px;font-size:15px;margin-top:4px}
+nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px);z-index:10}
+nav div{max-width:460px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr)}
+nav button{border:none;background:transparent;padding:10px 0 12px;font-size:12px;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:2px}
+nav button span{font-size:20px}
+nav button[aria-current="page"]{color:var(--jade);font-weight:500}
+.trail{margin-top:14px;border-radius:18px;overflow:hidden;border:1px solid var(--line)}.trail svg{display:block;width:100%;height:auto}
+.lockb{display:inline-flex;align-items:center;gap:4px;white-space:nowrap;font-size:12px;border-radius:999px;padding:3px 10px;background:var(--paper);border:1px solid var(--line);color:var(--muted)}
+.freeb{background:var(--jade-soft);border-color:transparent;color:var(--jade);font-weight:500}
+.locked svg{filter:grayscale(.6);opacity:.75}
+.banner{display:flex;justify-content:space-between;align-items:center;gap:10px;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-top:12px;font-size:14px}
+.banner b{font-weight:500}.banner span:last-child{color:var(--jade);white-space:nowrap}
+.sheet-bg{position:fixed;inset:0;background:rgba(10,16,14,.45);z-index:35;display:flex;align-items:flex-end;justify-content:center}
+.sheet{background:var(--paper);width:100%;max-width:460px;border-radius:22px 22px 0 0;padding:20px 18px calc(22px + env(safe-area-inset-bottom,0px));max-height:88vh;overflow-y:auto}
+.sheet h2{font-size:21px}.sheet .sub{color:var(--muted);font-size:14px;margin:4px 0 14px}
+.perks{list-style:none;padding:0;margin:0 0 14px}.perks li{padding:5px 0;font-size:15px}.perks li::before{content:"✓";color:var(--jade);font-weight:600;margin-right:8px}
+.plans{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.plan{position:relative;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 12px;text-align:left}
+.plan.best{border:2px solid var(--jade)}
+.plan .pb{position:absolute;top:-10px;right:10px;background:var(--seal);color:#fff;font-size:11px;border-radius:999px;padding:2px 8px}
+.plan small{display:block;color:var(--muted);font-size:12px}.plan b{font-family:Prompt,sans-serif;font-size:24px;font-weight:600;display:block;margin:2px 0}
+.codeRow{display:flex;gap:8px;margin-top:8px}.codeRow input{flex:1;min-width:0;border:1px solid var(--line);background:var(--card);border-radius:10px;padding:11px 12px;font-size:16px;text-transform:uppercase;letter-spacing:.05em}
+.codeRow button{border:none;border-radius:10px;background:var(--jade);color:var(--on-jade);padding:0 16px;font-weight:500}
+.linkish{background:none;border:none;color:var(--muted);font-size:14px;padding:10px 0 0;width:100%}
+.zone{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 16px;margin-top:10px}
+.zone h3{font-size:16px}.zone .cn{color:var(--muted);font-size:13px;margin-left:6px;font-weight:400;font-family:"IBM Plex Sans Thai",sans-serif}
+.zone p{margin:6px 0 0;font-size:14px;color:var(--muted)}.zone .ln{display:inline-block;color:#fff;font-size:12px;font-weight:500;border-radius:6px;padding:2px 8px;margin-right:6px}
+.getthere p{margin:8px 0 0;font-size:14px}.getthere .muted{color:var(--muted)}
+.seg{grid-template-columns:repeat(4,1fr)!important}
+.tk{position:relative;background:var(--card);border:1px solid var(--line);border-radius:18px;margin-top:12px;overflow:hidden}
+.tk.past{opacity:.55}
+.tk .hd{display:flex;justify-content:space-between;align-items:center;background:var(--jade);color:var(--on-jade);padding:10px 16px;font-size:14px}
+.tk .hd b{font-family:Prompt,sans-serif;font-weight:600;font-size:16px}
+.tk .cd{font-size:12px;background:rgba(255,255,255,.2);border-radius:999px;padding:2px 10px}
+.tk .main{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center;padding:14px 16px 10px}
+.tk .pt small{display:block;color:var(--muted);font-size:12px}.tk .pt b{display:block;font-family:Prompt,sans-serif;font-size:18px;font-weight:600;line-height:1.25}
+.tk .pt .tm{font-size:22px;color:var(--jade)}.tk .pt.r{text-align:right}
+.tk .mid{text-align:center;color:var(--muted);font-size:20px}
+.tk .cut{position:relative;border-top:2px dashed var(--line);margin:0}
+.tk .cut::before,.tk .cut::after{content:"";position:absolute;top:-11px;width:20px;height:20px;border-radius:50%;background:var(--paper);border:1px solid var(--line)}
+.tk .cut::before{left:-11px}.tk .cut::after{right:-11px}
+.tk .ft{display:flex;flex-wrap:wrap;gap:16px;padding:10px 16px;font-size:13px}.tk .ft span{color:var(--muted)}.tk .ft b{display:block;color:var(--ink);font-weight:500;font-size:14px}
+.tk .acts2{display:flex;gap:8px;flex-wrap:wrap;padding:0 16px 14px}
+.tk .acts2 button{border:1px solid var(--line);background:var(--paper);border-radius:10px;padding:7px 12px;font-size:13px}
+.tform label{display:block;font-size:13px;color:var(--muted);margin-top:10px}
+.tform input,.tform textarea{width:100%;border:1px solid var(--line);background:var(--card);border-radius:10px;padding:10px 12px;font-size:15px;margin-top:4px}
+.tform .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.nextTk{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-top:10px;font-size:14px}
+.nextTk .i{font-size:22px}.nextTk small{display:block;color:var(--muted);font-size:12px}
+.imgview{position:fixed;inset:0;z-index:36;background:#0b0f0e;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px;padding-top:calc(16px + env(safe-area-inset-top,0px))}
+.imgview img{max-width:100%;max-height:80vh;border-radius:8px;background:#fff}
+.imgview button{margin-top:16px;border:1px solid rgba(255,255,255,.4);background:none;color:#fff;border-radius:12px;padding:10px 22px;font-size:15px}
+.dtk{display:flex;gap:10px;align-items:center;background:var(--jade-soft);border-radius:12px;padding:10px 12px;margin-top:8px;font-size:14px;width:100%;border:none;text-align:left}
+.scanbox{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:var(--jade-soft);border:1px dashed var(--jade);border-radius:14px;padding:12px 14px;margin-top:12px;color:var(--ink)}
+.scanbox .i{font-size:26px}.scanbox small{display:block;color:var(--muted);font-size:12px}.scanbox b{font-weight:500}
+.scanbox .pro{margin-left:auto;font-size:11px;background:var(--seal);color:#fff;border-radius:999px;padding:2px 8px;white-space:nowrap}
+.scanning{opacity:.6;pointer-events:none}
+.chk{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 16px;margin-top:12px}
+.chk .top2{display:flex;justify-content:space-between;align-items:center}.chk .top2 b{font-weight:500;font-size:16px}
+.chk .bar{height:6px;border-radius:3px;background:var(--jade-soft);margin:8px 0 4px}.chk .bar i{display:block;height:6px;border-radius:3px;background:var(--jade)}
+.crow{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px solid var(--line);font-size:14px}
+.crow:first-of-type{border-top:none}
+.cbox{width:24px;height:24px;border-radius:7px;border:1.5px solid var(--line);background:var(--paper);flex:none;display:grid;place-items:center;font-size:13px;color:var(--on-jade);padding:0}
+.cbox.on{background:var(--jade);border-color:var(--jade)}
+.crow .tx{flex:1;min-width:0}.crow .tx small{display:block;color:var(--muted);font-size:12px}
+.crow.done .tx>span{color:var(--muted);text-decoration:line-through}
+.alink{border:none;background:none;color:var(--jade);font-size:13px;font-weight:500;white-space:nowrap;padding:4px 0}
+.affrow{display:flex;align-items:center;gap:8px;margin-top:10px}.affrow .ghost{margin:0;flex:1}
+.afftag{font-size:11px;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:1px 8px;white-space:nowrap}
+.install{background:var(--card);border:1px dashed var(--jade);border-radius:14px;padding:12px 14px;margin-bottom:14px;font-size:14px}.install b{font-weight:500}.install .row{align-items:center;margin-top:8px}.install button{border:none;background:none;color:var(--muted);font-size:13px;padding:4px 0}.install .go{border:none;border-radius:10px;background:var(--jade);color:var(--on-jade);padding:8px 14px;font-weight:500;font-size:14px}
+.view{display:none}.view.on{display:block}
+.toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:10px 16px;border-radius:10px;font-size:14px;z-index:40;opacity:0;pointer-events:none;transition:opacity .2s}
+.toast.on{opacity:1}
+@media (prefers-reduced-motion:no-preference){.seal{transition:transform .3s}.seal.pop{transform:rotate(-8deg) scale(1.08)}}
+</style>
+</head>
+<body>
+<main class="app">
+
+<section class="view on" id="v-home" aria-label="หน้าแรก">
+ <div class="install" id="installBox" hidden></div>
+ <div class="top"><div><h1>ไปจีนกัน</h1><small>เที่ยวจีนเองแบบไม่หลง ไม่เกินงบ</small></div><span class="pill" id="ratePill"></span></div>
+ <button class="ticket" id="homeTicket" style="display:block;width:100%;text-align:left;border:none;color:var(--on-jade);font:inherit" aria-label="ไปที่งบทริป">
+  <div class="seal" id="homeSeal"></div>
+  <div class="lbl" id="homeTrip"></div>
+  <div class="big" id="homeLeft"></div>
+  <div class="meter"><i id="homeMeter"></i></div>
+  <div class="perf"></div>
+  <div class="row"><span id="homeSpent"></span><span>ดูงบทริป ›</span></div>
+ </button>
+ <button class="banner" id="planBanner"></button>
+ <div id="homeNext"></div>
+ <div id="checklist"></div>
+ <div class="sec-h"><h2>เลือกเมือง</h2><span id="cityCount"></span></div>
+ <div id="cityList"></div>
+</section>
+
+<section class="view" id="v-places" aria-label="ที่เที่ยว">
+ <div class="top"><div><h1 id="pTitle">ที่เที่ยว</h1><small id="pSub"></small></div></div>
+ <div class="scroll" id="pCities" role="group" aria-label="เลือกเมือง"></div>
+ <div class="scroll" id="pTypes" role="group" aria-label="เลือกประเภท" style="margin-top:8px"></div>
+ <div class="filters"><label class="tog"><input type="checkbox" id="fFree"> เข้าฟรี</label><label class="tog"><input type="checkbox" id="fFav"> ที่อยากไป</label>
+  <select id="sort" aria-label="เรียงตาม"><option value="team">คะแนนทีม</option><option value="users">คะแนนผู้ใช้</option><option value="name">ชื่อ ก–ฮ</option></select></div>
+ <p class="note" id="found"></p>
+ <div id="placeList"></div>
+</section>
+
+<section class="view" id="v-routes" aria-label="การเดินทาง">
+ <div id="routeListWrap">
+  <div class="top"><div><h1>การเดินทาง</h1><small>ที่พักยอดฮิต และเส้นทางจากสนามบินทีละขั้น</small></div></div>
+  <div class="scroll" id="rCities" role="group" aria-label="เลือกเมือง"></div>
+  <div id="routeList"></div>
+ </div>
+ <div id="routeDetail" hidden></div>
+</section>
+
+<section class="view" id="v-trip" aria-label="ทริปของฉัน">
+ <div class="top">
+  <div><h1 id="tripName"></h1><small id="tripMeta"></small></div>
+  <button class="icon-btn" id="gear" aria-label="ตั้งค่าทริป">⚙️</button>
+ </div>
+ <div class="card settings" id="settings" style="margin-top:0;margin-bottom:14px">
+  <h2 style="font-size:16px">ตั้งค่าทริป</h2>
+  <label>ชื่อทริป<input id="sName"></label>
+  <label>งบทั้งหมด (บาท)<input id="sBudget" inputmode="numeric"></label>
+  <label>จำนวนวัน<input id="sDays" inputmode="numeric"></label>
+  <label>วันเริ่มทริป (ไม่บังคับ)<input id="sStart" type="date"></label>
+  <label>เรทของฉัน (เว้นว่าง = ใช้เรทอ้างอิง)<input id="sRate" inputmode="decimal"></label>
+  <p class="note">ใส่เรทเองได้ถ้าแลกเงินมาในเรทที่ต่างจากเรทอ้างอิง</p>
+  <p class="err" id="sErr"></p>
+  <button class="primary" id="sSave">บันทึกการตั้งค่า</button>
+  <button class="ghost" id="reset">ล้างข้อมูลทริปทั้งหมด</button>
+  <p class="note" id="planInfo" style="font-size:14px;color:var(--ink)"></p><button class="ghost" id="openPlans">ดูแพ็กเกจ / กรอกรหัส</button>
+  <p class="note" id="dataInfo"></p>
+ </div>
+ <div class="seg" role="group" aria-label="เลือกส่วน">
+  <button data-seg="budget" aria-pressed="true">งบ</button><button data-seg="plan" aria-pressed="false">แผน</button><button data-seg="tickets" aria-pressed="false">ตั๋ว</button><button data-seg="fav" aria-pressed="false">อยากไป</button>
+ </div>
+
+ <div id="seg-budget">
+  <div class="ticket">
+   <div class="seal" id="seal"></div>
+   <div class="lbl">เหลือใช้ได้อีก</div>
+   <div class="big" id="left"></div>
+   <div class="meter"><i id="meter"></i></div>
+   <div class="perf"></div>
+   <div class="row"><span>ใช้ไป <b id="spent"></b></span><span>งบ <b id="budget"></b></span></div>
+   <div class="row" style="margin-top:4px;opacity:.85"><span id="perDay"></span><span id="rateTxt"></span></div>
+  </div>
+  <div class="card">
+   <label for="cny" style="font-size:13px;color:var(--muted)">จ่ายไปกี่หยวน</label>
+   <div class="conv"><span class="cur">¥</span><input id="cny" inputmode="decimal" placeholder="0" autocomplete="off"></div>
+   <div class="baht">เท่ากับ <b id="thb">฿0</b></div>
+   <div class="chips" id="cats" role="group" aria-label="หมวดค่าใช้จ่าย"></div>
+   <div class="field"><input id="note" placeholder="หม้อไฟร้านดัง"><select id="daySel" aria-label="วันที่"></select></div>
+   <p class="err" id="err"></p>
+   <button class="primary" id="addExp">บันทึกค่าใช้จ่าย</button>
+  </div>
+  <div class="sec-h"><h2>ใช้ไปกับอะไรบ้าง</h2></div>
+  <div class="card bars" id="bars" style="margin-top:0"></div>
+  <div class="sec-h"><h2>รายการล่าสุด</h2><span id="count"></span></div>
+  <div class="card" id="list" style="margin-top:0;padding-top:6px;padding-bottom:6px"></div>
+ </div>
+ <div id="seg-plan" hidden></div>
+ <div id="seg-tickets" hidden></div>
+ <div id="seg-fav" hidden></div>
+</section>
+</main>
+
+<div class="detail" id="detail" hidden></div>
+<div class="driver" id="driver" hidden></div>
+<div class="sheet-bg" id="sheetBg" hidden><div class="sheet" id="sheet" role="dialog" aria-modal="true"></div></div>
+<div class="imgview" id="imgView" hidden></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<nav><div>
+ <button data-tab="home" aria-current="page"><span>🏮</span>หน้าแรก</button>
+ <button data-tab="places"><span>📍</span>ที่เที่ยว</button>
+ <button data-tab="routes"><span>🚇</span>การเดินทาง</button>
+ <button data-tab="trip"><span>🧳</span>ทริปของฉัน</button>
+</div></nav>
+
+<script src="config.js"></script>
+<script>
+const EMBED={"dataVersion": 4, "lastUpdated": "2026-09-27", "rate": 5, "cacheHours": 24, "prices": {"lifetime": 199, "pass30": 79, "pass7": 39}, "buyUrl": "", "cities": [{"id": "BJ", "th": "ปักกิ่ง", "en": "Beijing", "cn": "北京", "desc": "เมืองหลวง กำแพงเมืองจีน และพระราชวังต้องห้าม เหมาะกับมือใหม่", "style": "ประวัติศาสตร์", "season": "ใบไม้ร่วง (ก.ย.–ต.ค.)"}, {"id": "SH", "th": "เซี่ยงไฮ้", "en": "Shanghai", "cn": "上海", "desc": "มหานครทันสมัย เดินเที่ยวง่าย วิวกลางคืนริมแม่น้ำ", "style": "เมืองทันสมัย", "season": "ใบไม้ผลิ / ใบไม้ร่วง"}, {"id": "CD", "th": "เฉิงตู", "en": "Chengdu", "cn": "成都", "desc": "เมืองแพนด้า อาหารเสฉวน บรรยากาศชิล เที่ยวสบาย", "style": "ชิล / อาหาร", "season": "ใบไม้ผลิ / ใบไม้ร่วง"}, {"id": "CQ", "th": "ฉงชิ่ง", "en": "Chongqing", "cn": "重庆", "desc": "เมืองภูเขาซ้อนชั้น วิวกลางคืนอลังการ สายคอนเทนต์", "style": "คอนเทนต์ / กลางคืน", "season": "ใบไม้ผลิ / ใบไม้ร่วง"}, {"id": "ZJ", "th": "จางเจียเจี้ย", "en": "Zhangjiajie", "cn": "张家界", "desc": "ภูเขาเสาหินแบบหนังอวตาร และสะพานกระจก", "style": "ธรรมชาติ", "season": "ใบไม้ผลิ / ใบไม้ร่วง"}, {"id": "QD", "th": "ชิงเต่า", "en": "Qingdao", "cn": "青岛", "desc": "เมืองชายทะเล ตึกสไตล์ยุโรป และเบียร์ชิงเต่าต้นตำรับ", "style": "ทะเล / ชิล", "season": "หน้าร้อน (มิ.ย.–ก.ย.)"}, {"id": "WH", "th": "อู่ฮั่น", "en": "Wuhan", "cn": "武汉", "desc": "เมืองริมแม่น้ำแยงซี หอกระเรียนเหลือง และอาหารเช้าขึ้นชื่อ", "style": "ประวัติศาสตร์ / อาหาร", "season": "ใบไม้ผลิ (ซากุระ มี.ค.) / ใบไม้ร่วง"}], "places": [{"id": "BJ-01", "c": "BJ", "th": "พระราชวังต้องห้าม", "en": "Forbidden City", "cn": "故宫博物院", "type": "ประวัติศาสตร์", "price": "ประมาณ ¥40–60 (ตามฤดู)", "free": false, "booking": "ต้องจองออนไลน์ล่วงหน้า", "desc": "พระราชวังหลวงสมัยราชวงศ์หมิงและชิง ใหญ่มาก ควรเผื่อครึ่งวัน", "status": "⚠️ ข้อมูลเบื้องต้น", "note": "ปิดวันจันทร์ (ตรวจสอบ)", "hours": null, "team": null, "uStars": null, "uCount": 0, "art": "temple", "station": "เทียนอันเหมินตะวันออก", "stationCn": "天安门东", "line": "สาย 1", "lineColor": "#C23A30", "exit": "", "walkMin": 10, "access": "เข้าทางประตูอู่เหมินด้านใต้ ออกทางประตูเสินอู่ด้านเหนือ"}, {"id": "BJ-02", "c": "BJ", "th": "กำแพงเมืองจีน ปาต๋าหลิ่ง", "en": "Badaling Great Wall", "cn": "八达岭长城", "type": "ประวัติศาสตร์", "price": "ประมาณ ¥40", "free": false, "booking": "ควรจองล่วงหน้า", "desc": "จุดชมกำแพงที่ดังและเดินทางง่ายที่สุด คนเยอะ", "status": "⚠️ ข้อมูลเบื้องต้น", "note": "", "hours": null, "team": null, "uStars": null, "uCount": 0, "art": "wall", "station": "สถานีปาต๋าหลิ่งฉางเฉิง", "stationCn": "八达岭长城站", "line": "รถไฟความเร็วสูง", "lineColor": "#555555", "exit": "", "walkMin": 10, "access": "นั่งรถไฟความเร็วสูงจากสถานีปักกิ่งเหนือ (北京北站)"}, {"id": "BJ-03", "c": "BJ", "th": "กำแพงเมืองจีน มู่เถียนอวี้", "en": "Mutianyu Great Wall", "cn": "慕田峪长城", "type": "ประวัติศาสตร์", "price": "ประมาณ ¥40 + กระเช้า/สไลเดอร์แยก", "free": false, "booking": "ควรจองล่วงหน้า", "desc": "คนน้อยกว่าปาต๋าหลิ่ง วิวสวย มีสไลเดอร์ลงเขา", "status": "⚠️ ข้อมูลเบื้องต้น", "note": "", "hours": null, "team": null, "uStars": null, "uCount": 0, "art": "wall", "station": "", "stationCn": "", "line": "", "lineColor": "", "exit": "", "walkMin": 0, "access": "ไม่มีรถไฟใต้ดินถึง ใช้รถบัสท่องเที่ยวหรือรถเหมา ประมาณ 1.5–2 ชม. จากตัวเมือง"}, {"id": "BJ-04", "c": "BJ", "th": "จัตุรัสเทียนอันเหมิน", "en": "Tiananmen Square", "cn": "天安门广场", "type": "เมือง", "price": "เข้าฟรี", "free": true, "booking": "ต้องลงทะเบียนล่วงหน้า", "desc": "จัตุรัสใจกลางเมือง อยู่ติดพระราชวังต้องห้าม", "status": "⚠️ ข้อมูลเบื้องต้น", "note": "ต้องใช้พาสปอร์ต", "hours": null, "team": null, "uStars": null, "uCount": 0, "art": "city", "station": "เทียนอันเหมินตะวันออก", "stationCn": "天安门东", "line": "สาย 1", "lineColor": "#C23A30", "exit": "", "walkMin": 5, "access": "ต้องลงทะเบียนล่วงหน้าและพกพาสปอร์ต"}, {"id": "BJ-05", "c": "BJ", "th": "หอฟ้าเทียนถาน", "en": "Temple of Heaven", "cn": "天坛", "type": "ประวัติศาสตร์", "price": "ประมาณ ¥15 (ตั๋วรวม ~¥34)", "free": false, "booking": "ไม่จำเป็น", "desc": "ที่จักรพรรดิใช้บวงสรวงฟ้า ตอนเช้ามีคนแก่มารำไทเก๊กในสวน", "status": "⚠️ ข้อมูลเบื้องต้น", "note": "", "hours": null, "team": null, "uStars": null, "uCount": 0, "art": "temple", "station": "ประตูตะวันออกหอฟ้า", "stationCn": "天坛东门", "line": "สาย 5", "lineColor": "#A6217F", "exit": "", "walkMin": 5, "access": ""}, {"id": "BJ-06", "c": "BJ", "th": "พระราชวังฤดูร้อน", "en": "Summer Palace", "cn": "颐和园", "type": "ประวัติศาสตร์", "price": "ประมาณ ¥30 (ตั๋วรวม ~¥60)", "free": false, "booking": "ควรจองช่วงวันหยุด", "desc": "สวนหลวงริมทะเลสาบคุนหมิง นั่งเรือได้", "status": "⚠️ ข้อมูลเบื้องต้น", "note": "", "hours": null, "team": null, "uStars": null, "uCount": 0, "art": "garden", "station": "ประตูเหนือพระราชวังฤดูร้อน", "stationCn": "北宫门", "line": "สาย 4", "lineColor": "#008E9C", "exit": "", "walkMin": 5, "access": ""}, {"id": "BJ-07", "c": "BJ", "th": "ตรอกหนานหลัวกู่เซียง", "en": "Nanluoguxiang", "cn": "南锣鼓巷", "type": "วัฒนธรรม", "price": "เข้าฟรี", "free": true, "booking": "ไม่จำเป็น", "desc": "ตรอกหูท่งเก่า มีร้านขนมและคาเฟ่", "status": "⚠️ ข้อมูลเบื้องต้น", "note": "", "hours": null, "team": null, "uStars": null, "uCount": 0, "art": "street", "station": "หนานหลัวกู่เซียง", "stationCn": "南锣鼓巷", "line": "สาย 6 / 8", "lineColor": "#D29700", "exit": "", "walkMin": 3, "access": ""}, {"id": "BJ-08", "c": "BJ", "th": "สนามกีฬารังนก", "en": "Bird's Nest (National Stadium)", "cn": "国家体育场（鸟巢）", "type": "เมือง", "price": "ด้านนอกฟรี / ด้านในประมาณ ¥50", "free": true, "booking": "ไม่จำเป็น", "desc": "สนามกีฬาโอลิมปิก 2008 สวยตอนเปิดไฟกลางคืน", "status": "⚠️ ข้อมูลเบื้องต้น", "note": "", "hours": null, "team": null, "uStars": null, "uCount": 0, "art": "city", "station": "สวนโอลิมปิก", "stationCn": "奥林匹克公园", "line": "สาย 8", "lineColor": "#009B6B", "exit": "", "walkMin": 10, "access": ""}, {"id": "BJ-09", "c": "BJ", "th": "ถนนหวังฝูจิ่ง", "en": "Wangfujing Street", "cn": "王府井", "type": "ช้อปปิ้ง", "price": "เข้าฟรี", "free": true, "booking": "ไม่จำเป็น", "desc": "ถนนช้อปปิ้งสายหลักใจกลางเมือง", "status": "⚠️ ข้อมูลเบื้องต้น", "note": "", "hours": null, "team": null, "uStars": null, "uCount": 0, "art": "shop", "station": "หวังฝูจิ่ง", "stationCn": "王府井", "line": "สาย 1", "lineColor": "#C23A30", "exit": "", "walkMin": 2, "access": ""}, {"id": "BJ-10", "c": "BJ", "th": "วัดลามะ (หย่งเหอกง)", "en": "Yonghe Temple", "cn": "雍和宫", "type": "วัฒนธรรม", "price": "ประมาณ ¥25", "free": false, "booking": "ควรจองล่วงหน้า", "desc": "วัดพุทธทิเบตที่ใหญ่ที่สุดในปักกิ่ง คนไทยนิยมไปไหว้", "status": "⚠️ ข้อมูลเบื้องต้น", "note": "", "hours": null, "team": null, "uStars": null, "uCount": 0, "art": "street", "station": "หย่งเหอกง", "stationCn": "雍和宫", "line": "สาย 2 / 5", "lineColor": "#006098", "exit": "", "walkMin": 3, "access": ""}, {"id": "BJ-11", "c": "BJ", "th": "ยูนิเวอร์แซล สตูดิโอ ปักกิ่ง", "en": "Universal Beijing Resort", "cn": "北京环球度假区", "type": "สวนสนุก", "price": "ประมาณ ¥400+ (ขึ้นกับวัน)", "free": false, "booking": "ต้องซื้อตั๋วล่วงหน้า", "desc": "สวนสนุกธีมภาพยนตร์ อยู่ชานเมือง", "status": "⚠️ ข้อมูลเบื้องต้น", "note": "", "hours": null, "team": null, "uStars": null, "uCount": 0, "art": "park", "station": "ยูนิเวอร์แซลรีสอร์ต", "stationCn": "环球度假区", "line": "สาย 7", "lineColor": "#F6C582", "exit": "", "walkMin": 5, "access": ""}, {"id": "SH-01", "c": "SH", "th": "เดอะบันด์", "en": "The Bund", "cn": "外滩", "type": "เมือง", "price": "เข้าฟรี", "free": true, "booking": "ไม่จำเป็น", "desc": "ทางเดินริมแม่น้ำ มองเห็นตึกระฟ้าฝั่งผู่ตง สวยสุดตอนกลางคืน", "status": "⚠️ ข้อมูลเบื้องต้น", "note": "ไฟตึกปิดราว 4 ทุ่ม (ตรวจสอบ)", "hours": null, "team": null, "uStars": null, "uCount": 0, "art": "city", "station": "หนานจิงตะวันออก", "stationCn": "南京东路", "line": "สาย 2 / 10", "lineColor": "#97D700", "exit": "", "walkMin": 10, "access": "เดินตามถนนหนานจิงไปทางแม่น้ำ"}, {"id": "SH-02", "c": "SH", "th": "สวนอวี้หยวน", "en": "Yu Garden", "cn": "豫园", "type": "วัฒนธรรม", "price": "ประมาณ ¥40", "free": false, "booking": "ควรจองช่วงเทศกาล", "desc": "สวนจีนโบราณ ล้อมด้วยตลาดเก่าและร้านอาหาร", "status": "⚠️ ข้อมูลเบื้องต้น", "note": "", "hours": null, "team": null, "uStars": null, "uCount": 0, "art": "garden", "station": "อวี้หยวน", "stationCn": "豫园", "line": "สาย 10", "lineColor": "#C6A1CF", "exit": "", "walkMin": 5, "access": ""}, {"id": "SH-03", "c": "SH", "th": "หอไข่มุกตะวันออก", "en": "Oriental Pearl Tower", "cn": "东方明珠", "type": "เมือง", "price": "ประมาณ ¥200 (ขึ้นกับชั้น)", "free": false, "booking": "ไม่จำเป็น", "desc": "แลนด์มาร์กทรงลูกบอลสีชมพู มีพื้นกระจก", "status": "⚠️ ข้อมูลเบื้องต้น", "note": "", "hours": null, "team": null, "uStars": null, "uCount": 0, "art": "city", "station": "ลู่เจียจุ่ย", "stationCn": "陆家嘴", "line": "สาย 2", "lineColor": "#97D700", "exit": "", "walkMin": 5, "access": ""}, {"id": "SH-04", "c": "SH", "th": "เซี่ยงไฮ้ทาวเวอร์", "en": "Shanghai Tower", "cn": "上海中心大厦", "type": "เมือง", "price": "ประมาณ ¥180", "free": false, "booking": "ไม่จำเป็น", "desc": "ตึกสูงที่สุดในจีน จุดชมวิวสูงมาก", "status": "⚠️ ข้อมูลเบื้องต้น", "note": "", "hours": null, "team": null, "uStars": null, "uCount": 0, "art": "city", "station": "ลู่เจียจุ่ย", "stationCn": "陆家嘴", "line": "สาย 2", "lineColor": "#97D700", "exit": "", "walkMin": 8, "access": ""}, {"id": "SH-05", "c": "SH", "th": "ถนนคนเดินหนานจิง", "en": "Nanjing Road", "cn": "南京路步行街", "type": "ช้อปปิ้ง", "price": "เข้าฟรี", "free": true, "booking": "ไม่จำเป็น", "desc": "ถนนช้อปปิ้งยาว เดินต่อไปเดอะบันด์ได้", "status": "⚠️ ข้อมูลเบื้องต้น", "note": "", "hours": null, "team": null, "uStars": null, "uCount": 0, "art": "shop", "station": "หนานจิงตะวันออก", "stationCn": "南京东路", "line": "สาย 2 / 10", "lineColor": "#97D700", "exit": "", "walkMin": 1, "access": ""}, {"id": "SH-06", "c": "SH", "th": "ซินเทียนตี้", "en": "Xintiandi", "cn": "新天地", "type": "เมือง", "price": "เข้าฟรี", "free": true, "booking": "ไม่จำเป็น", "desc": "ย่านบ้านเก่าสไตล์ชิคูเหมิน กลายเป็นร้านอาหารและบาร์", "status": "⚠️ ข้อมูลเบื้องต้น", "note": "", "hours": null, "team": null, "uStars": null, "uCount": 0, "art": "city", "station": "ซินเทียนตี้", "stationCn": "新天地", "line": "สาย 10", "lineColor": "#C6A1CF", "exit": "", "walkMin": 3, "access": ""}, {"id": "SH-07", "c": "SH", "th": "เถียนจื่อฟาง", "en": "Tianzifang", "cn": "田子坊", "type": "วัฒนธรรม", "price": "เข้าฟรี", "free": true, "booking": "ไม่จำเป็น", "desc": "ตรอกเล็ก ๆ ร้านงานศิลปะ ของที่ระลึก คาเฟ่", "status": "⚠️ ข้อมูลเบื้องต้น", "note": "", "hours": null, "team": null, "uStars": null, "uCount": 0, "art": "street", "station": "ต้าผู่เฉียว", "stationCn": "打浦桥", "line": "สาย 9", "lineColor": "#71C5E8", "exit": "", "walkMin": 3, "access": ""}, {"id": "SH-08", "c": "SH", "th": "ถนนอู่คัง", "en": "Wukang Road", "cn": "武康路", "type": "เมือง", "price": "เข้าฟรี", "free": true, "booking": "ไม่จำเป็น", "desc": "ถนนต้นไม้ร่มรื่น ตึกสไตล์ยุโรป จุดถ่ายรูปยอดฮิต", "status": "⚠️ ข้อมูลเบื้องต้น", "note": "", "hours": null, "team": null, "uStars": null, "uCount": 0, "art": "city", "station": "ห้องสมุดเซี่ยงไฮ้", "stationCn": "上海图书馆", "line": "สาย 10", "lineColor": "#C6A1CF", "exit": "", "walkMin": 5, "access": ""}, {"id": "SH-09", "c": "SH", "th": "เมืองน้ำจูเจียเจี่ยว", "en": "Zhujiajiao Water Town", "cn": "朱家角古镇", "type": "วัฒนธรรม", "price": "เข้าเมืองฟรี (บางจุดเสียเงิน)", "free": true, "booking": "ไม่จำเป็น", "desc": "เมืองโบราณริมคลอง นั่งเรือได้ ไปกลับได้ในวันเดียว", "status": "⚠️ ข้อมูลเบื้องต้น", "note": "", "hours": null, "team": null, "uStars": null, "uCount": 0, "art": "street", "station": "จูเจียเจี่ยว", "stationCn": "朱家角", "line": "สาย 17", "lineColor": "#BC796F", "exit": "", "walkMin": 15, "access": ""}, {"id": "SH-10", "c": "SH", "th": "เซี่ยงไฮ้ ดิสนีย์แลนด์", "en": "Shanghai Disneyland", "cn": "上海迪士尼乐园", "type": "สวนสนุก", "price": "ประมาณ ¥450+ (ขึ้นกับวัน)", "free": false, "booking": "ต้องซื้อตั๋วล่วงหน้า", "desc": "สวนสนุกดิสนีย์ในจีนแผ่นดินใหญ่", "status": "⚠️ ข้อมูลเบื้องต้น", "note": "", "hours": null, "team": null, "uStars": null, "uCount": 0, "art": "park", "station": "ดิสนีย์รีสอร์ต", "stationCn": "迪士尼", "line": "สาย 11", "lineColor": "#76232F", "exit": "", "walkMin": 5, "access": ""}, {"id": "SH-11", "c": "SH", "th": "พิพิธภัณฑ์เซี่ยงไฮ้", "en": "Shanghai Museum", "cn": "上海博物馆", "type": "วัฒนธรรม", "price": "เข้าฟรี", "free": true, "booking": "ต้องจองล่วงหน้า", "desc": "พิพิธภัณฑ์ศิลปะจีนโบราณ", "status": "⚠️ ข้อมูลเบื้องต้น", "note": "", "hours": null, "team": null, "uStars": null, "uCount": 0, "art": "street", "station": "จัตุรัสประชาชน", "stationCn": "人民广场", "line": "สาย 1 / 2 / 8", "lineColor": "#E4002B", "exit": "", "walkMin": 5, "access": ""}, {"id": "CD-01", "c": "CD", "th": "ศูนย์อนุรักษ์แพนด้ายักษ์", "en": "Chengdu Research Base of Giant Panda Breeding", "cn": "成都大熊猫繁育研究基地", "type": "สัตว์", "price": "ประมาณ ¥55", "free": false, "booking": "ควรจองล่วงหน้า", "desc": "ดูแพนด้าใกล้ ๆ ไปตอนเช้าแพนด้าตื่น", "status": "⚠️ ข้อมูลเบื้องต้น", "note": "", "hours": null, "team": null, "uStars": null, "uCount": 0, "art": "forest", "station": "ถนนแพนด้า", "stationCn": "熊猫大道", "line": "สาย 3", "lineColor": "#E4007F", "exit": "", "walkMin": 0, "access": "จากสถานีต่อแท็กซี่หรือรถบัสประมาณ 10 นาที"}, {"id": "CD-02", "c": "CD", "th": "ตรอกควานจ๋าย", "en": "Kuanzhai Alley", "cn": "宽窄巷子", "type": "วัฒนธรรม", "price": "เข้าฟรี", "free": true, "booking": "ไม่จำเป็น", "desc": "ตรอกบ้านโบราณ ร้านขนม ชา และการแสดงพ่นไฟ", "status": "⚠️ ข้อมูลเบื้องต้น", "note": "", "hours": null, "team": null, "uStars": null, "uCount": 0, "art": "street", "station": "ควานจ๋ายเซี่ยงจื่อ", "stationCn": "宽窄巷子", "line": "สาย 4", "lineColor": "#2E9B3E", "exit": "", "walkMin": 5, "access": ""}, {"id": "CD-03", "c": "CD", "th": "ถนนโบราณจิ่นหลี่", "en": "Jinli Ancient Street", "cn": "锦里古街", "type": "วัฒนธรรม", "price": "เข้าฟรี", "free": true, "booking": "ไม่จำเป็น", "desc": "ถนนสไตล์สามก๊ก ของกินเยอะ อยู่ติดศาลเจ้าอู่โหว", "status": "⚠️ ข้อมูลเบื้องต้น", "note": "", "hours": null, "team": null, "uStars": null, "uCount": 0, "art": "street", "station": "เกาเซิงเฉียว", "stationCn": "高升桥", "line": "สาย 3", "lineColor": "#E4007F", "exit": "", "walkMin": 10, "access": "อยู่ติดศาลเจ้าอู่โหว"}, {"id": "CD-04", "c": "CD", "th": "ศาลเจ้าอู่โหว (ขงเบ้ง)", "en": "Wuhou Shrine", "cn": "武侯祠", "type": "ประวัติศาสตร์", "price": "ประมาณ ¥50", "free": false, "booking": "ไม่จำเป็น", "desc": "ศาลเจ้าขงเบ้งและเล่าปี่ สำหรับแฟนสามก๊ก", "status": "⚠️ ข้อมูลเบื้องต้น", "note": "", "hours": null, "team": null, "uStars": null, "uCount": 0, "art": "temple", "station": "เกาเซิงเฉียว", "stationCn": "高升桥", "line": "สาย 3", "lineColor": "#E4007F", "exit": "", "walkMin": 10, "access": ""}, {"id": "CD-05", "c": "CD", "th": "ไท่กู่หลี่ + แพนด้าปีนตึก IFS", "en": "Taikoo Li & Chengdu IFS", "cn": "成都远洋太古里 / 成都IFS", "type": "ช้อปปิ้ง", "price": "เข้าฟรี", "free": true, "booking": "ไม่จำเป็น", "desc": "ย่านช้อปปิ้งทันสมัย มีรูปปั้นแพนด้าปีนตึก", "status": "⚠️ ข้อมูลเบื้องต้น", "note": "", "hours": null, "team": null, "uStars": null, "uCount": 0, "art": "shop", "station": "ชุนซีลู่", "stationCn": "春熙路", "line": "สาย 2 / 3", "lineColor": "#F08300", "exit": "", "walkMin": 3, "access": ""}, {"id": "CD-06", "c": "CD", "th": "ถนนชุนซีลู่", "en": "Chunxi Road", "cn": "春熙路", "type": "ช้อปปิ้ง", "price": "เข้าฟรี", "free": true, "booking": "ไม่จำเป็น", "desc": "ถนนช้อปปิ้งใจกลางเมือง อยู่ใกล้ไท่กู่หลี่", "status": "⚠️ ข้อมูลเบื้องต้น", "note": "", "hours": null, "team": null, "uStars": null, "uCount": 0, "art": "shop", "station": "ชุนซีลู่", "stationCn": "春熙路", "line": "สาย 2 / 3", "lineColor": "#F08300", "exit": "", "walkMin": 1, "access": ""}, {"id": "CD-07", "c": "CD", "th": "สวนประชาชน (ร้านน้ำชา)", "en": "People's Park", "cn": "人民公园", "type": "วัฒนธรรม", "price": "เข้าฟรี", "free": true, "booking": "ไม่จำเป็น", "desc": "นั่งจิบชาแบบคนเฉิงตู มีบริการแคะหู", "status": "⚠️ ข้อมูลเบื้องต้น", "note": "", "hours": null, "team": null, "uStars": null, "uCount": 0, "art": "street", "station": "สวนประชาชน", "stationCn": "人民公园", "line": "สาย 2", "lineColor": "#F08300", "exit": "", "walkMin": 3, "access": ""}, {"id": "CD-08", "c": "CD", "th": "ภูเขาชิงเฉิง", "en": "Mount Qingcheng", "cn": "青城山", "type": "ธรรมชาติ", "price": "ประมาณ ¥80 + กระเช้า", "free": false, "booking": "ไม่จำเป็น", "desc": "ภูเขาเต๋า ป่าเขียว บันไดเยอะ", "status": "⚠️ ข้อมูลเบื้องต้น", "note": "ไปกลับวันเดียวได้", "hours": null, "team": null, "uStars": null, "uCount": 0, "art": "mountain", "station": "สถานีภูเขาชิงเฉิง", "stationCn": "青城山站", "line": "รถไฟความเร็วสูง", "lineColor": "#555555", "exit": "", "walkMin": 0, "access": "จากสถานีต่อรถบัสหรือแท็กซี่ไปทางเข้าประมาณ 10 นาที"}, {"id": "CD-09", "c": "CD", "th": "ระบบชลประทานตูเจียงเยี่ยน", "en": "Dujiangyan Irrigation System", "cn": "都江堰", "type": "ประวัติศาสตร์", "price": "ประมาณ ¥80", "free": false, "booking": "ไม่จำเป็น", "desc": "ระบบชลประทานอายุกว่า 2,000 ปี มรดกโลก", "status": "⚠️ ข้อมูลเบื้องต้น", "note": "ไปคู่กับชิงเฉิงได้", "hours": null, "team": null, "uStars": null, "uCount": 0, "art": "temple", "station": "สถานีตูเจียงเยี่ยน", "stationCn": "都江堰站", "line": "รถไฟความเร็วสูง", "lineColor": "#555555", "exit": "", "walkMin": 0, "access": "จากสถานีต่อรถบัสหรือแท็กซี่ไปทางเข้า"}, {"id": "CD-10", "c": "CD", "th": "พระใหญ่เล่อซาน", "en": "Leshan Giant Buddha", "cn": "乐山大佛", "type": "วัฒนธรรม", "price": "ประมาณ ¥80", "free": false, "booking": "ควรจองล่วงหน้า", "desc": "พระพุทธรูปแกะสลักหน้าผาขนาดใหญ่ที่สุดในโลก", "status": "⚠️ ข้อมูลเบื้องต้น", "note": "ห่างเฉิงตูราว 1 ชม. ด้วยรถไฟความเร็วสูง (ตรวจสอบ)", "hours": null, "team": null, "uStars": null, "uCount": 0, "art": "street", "station": "สถานีเล่อซาน", "stationCn": "乐山站", "line": "รถไฟความเร็วสูง", "lineColor": "#555555", "exit": "", "walkMin": 0, "access": "จากสถานีต่อรถบัสหรือแท็กซี่ประมาณ 30 นาที"}, {"id": "CQ-01", "c": "CQ", "th": "หงหยาต้ง", "en": "Hongyadong", "cn": "洪崖洞", "type": "เมือง", "price": "เข้าฟรี", "free": true, "booking": "ไม่จำเป็น", "desc": "อาคารไม้ซ้อนชั้นเกาะหน้าผา เปิดไฟสวยตอนกลางคืน", "status": "⚠️ ข้อมูลเบื้องต้น", "note": "", "hours": null, "team": null, "uStars": null, "uCount": 0, "art": "city", "station": "เสี่ยวสือจื่อ", "stationCn": "小什字", "line": "สาย 1 / 6", "lineColor": "#E60012", "exit": "", "walkMin": 10, "access": ""}, {"id": "CQ-02", "c": "CQ", "th": "สถานีรถไฟฟ้าทะลุตึก หลี่จื่อป้า", "en": "Liziba Station", "cn": "李子坝站", "type": "เมือง", "price": "ดูฟรี / ตั๋วรถไฟ ¥2–3", "free": true, "booking": "ไม่จำเป็น", "desc": "รถไฟรางเดี่ยวสาย 2 วิ่งทะลุอาคารที่พักอาศัย", "status": "⚠️ ข้อมูลเบื้องต้น", "note": "", "hours": null, "team": null, "uStars": null, "uCount": 0, "art": "train", "station": "หลี่จื่อป้า", "stationCn": "李子坝", "line": "สาย 2", "lineColor": "#009B4C", "exit": "", "walkMin": 0, "access": "จุดชมวิวอยู่ใต้สถานี"}, {"id": "CQ-03", "c": "CQ", "th": "กระเช้าข้ามแม่น้ำแยงซี", "en": "Yangtze River Cableway", "cn": "长江索道", "type": "เมือง", "price": "ประมาณ ¥20 ต่อเที่ยว", "free": false, "booking": "ไม่จำเป็น", "desc": "กระเช้าข้ามแม่น้ำ ชมวิวเมือง คิวยาวช่วงวันหยุด", "status": "⚠️ ข้อมูลเบื้องต้น", "note": "", "hours": null, "team": null, "uStars": null, "uCount": 0, "art": "river", "station": "เสี่ยวสือจื่อ", "stationCn": "小什字", "line": "สาย 1 / 6", "lineColor": "#E60012", "exit": "", "walkMin": 5, "access": ""}, {"id": "CQ-04", "c": "CQ", "th": "ย่านเจี่ยฟ่างเปย", "en": "Jiefangbei", "cn": "解放碑", "type": "ช้อปปิ้ง", "price": "เข้าฟรี", "free": true, "booking": "ไม่จำเป็น", "desc": "ย่านช้อปปิ้งใจกลางเมือง มีร้านหม้อไฟเยอะ", "status": "⚠️ ข้อมูลเบื้องต้น", "note": "", "hours": null, "team": null, "uStars": null, "uCount": 0, "art": "shop", "station": "หลินเจียงเหมิน", "stationCn": "临江门", "line": "สาย 2", "lineColor": "#009B4C", "exit": "", "walkMin": 5, "access": ""}, {"id": "CQ-05", "c": "CQ", "th": "ถนนบันได 18 ขั้น ซือปาถี", "en": "Shibati", "cn": "十八梯", "type": "วัฒนธรรม", "price": "เข้าฟรี", "free": true, "booking": "ไม่จำเป็น", "desc": "ย่านเก่าปรับปรุงใหม่ เดินลงบันไดดูบ้านเก่าและร้านค้า", "status": "⚠️ ข้อมูลเบื้องต้น", "note": "", "hours": null, "team": null, "uStars": null, "uCount": 0, "art": "street", "station": "เจี้ยวฉางโข่ว", "stationCn": "较场口", "line": "สาย 1 / 2", "lineColor": "#E60012", "exit": "", "walkMin": 3, "access": ""}, {"id": "CQ-06", "c": "CQ", "th": "เมืองโบราณฉือชี่โข่ว", "en": "Ciqikou Ancient Town", "cn": "磁器口古镇", "type": "วัฒนธรรม", "price": "เข้าฟรี", "free": true, "booking": "ไม่จำเป็น", "desc": "เมืองเก่าริมแม่น้ำเจียหลิง ขนมและของฝาก", "status": "⚠️ ข้อมูลเบื้องต้น", "note": "", "hours": null, "team": null, "uStars": null, "uCount": 0, "art": "street", "station": "ฉือชี่โข่ว", "stationCn": "磁器口", "line": "สาย 1", "lineColor": "#E60012", "exit": "", "walkMin": 10, "access": ""}, {"id": "CQ-07", "c": "CQ", "th": "เฉาเทียนเหมิน", "en": "Chaotianmen", "cn": "朝天门", "type": "เมือง", "price": "เข้าฟรี", "free": true, "booking": "ไม่จำเป็น", "desc": "จุดที่แม่น้ำสองสายมาบรรจบกัน ข้างอาคารราฟเฟิลส์ซิตี้", "status": "⚠️ ข้อมูลเบื้องต้น", "note": "", "hours": null, "team": null, "uStars": null, "uCount": 0, "art": "city", "station": "เฉาเทียนเหมิน", "stationCn": "朝天门", "line": "สาย 1", "lineColor": "#E60012", "exit": "", "walkMin": 5, "access": ""}, {"id": "CQ-08", "c": "CQ", "th": "จุดชมวิวคริสตัล ราฟเฟิลส์ซิตี้", "en": "The Crystal, Raffles City Chongqing", "cn": "重庆来福士·探索·观景台", "type": "เมือง", "price": "ตรวจสอบราคา", "free": false, "booking": "ไม่จำเป็น", "desc": "สะพานลอยฟ้าเชื่อมตึก ชมวิวแม่น้ำ", "status": "⚠️ ข้อมูลเบื้องต้น", "note": "", "hours": null, "team": null, "uStars": null, "uCount": 0, "art": "city", "station": "เฉาเทียนเหมิน", "stationCn": "朝天门", "line": "สาย 1", "lineColor": "#E60012", "exit": "", "walkMin": 5, "access": ""}, {"id": "CQ-09", "c": "CQ", "th": "ล่องเรือแม่น้ำสองสายยามค่ำ", "en": "Two Rivers Night Cruise", "cn": "两江夜游", "type": "เมือง", "price": "ประมาณ ¥100–200 (ขึ้นกับเรือ)", "free": false, "booking": "ควรจองล่วงหน้า", "desc": "ล่องเรือชมไฟเมืองตอนกลางคืน", "status": "⚠️ ข้อมูลเบื้องต้น", "note": "", "hours": null, "team": null, "uStars": null, "uCount": 0, "art": "river", "station": "เฉาเทียนเหมิน", "stationCn": "朝天门", "line": "สาย 1", "lineColor": "#E60012", "exit": "", "walkMin": 5, "access": "ท่าเรือขึ้นกับบริษัทเรือ ดูในตั๋ว"}, {"id": "CQ-10", "c": "CQ", "th": "หอประชุมประชาชนฉงชิ่ง", "en": "Chongqing People's Auditorium", "cn": "重庆市人民大礼堂", "type": "ประวัติศาสตร์", "price": "ตรวจสอบราคา", "free": false, "booking": "ไม่จำเป็น", "desc": "อาคารสถาปัตยกรรมจีนหลังคาเขียว", "status": "⚠️ ข้อมูลเบื้องต้น", "note": "", "hours": null, "team": null, "uStars": null, "uCount": 0, "art": "temple", "station": "", "stationCn": "", "line": "", "lineColor": "", "exit": "", "walkMin": 0, "access": "นั่งแท็กซี่จากย่านเจี่ยฟ่างเปยประมาณ 10 นาที"}, {"id": "CQ-11", "c": "CQ", "th": "อุทยานอู่หลง (สะพานสวรรค์)", "en": "Wulong Karst – Three Natural Bridges", "cn": "武隆天生三桥", "type": "ธรรมชาติ", "price": "ตรวจสอบราคา (รวมรถรับส่ง)", "free": false, "booking": "ควรจองล่วงหน้า", "desc": "หุบเขาหินปูนและสะพานหินธรรมชาติ มรดกโลก", "status": "⚠️ ข้อมูลเบื้องต้น", "note": "ห่างตัวเมืองหลายชั่วโมง", "hours": null, "team": null, "uStars": null, "uCount": 0, "art": "mountain", "station": "สถานีอู่หลง", "stationCn": "武隆站", "line": "รถไฟความเร็วสูง", "lineColor": "#555555", "exit": "", "walkMin": 0, "access": "จากสถานีต่อรถบัสไปศูนย์บริการนักท่องเที่ยว แล้วขึ้นรถรับส่งของอุทยาน"}, {"id": "CQ-12", "c": "CQ", "th": "ภาพสลักหินต้าจู๋", "en": "Dazu Rock Carvings", "cn": "大足石刻", "type": "วัฒนธรรม", "price": "ตรวจสอบราคา", "free": false, "booking": "ไม่จำเป็น", "desc": "ภาพสลักหินพุทธศาสนา มรดกโลก", "status": "⚠️ ข้อมูลเบื้องต้น", "note": "ห่างตัวเมืองราว 2 ชม. (ตรวจสอบ)", "hours": null, "team": null, "uStars": null, "uCount": 0, "art": "street", "station": "", "stationCn": "", "line": "", "lineColor": "", "exit": "", "walkMin": 0, "access": "ใช้รถทัวร์หรือรถเหมาจากตัวเมืองประมาณ 2 ชม."}, {"id": "ZJ-01", "c": "ZJ", "th": "อุทยานแห่งชาติจางเจียเจี้ย (ภูเขาอวตาร)", "en": "Zhangjiajie National Forest Park", "cn": "张家界国家森林公园", "type": "ธรรมชาติ", "price": "ตรวจสอบราคา (ตั๋วหลายวัน)", "free": false, "booking": "ควรจองล่วงหน้า", "desc": "เสาหินทรายสูงชัน แรงบันดาลใจหนังอวตาร ใช้เวลา 1–2 วัน", "status": "⚠️ ข้อมูลเบื้องต้น", "note": "", "hours": null, "team": null, "uStars": null, "uCount": 0, "art": "mountain", "station": "ประตูอู่หลิงหยวน", "stationCn": "武陵源门票站", "line": "เดิน", "lineColor": "#3F7F5F", "exit": "", "walkMin": 10, "access": "ถ้าพักย่านอู่หลิงหยวนเดินไปทางเข้าได้ ในอุทยานมีรถรับส่งฟรี"}, {"id": "ZJ-02", "c": "ZJ", "th": "ลิฟต์ไป่หลง", "en": "Bailong Elevator", "cn": "百龙天梯", "type": "ธรรมชาติ", "price": "ตรวจสอบราคา (ไม่รวมในตั๋วอุทยาน)", "free": false, "booking": "ไม่จำเป็น", "desc": "ลิฟต์กลางแจ้งเกาะหน้าผา ขึ้นสู่จุดชมวิวในอุทยาน", "status": "⚠️ ข้อมูลเบื้องต้น", "note": "", "hours": null, "team": null, "uStars": null, "uCount": 0, "art": "mountain", "station": "ในอุทยาน", "stationCn": "", "line": "รถรับส่งอุทยาน", "lineColor": "#3F7F5F", "exit": "", "walkMin": 0, "access": "นั่งรถรับส่งในอุทยานไปจุดขึ้นลิฟต์"}, {"id": "ZJ-03", "c": "ZJ", "th": "เขาเทียนเหมินซาน", "en": "Tianmen Mountain", "cn": "天门山", "type": "ธรรมชาติ", "price": "ตรวจสอบราคา (รวมกระเช้า)", "free": false, "booking": "ต้องจองล่วงหน้า", "desc": "กระเช้ายาวมาก ถ้ำประตูสวรรค์ และทางเดินกระจกริมหน้าผา", "status": "⚠️ ข้อมูลเบื้องต้น", "note": "", "hours": null, "team": null, "uStars": null, "uCount": 0, "art": "mountain", "station": "สถานีกระเช้าเทียนเหมินซาน", "stationCn": "天门山索道", "line": "กระเช้า", "lineColor": "#3F7F5F", "exit": "", "walkMin": 0, "access": "สถานีกระเช้าอยู่ในตัวเมืองจางเจียเจี้ย"}, {"id": "ZJ-04", "c": "ZJ", "th": "สะพานกระจกแกรนด์แคนยอน", "en": "Zhangjiajie Grand Canyon Glass Bridge", "cn": "张家界大峡谷玻璃桥", "type": "ธรรมชาติ", "price": "ตรวจสอบราคา", "free": false, "booking": "ควรจองล่วงหน้า", "desc": "สะพานกระจกข้ามหุบเขา สำหรับคนชอบความหวาดเสียว", "status": "⚠️ ข้อมูลเบื้องต้น", "note": "", "hours": null, "team": null, "uStars": null, "uCount": 0, "art": "mountain", "station": "", "stationCn": "", "line": "รถบัส", "lineColor": "#3F7F5F", "exit": "", "walkMin": 0, "access": "นั่งรถบัสหรือแท็กซี่จากย่านอู่หลิงหยวนประมาณ 40 นาที"}, {"id": "ZJ-05", "c": "ZJ", "th": "ถ้ำมังกรเหลือง", "en": "Yellow Dragon Cave", "cn": "黄龙洞", "type": "ธรรมชาติ", "price": "ตรวจสอบราคา", "free": false, "booking": "ไม่จำเป็น", "desc": "ถ้ำหินปูนขนาดใหญ่ มีล่องเรือในถ้ำ", "status": "⚠️ ข้อมูลเบื้องต้น", "note": "", "hours": null, "team": null, "uStars": null, "uCount": 0, "art": "river", "station": "", "stationCn": "", "line": "รถบัส", "lineColor": "#3F7F5F", "exit": "", "walkMin": 0, "access": "นั่งแท็กซี่จากย่านอู่หลิงหยวนประมาณ 15 นาที"}, {"id": "ZJ-06", "c": "ZJ", "th": "ทะเลสาบเป่าเฟิง", "en": "Baofeng Lake", "cn": "宝峰湖", "type": "ธรรมชาติ", "price": "ตรวจสอบราคา", "free": false, "booking": "ไม่จำเป็น", "desc": "ทะเลสาบกลางหุบเขา นั่งเรือชมวิว", "status": "⚠️ ข้อมูลเบื้องต้น", "note": "", "hours": null, "team": null, "uStars": null, "uCount": 0, "art": "river", "station": "", "stationCn": "", "line": "รถบัส", "lineColor": "#3F7F5F", "exit": "", "walkMin": 0, "access": "นั่งแท็กซี่จากย่านอู่หลิงหยวนประมาณ 10 นาที"}, {"id": "ZJ-07", "c": "ZJ", "th": "ถนนคนเดินซีปู้", "en": "Xibu Street", "cn": "溪布街", "type": "ช้อปปิ้ง", "price": "เข้าฟรี", "free": true, "booking": "ไม่จำเป็น", "desc": "ถนนคนเดินใกล้ทางเข้าอุทยาน ของกินและของฝาก", "status": "⚠️ ข้อมูลเบื้องต้น", "note": "", "hours": null, "team": null, "uStars": null, "uCount": 0, "art": "shop", "station": "ย่านอู่หลิงหยวน", "stationCn": "武陵源", "line": "เดิน", "lineColor": "#3F7F5F", "exit": "", "walkMin": 5, "access": "อยู่ใกล้ทางเข้าอุทยาน"}, {"id": "ZJ-08", "c": "ZJ", "th": "เมืองโบราณฝูหรงเจิ้น", "en": "Furong Ancient Town", "cn": "芙蓉镇", "type": "วัฒนธรรม", "price": "ตรวจสอบราคา", "free": false, "booking": "ไม่จำเป็น", "desc": "เมืองโบราณริมน้ำตก เปิดไฟสวยตอนกลางคืน", "status": "⚠️ ข้อมูลเบื้องต้น", "note": "ห่างจางเจียเจี้ยราว 1–2 ชม. (ตรวจสอบ)", "hours": null, "team": null, "uStars": null, "uCount": 0, "art": "street", "station": "สถานีฝูหรงเจิ้น", "stationCn": "芙蓉镇站", "line": "รถไฟความเร็วสูง", "lineColor": "#555555", "exit": "", "walkMin": 0, "access": "จากสถานีต่อแท็กซี่เข้าเมืองโบราณ"}, {"id": "ZJ-09", "c": "ZJ", "th": "เมืองโบราณเฟิ่งหวง", "en": "Fenghuang Ancient Town", "cn": "凤凰古城", "type": "วัฒนธรรม", "price": "เข้าเมืองฟรี (บางจุดเสียเงิน)", "free": true, "booking": "ไม่จำเป็น", "desc": "เมืองโบราณริมแม่น้ำ บ้านเสาสูง สวยตอนกลางคืน", "status": "⚠️ ข้อมูลเบื้องต้น", "note": "ห่างหลายชั่วโมง เหมาะค้าง 1 คืน", "hours": null, "team": null, "uStars": null, "uCount": 0, "art": "street", "station": "สถานีเฟิ่งหวงกู่เฉิง", "stationCn": "凤凰古城站", "line": "รถไฟความเร็วสูง", "lineColor": "#555555", "exit": "", "walkMin": 0, "access": "จากสถานีต่อรถบัสหรือแท็กซี่เข้าเมืองโบราณ"}, {"id": "QD-01", "c": "QD", "th": "สะพานจั้นเฉียว", "en": "Zhanqiao Pier", "cn": "栈桥", "type": "เมือง", "price": "เข้าฟรี", "free": true, "booking": "ไม่จำเป็น", "desc": "สะพานยื่นลงทะเล แลนด์มาร์กที่อยู่บนฉลากเบียร์ชิงเต่า", "status": "⚠️ ข้อมูลเบื้องต้น", "note": "", "hours": null, "team": null, "uStars": null, "uCount": 0, "art": "sea", "station": "สถานีรถไฟชิงเต่า", "stationCn": "青岛站", "line": "สาย 3", "lineColor": "#0072BC", "exit": "", "walkMin": 5, "access": ""}, {"id": "QD-02", "c": "QD", "th": "ย่านปาต้ากวน", "en": "Badaguan Scenic Area", "cn": "八大关", "type": "เมือง", "price": "เข้าฟรี", "free": true, "booking": "ไม่จำเป็น", "desc": "ย่านวิลล่าสไตล์ยุโรปหลายสิบหลัง ถนนต้นไม้สวย เดินถ่ายรูปเพลิน", "status": "⚠️ ข้อมูลเบื้องต้น", "note": "", "hours": null, "team": null, "uStars": null, "uCount": 0, "art": "city", "station": "สวนไท่ผิงเจี่ยว", "stationCn": "太平角公园", "line": "สาย 3", "lineColor": "#0072BC", "exit": "", "walkMin": 10, "access": ""}, {"id": "QD-03", "c": "QD", "th": "พิพิธภัณฑ์เบียร์ชิงเต่า", "en": "Tsingtao Beer Museum", "cn": "青岛啤酒博物馆", "type": "วัฒนธรรม", "price": "ประมาณ ¥60 (รวมชิมเบียร์)", "free": false, "booking": "ควรจองช่วงวันหยุด", "desc": "โรงเบียร์เก่าอายุกว่าร้อยปี ได้ชิมเบียร์สดจากโรงงาน", "status": "⚠️ ข้อมูลเบื้องต้น", "note": "", "hours": null, "team": null, "uStars": null, "uCount": 0, "art": "street", "station": "", "stationCn": "", "line": "", "lineColor": "", "exit": "", "walkMin": 0, "access": "นั่งแท็กซี่จากถนนจงซานประมาณ 15 นาที"}, {"id": "QD-04", "c": "QD", "th": "ภูเขาเหลาซาน", "en": "Mount Lao", "cn": "崂山", "type": "ธรรมชาติ", "price": "ตรวจสอบราคา (หลายเส้นทาง)", "free": false, "booking": "ควรจองล่วงหน้า", "desc": "ภูเขาริมทะเลและวัดเต๋าเก่าแก่", "status": "⚠️ ข้อมูลเบื้องต้น", "note": "ห่างตัวเมือง ใช้เวลาเกือบทั้งวัน", "hours": null, "team": null, "uStars": null, "uCount": 0, "art": "mountain", "station": "", "stationCn": "", "line": "รถบัส", "lineColor": "#3F7F5F", "exit": "", "walkMin": 0, "access": "รถบัสท่องเที่ยวหรือแท็กซี่จากตัวเมืองประมาณ 1 ชม."}, {"id": "QD-05", "c": "QD", "th": "โบสถ์เซนต์ไมเคิล", "en": "St. Michael's Cathedral", "cn": "天主教堂", "type": "ประวัติศาสตร์", "price": "ตรวจสอบราคา", "free": false, "booking": "ไม่จำเป็น", "desc": "โบสถ์หินสไตล์โกธิก จุดถ่ายรูปพรีเวดดิ้งยอดฮิต", "status": "⚠️ ข้อมูลเบื้องต้น", "note": "", "hours": null, "team": null, "uStars": null, "uCount": 0, "art": "temple", "station": "สถานีรถไฟชิงเต่า", "stationCn": "青岛站", "line": "สาย 3", "lineColor": "#0072BC", "exit": "", "walkMin": 15, "access": "เดินผ่านถนนจงซานขึ้นเนิน"}, {"id": "QD-06", "c": "QD", "th": "จัตุรัสอู่ซื่อ", "en": "May Fourth Square", "cn": "五四广场", "type": "เมือง", "price": "เข้าฟรี", "free": true, "booking": "ไม่จำเป็น", "desc": "จัตุรัสริมทะเล มีประติมากรรมสีแดง 'สายลมเดือนพฤษภา' และโชว์ไฟตอนกลางคืน", "status": "⚠️ ข้อมูลเบื้องต้น", "note": "", "hours": null, "team": null, "uStars": null, "uCount": 0, "art": "sea", "station": "อู่ซื่อกว่างฉ่าง", "stationCn": "五四广场", "line": "สาย 2 / 3", "lineColor": "#0072BC", "exit": "", "walkMin": 3, "access": ""}, {"id": "QD-07", "c": "QD", "th": "ถนนต้าเสวี่ยลู่", "en": "Daxue Road", "cn": "大学路", "type": "เมือง", "price": "เข้าฟรี", "free": true, "booking": "ไม่จำเป็น", "desc": "ถนนกำแพงแดงหัวมุมที่คนมาถ่ายรูปกันเยอะ", "status": "⚠️ ข้อมูลเบื้องต้น", "note": "", "hours": null, "team": null, "uStars": null, "uCount": 0, "art": "city", "station": "", "stationCn": "", "line": "", "lineColor": "", "exit": "", "walkMin": 0, "access": "นั่งแท็กซี่จากถนนจงซานประมาณ 10 นาที"}, {"id": "QD-08", "c": "QD", "th": "สวนเขาเสี่ยวอวี๋ซาน", "en": "Xiaoyushan Park", "cn": "小鱼山公园", "type": "ธรรมชาติ", "price": "ตรวจสอบราคา", "free": false, "booking": "ไม่จำเป็น", "desc": "เนินเขาเล็ก ๆ มองเห็นหลังคาแดงและทะเลทั้งเมือง", "status": "⚠️ ข้อมูลเบื้องต้น", "note": "", "hours": null, "team": null, "uStars": null, "uCount": 0, "art": "mountain", "station": "", "stationCn": "", "line": "", "lineColor": "", "exit": "", "walkMin": 0, "access": "อยู่ใกล้ถนนต้าเสวี่ยลู่ เดินขึ้นเนินประมาณ 10 นาที"}, {"id": "QD-09", "c": "QD", "th": "ชายหาดหมายเลขหนึ่ง", "en": "No.1 Bathing Beach", "cn": "第一海水浴场", "type": "ทะเล", "price": "เข้าฟรี", "free": true, "booking": "ไม่จำเป็น", "desc": "ชายหาดกลางเมือง คนเยอะช่วงหน้าร้อน", "status": "⚠️ ข้อมูลเบื้องต้น", "note": "", "hours": null, "team": null, "uStars": null, "uCount": 0, "art": "sea", "station": "", "stationCn": "", "line": "", "lineColor": "", "exit": "", "walkMin": 0, "access": "นั่งแท็กซี่จากถนนจงซานประมาณ 10 นาที"}, {"id": "QD-10", "c": "QD", "th": "ถนนเบียร์เติงโจว", "en": "Dengzhou Road Beer Street", "cn": "登州路啤酒街", "type": "ช้อปปิ้ง", "price": "เข้าฟรี", "free": true, "booking": "ไม่จำเป็น", "desc": "ถนนร้านเบียร์สดและอาหารทะเล คนท้องถิ่นซื้อเบียร์ใส่ถุงกลับบ้าน", "status": "⚠️ ข้อมูลเบื้องต้น", "note": "", "hours": null, "team": null, "uStars": null, "uCount": 0, "art": "shop", "station": "", "stationCn": "", "line": "", "lineColor": "", "exit": "", "walkMin": 0, "access": "อยู่ติดพิพิธภัณฑ์เบียร์ชิงเต่า"}, {"id": "QD-11", "c": "QD", "th": "ถนนจงซาน", "en": "Zhongshan Road", "cn": "中山路", "type": "ช้อปปิ้ง", "price": "เข้าฟรี", "free": true, "booking": "ไม่จำเป็น", "desc": "ถนนเก่าใจกลางเมือง เดินต่อไปสะพานจั้นเฉียวได้", "status": "⚠️ ข้อมูลเบื้องต้น", "note": "", "hours": null, "team": null, "uStars": null, "uCount": 0, "art": "shop", "station": "สถานีรถไฟชิงเต่า", "stationCn": "青岛站", "line": "สาย 3", "lineColor": "#0072BC", "exit": "", "walkMin": 10, "access": ""}, {"id": "WH-01", "c": "WH", "th": "หอกระเรียนเหลือง", "en": "Yellow Crane Tower", "cn": "黄鹤楼", "type": "ประวัติศาสตร์", "price": "ประมาณ ¥70 (ตรวจสอบ)", "free": false, "booking": "ควรจองล่วงหน้า", "desc": "หอโบราณริมแม่น้ำแยงซี ขึ้นชื่อจากบทกวีจีน วิวเมืองสวยจากชั้นบน", "status": "⚠️ ข้อมูลเบื้องต้น", "note": "", "hours": null, "team": null, "uStars": null, "uCount": 0, "art": "temple", "station": "ซือเหมินโข่วหวงเหอโหลว", "stationCn": "司门口黄鹤楼", "line": "สาย 5", "lineColor": "#C6232B", "exit": "", "walkMin": 10, "access": ""}, {"id": "WH-02", "c": "WH", "th": "ทะเลสาบตะวันออก", "en": "East Lake", "cn": "东湖", "type": "ธรรมชาติ", "price": "เข้าฟรี (บางจุดเสียเงิน)", "free": true, "booking": "ไม่จำเป็น", "desc": "ทะเลสาบในเมืองขนาดใหญ่ ปั่นจักรยานรอบทะเลสาบได้", "status": "⚠️ ข้อมูลเบื้องต้น", "note": "", "hours": null, "team": null, "uStars": null, "uCount": 0, "art": "river", "station": "", "stationCn": "", "line": "", "lineColor": "", "exit": "", "walkMin": 0, "access": "นั่งแท็กซี่ไปประตูทางเข้าที่ต้องการ ทะเลสาบกว้างมาก"}, {"id": "WH-03", "c": "WH", "th": "ตรอกฮู่ปู้เซี่ยง", "en": "Hubu Alley", "cn": "户部巷", "type": "วัฒนธรรม", "price": "เข้าฟรี", "free": true, "booking": "ไม่จำเป็น", "desc": "ตรอกอาหารเช้าชื่อดัง ต้องลองบะหมี่ร้อนแห้ง (热干面)", "status": "⚠️ ข้อมูลเบื้องต้น", "note": "", "hours": null, "team": null, "uStars": null, "uCount": 0, "art": "street", "station": "ซือเหมินโข่วหวงเหอโหลว", "stationCn": "司门口黄鹤楼", "line": "สาย 5", "lineColor": "#C6232B", "exit": "", "walkMin": 5, "access": ""}, {"id": "WH-04", "c": "WH", "th": "ถนนคนเดินเจียงฮั่นลู่", "en": "Jianghan Road", "cn": "江汉路步行街", "type": "ช้อปปิ้ง", "price": "เข้าฟรี", "free": true, "booking": "ไม่จำเป็น", "desc": "ถนนช้อปปิ้งมีตึกเก่าสไตล์ยุโรป", "status": "⚠️ ข้อมูลเบื้องต้น", "note": "", "hours": null, "team": null, "uStars": null, "uCount": 0, "art": "shop", "station": "เจียงฮั่นลู่", "stationCn": "江汉路", "line": "สาย 2 / 6", "lineColor": "#E4007F", "exit": "", "walkMin": 1, "access": ""}, {"id": "WH-05", "c": "WH", "th": "พิพิธภัณฑ์มณฑลหูเป่ย", "en": "Hubei Provincial Museum", "cn": "湖北省博物馆", "type": "ประวัติศาสตร์", "price": "เข้าฟรี", "free": true, "booking": "ต้องจองล่วงหน้า", "desc": "มีระฆังโบราณชุดใหญ่และดาบโบราณที่ขึ้นชื่อ", "status": "⚠️ ข้อมูลเบื้องต้น", "note": "ปิดวันจันทร์ (ตรวจสอบ)", "hours": null, "team": null, "uStars": null, "uCount": 0, "art": "temple", "station": "พิพิธภัณฑ์มณฑล", "stationCn": "省博湖北日报", "line": "สาย 8", "lineColor": "#8C8C00", "exit": "", "walkMin": 5, "access": ""}, {"id": "WH-06", "c": "WH", "th": "มหาวิทยาลัยอู่ฮั่น", "en": "Wuhan University", "cn": "武汉大学", "type": "วัฒนธรรม", "price": "ตรวจสอบ (ต้องลงทะเบียน)", "free": false, "booking": "ต้องจองล่วงหน้า", "desc": "แคมปัสสวยที่สุดแห่งหนึ่งในจีน ดังเรื่องซากุระช่วงมีนาคม", "status": "⚠️ ข้อมูลเบื้องต้น", "note": "", "hours": null, "team": null, "uStars": null, "uCount": 0, "art": "street", "station": "เจียเต้าโข่ว", "stationCn": "街道口", "line": "สาย 2", "lineColor": "#E4007F", "exit": "", "walkMin": 10, "access": "ต้องลงทะเบียนเข้ามหาวิทยาลัยล่วงหน้า"}, {"id": "WH-07", "c": "WH", "th": "สะพานแม่น้ำแยงซีอู่ฮั่น", "en": "Wuhan Yangtze River Bridge", "cn": "武汉长江大桥", "type": "เมือง", "price": "เข้าฟรี", "free": true, "booking": "ไม่จำเป็น", "desc": "สะพานข้ามแยงซีแห่งแรกของจีน เดินชมวิวแม่น้ำได้", "status": "⚠️ ข้อมูลเบื้องต้น", "note": "", "hours": null, "team": null, "uStars": null, "uCount": 0, "art": "city", "station": "ซือเหมินโข่วหวงเหอโหลว", "stationCn": "司门口黄鹤楼", "line": "สาย 5", "lineColor": "#C6232B", "exit": "", "walkMin": 10, "access": ""}, {"id": "WH-08", "c": "WH", "th": "สวนริมน้ำฮั่นโข่วเจียงทาน", "en": "Hankou Riverside Park", "cn": "汉口江滩", "type": "เมือง", "price": "เข้าฟรี", "free": true, "booking": "ไม่จำเป็น", "desc": "สวนยาวริมแม่น้ำ ตอนกลางคืนมีโชว์ไฟบนตึกฝั่งตรงข้าม", "status": "⚠️ ข้อมูลเบื้องต้น", "note": "", "hours": null, "team": null, "uStars": null, "uCount": 0, "art": "river", "station": "เจียงฮั่นลู่", "stationCn": "江汉路", "line": "สาย 2 / 6", "lineColor": "#E4007F", "exit": "", "walkMin": 10, "access": ""}, {"id": "WH-09", "c": "WH", "th": "ถนนชูเหอฮั่นเจีย", "en": "Chuhe Han Street", "cn": "楚河汉街", "type": "ช้อปปิ้ง", "price": "เข้าฟรี", "free": true, "booking": "ไม่จำเป็น", "desc": "ถนนช้อปปิ้งสไตล์ตึกเก่าเรียงริมคลอง", "status": "⚠️ ข้อมูลเบื้องต้น", "note": "", "hours": null, "team": null, "uStars": null, "uCount": 0, "art": "river", "station": "ชูเหอฮั่นเจีย", "stationCn": "楚河汉街", "line": "สาย 4 / 8", "lineColor": "#8DC21F", "exit": "", "walkMin": 3, "access": ""}, {"id": "WH-10", "c": "WH", "th": "ถนนหลีหวงผี", "en": "Lihuangpi Road", "cn": "黎黄陂路", "type": "วัฒนธรรม", "price": "เข้าฟรี", "free": true, "booking": "ไม่จำเป็น", "desc": "ถนนย่านสัมปทานเก่า ตึกยุโรปกลายเป็นคาเฟ่", "status": "⚠️ ข้อมูลเบื้องต้น", "note": "", "hours": null, "team": null, "uStars": null, "uCount": 0, "art": "street", "station": "", "stationCn": "", "line": "", "lineColor": "", "exit": "", "walkMin": 0, "access": "เดินจากถนนเจียงฮั่นลู่ประมาณ 15 นาที หรือนั่งแท็กซี่"}, {"id": "WH-11", "c": "WH", "th": "วัดกุยหยวน", "en": "Guiyuan Temple", "cn": "归元寺", "type": "วัฒนธรรม", "price": "ตรวจสอบราคา", "free": false, "booking": "ไม่จำเป็น", "desc": "วัดพุทธเก่าแก่ มีห้องพระอรหันต์ 500 องค์", "status": "⚠️ ข้อมูลเบื้องต้น", "note": "", "hours": null, "team": null, "uStars": null, "uCount": 0, "art": "street", "station": "จงเจียชุน", "stationCn": "钟家村", "line": "สาย 4 / 6", "lineColor": "#8DC21F", "exit": "", "walkMin": 10, "access": ""}], "zones": [{"id": "BJ-H1", "c": "BJ", "name": "หวังฝูจิ่ง", "cn": "王府井", "station": "หวังฝูจิ่ง", "stationCn": "王府井", "line": "สาย 1", "lineColor": "#C23A30", "goodFor": "มือใหม่ ช้อปปิ้ง", "desc": "ใจกลางเมือง เดินไปพระราชวังต้องห้ามได้", "status": "⚠️ ข้อมูลเบื้องต้น"}, {"id": "BJ-H2", "c": "BJ", "name": "เฉียนเหมิน", "cn": "前门", "station": "เฉียนเหมิน", "stationCn": "前门", "line": "สาย 2 / 8", "lineColor": "#006098", "goodFor": "สายเมืองเก่า ประหยัด", "desc": "ย่านถนนเก่า ใกล้จัตุรัสเทียนอันเหมิน", "status": "⚠️ ข้อมูลเบื้องต้น"}, {"id": "SH-H1", "c": "SH", "name": "หนานจิงตะวันออก / เดอะบันด์", "cn": "南京东路", "station": "หนานจิงตะวันออก", "stationCn": "南京东路", "line": "สาย 2 / 10", "lineColor": "#97D700", "goodFor": "มือใหม่ สายวิวกลางคืน", "desc": "เดินไปเดอะบันด์และถนนช้อปปิ้งได้", "status": "⚠️ ข้อมูลเบื้องต้น"}, {"id": "SH-H2", "c": "SH", "name": "จัตุรัสประชาชน", "cn": "人民广场", "station": "จัตุรัสประชาชน", "stationCn": "人民广场", "line": "สาย 1 / 2 / 8", "lineColor": "#E4002B", "goodFor": "เดินทางสะดวกสุด", "desc": "ชุมทางรถไฟใต้ดิน 3 สาย ไปได้ทุกทิศ", "status": "⚠️ ข้อมูลเบื้องต้น"}, {"id": "SH-H3", "c": "SH", "name": "ลู่เจียจุ่ย", "cn": "陆家嘴", "station": "ลู่เจียจุ่ย", "stationCn": "陆家嘴", "line": "สาย 2", "lineColor": "#97D700", "goodFor": "สายโรงแรมหรู วิวตึกสูง", "desc": "ฝั่งผู่ตง ใกล้หอไข่มุกและเซี่ยงไฮ้ทาวเวอร์", "status": "⚠️ ข้อมูลเบื้องต้น"}, {"id": "CD-H1", "c": "CD", "name": "ชุนซีลู่ / ไท่กู่หลี่", "cn": "春熙路", "station": "ชุนซีลู่", "stationCn": "春熙路", "line": "สาย 2 / 3", "lineColor": "#F08300", "goodFor": "มือใหม่ สายกิน ช้อปปิ้ง", "desc": "ใจกลางเมือง ร้านหม้อไฟเยอะ ไปศูนย์แพนด้าด้วยสาย 3 ได้", "status": "⚠️ ข้อมูลเบื้องต้น"}, {"id": "CD-H2", "c": "CD", "name": "เทียนฝู่สแควร์", "cn": "天府广场", "station": "เทียนฝู่สแควร์", "stationCn": "天府广场", "line": "สาย 1 / 2", "lineColor": "#1A3A8F", "goodFor": "เดินทางสะดวก", "desc": "ชุมทางสาย 1 และ 2 ไปสถานีรถไฟใต้ได้ตรง", "status": "⚠️ ข้อมูลเบื้องต้น"}, {"id": "CD-H3", "c": "CD", "name": "ควานจ๋าย", "cn": "宽窄巷子", "station": "ควานจ๋ายเซี่ยงจื่อ", "stationCn": "宽窄巷子", "line": "สาย 4", "lineColor": "#2E9B3E", "goodFor": "สายบรรยากาศเมืองเก่า", "desc": "ใกล้ตรอกควานจ๋ายและสวนประชาชน", "status": "⚠️ ข้อมูลเบื้องต้น"}, {"id": "CQ-H1", "c": "CQ", "name": "เจี่ยฟ่างเปย", "cn": "解放碑", "station": "เจี้ยวฉางโข่ว", "stationCn": "较场口", "line": "สาย 1 / 2", "lineColor": "#E60012", "goodFor": "มือใหม่ สายกิน", "desc": "ใจกลางเมือง เดินไปหงหยาต้งและซือปาถีได้", "status": "⚠️ ข้อมูลเบื้องต้น"}, {"id": "CQ-H2", "c": "CQ", "name": "เฉาเทียนเหมิน / หงหยาต้ง", "cn": "朝天门", "station": "เสี่ยวสือจื่อ", "stationCn": "小什字", "line": "สาย 1 / 6", "lineColor": "#E60012", "goodFor": "สายวิวกลางคืน", "desc": "ริมแม่น้ำ ใกล้หงหยาต้ง กระเช้า และเรือล่องแม่น้ำ", "status": "⚠️ ข้อมูลเบื้องต้น"}, {"id": "ZJ-H1", "c": "ZJ", "name": "อู่หลิงหยวน", "cn": "武陵源", "station": "ย่านอู่หลิงหยวน", "stationCn": "武陵源", "line": "รถบัส", "lineColor": "#3F7F5F", "goodFor": "เที่ยวอุทยานอวตาร", "desc": "อยู่ติดทางเข้าอุทยานแห่งชาติ เหมาะถ้าจะเที่ยวอุทยานหลายวัน", "status": "⚠️ ข้อมูลเบื้องต้น"}, {"id": "ZJ-H2", "c": "ZJ", "name": "ตัวเมืองจางเจียเจี้ย", "cn": "张家界市区", "station": "สถานีกระเช้าเทียนเหมินซาน", "stationCn": "天门山索道", "line": "กระเช้า", "lineColor": "#3F7F5F", "goodFor": "เที่ยวเทียนเหมินซาน ต่อรถไฟ", "desc": "ใกล้สถานีกระเช้าเทียนเหมินซานและสถานีรถไฟ", "status": "⚠️ ข้อมูลเบื้องต้น"}, {"id": "QD-H1", "c": "QD", "name": "ถนนจงซาน / สถานีรถไฟชิงเต่า", "cn": "中山路", "station": "สถานีรถไฟชิงเต่า", "stationCn": "青岛站", "line": "สาย 3", "lineColor": "#0072BC", "goodFor": "มือใหม่ สายเมืองเก่า", "desc": "เดินไปสะพานจั้นเฉียวและโบสถ์ได้", "status": "⚠️ ข้อมูลเบื้องต้น"}, {"id": "QD-H2", "c": "QD", "name": "จัตุรัสอู่ซื่อ", "cn": "五四广场", "station": "อู่ซื่อกว่างฉ่าง", "stationCn": "五四广场", "line": "สาย 2 / 3", "lineColor": "#0072BC", "goodFor": "สายวิวทะเล ทันสมัย", "desc": "ย่านใหม่ริมทะเล ห้างใหญ่เยอะ", "status": "⚠️ ข้อมูลเบื้องต้น"}, {"id": "WH-H1", "c": "WH", "name": "เจียงฮั่นลู่", "cn": "江汉路", "station": "เจียงฮั่นลู่", "stationCn": "江汉路", "line": "สาย 2 / 6", "lineColor": "#E4007F", "goodFor": "มือใหม่ ช้อปปิ้ง", "desc": "สาย 2 ต่อตรงจากสนามบิน เดินไปริมน้ำฮั่นโข่วได้", "status": "⚠️ ข้อมูลเบื้องต้น"}, {"id": "WH-H2", "c": "WH", "name": "ชูเหอฮั่นเจีย", "cn": "楚河汉街", "station": "ชูเหอฮั่นเจีย", "stationCn": "楚河汉街", "line": "สาย 4 / 8", "lineColor": "#8DC21F", "goodFor": "สายชิล ใกล้ทะเลสาบ", "desc": "ใกล้ทะเลสาบตะวันออกและพิพิธภัณฑ์มณฑล", "status": "⚠️ ข้อมูลเบื้องต้น"}], "routes": [{"id": "CD-R01", "c": "CD", "from": "ย่านชุนซีลู่", "to": "CD-01", "min": 40, "cny": 19, "status": "⚠️ ข้อมูลเบื้องต้น", "note": "แถวตัวอย่างรูปแบบ ต้องเช็กทุกขั้นก่อนใช้จริง", "steps": [{"mode": "เดิน", "line": "", "color": "", "text": "เดินไปสถานีรถไฟใต้ดินชุนซีลู่", "board": "", "alight": "", "exit": "", "min": 5, "cny": 0}, {"mode": "รถไฟใต้ดิน", "line": "สาย 3", "color": "#E4007F", "text": "นั่งไปทางเหนือ ลงสถานีถนนแพนด้า", "board": "ชุนซีลู่ 春熙路", "alight": "ถนนแพนด้า 熊猫大道", "exit": "", "min": 25, "cny": 4}, {"mode": "แท็กซี่", "line": "", "color": "", "text": "ต่อแท็กซี่หรือรถบัสไปทางเข้าศูนย์แพนด้า", "board": "", "alight": "ศูนย์แพนด้า", "exit": "", "min": 10, "cny": 15}]}, {"id": "BJ-R01", "c": "BJ", "from": "สนามบินปักกิ่ง (โส่วตู) T3", "to": "BJ-H1", "min": 40, "cny": 29, "status": "⚠️ ข้อมูลเบื้องต้น", "note": "สนามบิน → โซนที่พัก", "steps": [{"mode": "รถไฟใต้ดิน", "line": "แอร์พอร์ตเอ็กซ์เพรส", "color": "#A29BBB", "text": "นั่งรถไฟสนามบินเข้าเมือง", "board": "สนามบิน T3 3号航站楼", "alight": "ตงจื๋อเหมิน 东直门", "exit": "", "min": 25, "cny": 25}, {"mode": "เปลี่ยนสาย", "line": "สาย 2", "color": "#006098", "text": "เปลี่ยนเป็นสาย 2 ไปทางใต้", "board": "ตงจื๋อเหมิน 东直门", "alight": "เจี้ยนกั๋วเหมิน 建国门", "exit": "", "min": 10, "cny": 0}, {"mode": "เปลี่ยนสาย", "line": "สาย 1", "color": "#C23A30", "text": "เปลี่ยนเป็นสาย 1 ไปทางตะวันตก", "board": "เจี้ยนกั๋วเหมิน 建国门", "alight": "หวังฝูจิ่ง 王府井", "exit": "", "min": 5, "cny": 4}]}, {"id": "SH-R01", "c": "SH", "from": "สนามบินผู่ตง", "to": "SH-H1", "min": 80, "cny": 7, "status": "⚠️ ข้อมูลเบื้องต้น", "note": "สนามบิน → โซนที่พัก", "steps": [{"mode": "รถไฟใต้ดิน", "line": "สาย 2", "color": "#97D700", "text": "นั่งสาย 2 ยาวถึงใจกลางเมือง ไม่ต้องเปลี่ยนสาย", "board": "สนามบินผู่ตง T1/T2 浦东1号2号航站楼", "alight": "หนานจิงตะวันออก 南京东路", "exit": "", "min": 70, "cny": 7}, {"mode": "เดิน", "line": "", "color": "", "text": "เดินไปโรงแรมหรือเดอะบันด์", "board": "", "alight": "", "exit": "", "min": 10, "cny": 0}]}, {"id": "SH-R02", "c": "SH", "from": "สนามบินหงเฉียว T2", "to": "SH-H2", "min": 35, "cny": 5, "status": "⚠️ ข้อมูลเบื้องต้น", "note": "สนามบิน → โซนที่พัก", "steps": [{"mode": "รถไฟใต้ดิน", "line": "สาย 2", "color": "#97D700", "text": "นั่งสาย 2 ไปทางตะวันออก", "board": "สนามบินหงเฉียว T2 虹桥2号航站楼", "alight": "จัตุรัสประชาชน 人民广场", "exit": "", "min": 35, "cny": 5}]}, {"id": "CD-R02", "c": "CD", "from": "สนามบินเทียนฝู่", "to": "CD-H1", "min": 60, "cny": 8, "status": "⚠️ ข้อมูลเบื้องต้น", "note": "สนามบิน → โซนที่พัก", "steps": [{"mode": "รถไฟใต้ดิน", "line": "สาย 18", "color": "#00A29A", "text": "นั่งสาย 18 เข้าเมือง", "board": "สนามบินเทียนฝู่ 天府机场1号2号航站楼", "alight": "สถานีรถไฟใต้ 火车南站", "exit": "", "min": 40, "cny": 8}, {"mode": "เปลี่ยนสาย", "line": "สาย 1", "color": "#1A3A8F", "text": "เปลี่ยนเป็นสาย 1 ไปทางเหนือ", "board": "สถานีรถไฟใต้ 火车南站", "alight": "เทียนฝู่สแควร์ 天府广场", "exit": "", "min": 15, "cny": 0}, {"mode": "เปลี่ยนสาย", "line": "สาย 2", "color": "#F08300", "text": "เปลี่ยนเป็นสาย 2 ไปทางตะวันออก 1 สถานี", "board": "เทียนฝู่สแควร์ 天府广场", "alight": "ชุนซีลู่ 春熙路", "exit": "", "min": 5, "cny": 0}]}, {"id": "CD-R03", "c": "CD", "from": "สนามบินซวงหลิว", "to": "CD-H1", "min": 50, "cny": 6, "status": "⚠️ ข้อมูลเบื้องต้น", "note": "สนามบิน → โซนที่พัก", "steps": [{"mode": "รถไฟใต้ดิน", "line": "สาย 10", "color": "#1D5EAA", "text": "นั่งสาย 10 เข้าเมือง", "board": "สนามบินซวงหลิว 双流机场", "alight": "ไท่ผิงหยวน 太平园", "exit": "", "min": 25, "cny": 4}, {"mode": "เปลี่ยนสาย", "line": "สาย 3", "color": "#E4007F", "text": "เปลี่ยนเป็นสาย 3 ไปทางเหนือ", "board": "ไท่ผิงหยวน 太平园", "alight": "ชุนซีลู่ 春熙路", "exit": "", "min": 25, "cny": 2}]}, {"id": "CQ-R01", "c": "CQ", "from": "สนามบินเจียงเป่ย T2", "to": "CQ-H1", "min": 55, "cny": 7, "status": "⚠️ ข้อมูลเบื้องต้น", "note": "สนามบิน → โซนที่พัก", "steps": [{"mode": "รถไฟใต้ดิน", "line": "สาย 3", "color": "#0071BC", "text": "นั่งสาย 3 เข้าเมือง", "board": "สนามบิน T2 江北机场T2航站楼", "alight": "เหลี่ยงลู่โข่ว 两路口", "exit": "", "min": 50, "cny": 6}, {"mode": "เปลี่ยนสาย", "line": "สาย 1", "color": "#E60012", "text": "เปลี่ยนเป็นสาย 1 ไปทางตะวันออก", "board": "เหลี่ยงลู่โข่ว 两路口", "alight": "เจี้ยวฉางโข่ว 较场口", "exit": "", "min": 5, "cny": 1}]}, {"id": "ZJ-R01", "c": "ZJ", "from": "สนามบินเหอฮัวจางเจียเจี้ย", "to": "ZJ-H1", "min": 50, "cny": 0, "status": "⚠️ ข้อมูลเบื้องต้น", "note": "สนามบิน → โซนที่พัก", "steps": [{"mode": "แท็กซี่", "line": "", "color": "", "text": "นั่งแท็กซี่หรือรถรับส่งโรงแรมไปย่านอู่หลิงหยวน", "board": "สนามบิน 荷花机场", "alight": "อู่หลิงหยวน 武陵源", "exit": "", "min": 50, "cny": 0}]}, {"id": "QD-R01", "c": "QD", "from": "สนามบินเจียวตง", "to": "QD-H2", "min": 60, "cny": 7, "status": "⚠️ ข้อมูลเบื้องต้น", "note": "สนามบิน → โซนที่พัก", "steps": [{"mode": "รถไฟใต้ดิน", "line": "สาย 8", "color": "#C7161E", "text": "นั่งสาย 8 เข้าเมือง", "board": "สนามบินเจียวตง 胶东机场", "alight": "อู่ซื่อกว่างฉ่าง 五四广场", "exit": "", "min": 60, "cny": 7}]}, {"id": "WH-R01", "c": "WH", "from": "สนามบินเทียนเหอ", "to": "WH-H1", "min": 50, "cny": 6, "status": "⚠️ ข้อมูลเบื้องต้น", "note": "สนามบิน → โซนที่พัก", "steps": [{"mode": "รถไฟใต้ดิน", "line": "สาย 2", "color": "#E4007F", "text": "นั่งสาย 2 เข้าเมือง ไม่ต้องเปลี่ยนสาย", "board": "สนามบินเทียนเหอ 天河机场", "alight": "เจียงฮั่นลู่ 江汉路", "exit": "", "min": 50, "cny": 6}]}], "affiliates": []};
+const API_URL=((window.APP_CONFIG&&window.APP_CONFIG.API_URL)||"").trim();
+const $=id=>document.getElementById(id);
+const esc=s=>String(s==null?"":s).replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));
+const fmt=n=>"฿"+Math.round(n).toLocaleString("th-TH");
+const fy=n=>"¥"+(Math.round(n*100)/100).toLocaleString("th-TH");
+const CATS=[{k:"food",n:"อาหาร",i:"🍜"},{k:"stay",n:"ที่พัก",i:"🏨"},{k:"move",n:"เดินทาง",i:"🚇"},{k:"shop",n:"ช้อปปิ้ง",i:"🛍️"},{k:"ticket",n:"ค่าเข้าชม",i:"🎟️"}];
+const MODE={"เดิน":"🚶","รถไฟใต้ดิน":"🚇","รถบัส":"🚌","แท็กซี่":"🚕","รถไฟความเร็วสูง":"🚄","เปลี่ยนสาย":"🔁","กระเช้า":"🚡","เรือ":"⛴️"};
+const CITY_ART={BJ:"wall",SH:"city",CD:"forest",CQ:"river",ZJ:"mountain",QD:"sea",WH:"temple"};
+
+let S;
+try{S=JSON.parse(localStorage.getItem("chinaTrip2"))}catch(e){S=null}
+if(!S||!S.trip)S={trip:{name:"ทริปเฉิงตู–ฉงชิ่ง",budget:20000,days:5,rateOverride:null},expenses:[],plan:[],fav:[],myRate:{},pending:[],deviceId:null,cache:null};
+S.freeCity=S.freeCity||null;S.tickets=S.tickets||[];S.checklist=S.checklist||{};S.unlock=S.unlock||null;
+if(!S.deviceId)S.deviceId="d"+Date.now().toString(36)+Math.random().toString(36).slice(2,10);
+function save(){try{localStorage.setItem("chinaTrip2",JSON.stringify(S))}catch(e){}}
+let D=(S.cache&&S.cache.payload&&S.cache.payload.dataVersion>=EMBED.dataVersion)?S.cache.payload:EMBED;
+const rate=()=>S.trip.rateOverride||D.rate||5;
+const cityOf=id=>D.cities.find(c=>c.id===id);
+const placeOf=id=>D.places.find(p=>p.id===id);
+const zoneOf=id=>(D.zones||[]).find(z=>z.id===id);
+const destName=id=>{const p=placeOf(id);if(p)return p.th;const z=zoneOf(id);return z?z.name:id};
+let tab="home",city="CD",ptype="ทั้งหมด",seg="budget",cat="food",rCity="CD",openRoute=null;
+
+function art(type,h){
+ const sky={forest:"#CFE6D8",street:"#F2D6B3",mountain:"#D4E3EE",city:"#2D3A5C",train:"#E8DCCB",river:"#C9DCE6",garden:"#DDE8CF",temple:"#F3E3C8",wall:"#DCE6D2",shop:"#F1D9D4",park:"#D8E4F4",sea:"#CFE6F2"}[type]||"#DDE";
+ const g={
+ forest:'<circle cx="310" cy="45" r="22" fill="#F6E7A8"/><path d="M0 150 L0 95 Q60 60 120 95 T240 90 T400 85 L400 150Z" fill="#6FA884"/><path d="M0 150 L0 115 Q80 90 160 118 T400 110 L400 150Z" fill="#3E7D5A"/><g fill="#2B5E43"><path d="M70 150 L90 85 L110 150Z"/><path d="M300 150 L322 78 L344 150Z"/><path d="M200 150 L215 100 L230 150Z"/></g>',
+ street:'<rect x="0" y="120" width="400" height="30" fill="#B98A5E"/><g fill="#7A4B2E"><rect x="20" y="55" width="110" height="70"/><rect x="150" y="45" width="100" height="80"/><rect x="270" y="60" width="120" height="65"/></g><g fill="#4A2C1B"><path d="M10 58 L75 30 L140 58Z"/><path d="M140 48 L200 18 L260 48Z"/><path d="M260 63 L330 35 L400 63Z"/></g><g fill="#E0463A"><circle cx="55" cy="75" r="7"/><circle cx="100" cy="75" r="7"/><circle cx="180" cy="68" r="7"/><circle cx="225" cy="68" r="7"/><circle cx="310" cy="80" r="7"/><circle cx="355" cy="80" r="7"/></g>',
+ mountain:'<circle cx="80" cy="45" r="18" fill="#FFFFFF" opacity=".8"/><path d="M0 150 L90 50 L150 110 L230 30 L330 120 L400 70 L400 150Z" fill="#7C9AB0"/><path d="M0 150 L60 105 L140 140 L220 95 L300 135 L400 110 L400 150Z" fill="#4E6E84"/><path d="M215 45 L230 30 L245 45 L235 42 L230 48Z" fill="#FFFFFF"/>',
+ city:'<circle cx="330" cy="35" r="14" fill="#F4E3A1"/><rect x="0" y="125" width="400" height="25" fill="#1A2440"/><g fill="#44557F"><rect x="20" y="70" width="40" height="55"/><rect x="70" y="40" width="30" height="85"/><rect x="110" y="80" width="50" height="45"/><rect x="175" y="25" width="22" height="100"/><rect x="210" y="60" width="45" height="65"/><rect x="265" y="50" width="30" height="75"/><rect x="305" y="85" width="70" height="40"/></g><g fill="#F2B94B"><rect x="28" y="80" width="6" height="6"/><rect x="44" y="96" width="6" height="6"/><rect x="80" y="55" width="6" height="6"/><rect x="182" y="40" width="6" height="6"/><rect x="220" y="75" width="6" height="6"/><rect x="274" y="66" width="6" height="6"/><rect x="320" y="95" width="6" height="6"/><rect x="120" y="92" width="6" height="6"/></g>',
+ train:'<rect x="60" y="30" width="170" height="120" fill="#B7A48C"/><g fill="#8C7A64"><rect x="75" y="40" width="20" height="16"/><rect x="110" y="40" width="20" height="16"/><rect x="145" y="40" width="20" height="16"/><rect x="180" y="40" width="20" height="16"/><rect x="75" y="120" width="20" height="16"/><rect x="180" y="120" width="20" height="16"/></g><rect x="0" y="80" width="400" height="8" fill="#6A6A6A"/><rect x="110" y="62" width="200" height="22" rx="6" fill="#2F7FC1"/><g fill="#D8ECF8"><rect x="125" y="67" width="18" height="10"/><rect x="155" y="67" width="18" height="10"/><rect x="185" y="67" width="18" height="10"/><rect x="215" y="67" width="18" height="10"/><rect x="245" y="67" width="18" height="10"/><rect x="275" y="67" width="18" height="10"/></g>',
+ river:'<rect x="0" y="105" width="400" height="45" fill="#6C94A8"/><path d="M0 105 L0 70 L60 60 L120 75 L120 105Z" fill="#8FA7B4"/><path d="M280 105 L280 55 L340 65 L400 50 L400 105Z" fill="#8FA7B4"/><line x1="0" y1="30" x2="400" y2="52" stroke="#3C4B55" stroke-width="2"/><rect x="170" y="42" width="44" height="30" rx="6" fill="#D2463B"/><rect x="178" y="48" width="12" height="10" fill="#F4D9D3"/><rect x="195" y="48" width="12" height="10" fill="#F4D9D3"/><line x1="192" y1="38" x2="192" y2="44" stroke="#3C4B55" stroke-width="2"/>',
+ garden:'<rect x="0" y="118" width="400" height="32" fill="#8DB2A0"/><path d="M130 70 L200 45 L270 70Z" fill="#6B3B2A"/><rect x="145" y="70" width="110" height="10" fill="#A1523B"/><g fill="#A1523B"><rect x="152" y="80" width="8" height="40"/><rect x="240" y="80" width="8" height="40"/></g><path d="M150 100 Q200 88 250 100 L250 104 Q200 92 150 104Z" fill="#7A4A36"/><g fill="#4F8A5E"><circle cx="50" cy="100" r="28"/><circle cx="350" cy="96" r="32"/><circle cx="90" cy="110" r="18"/></g>',
+ temple:'<rect x="0" y="125" width="400" height="25" fill="#C9A77A"/><rect x="110" y="85" width="180" height="40" fill="#B23A2E"/><rect x="120" y="92" width="16" height="33" fill="#7A2219"/><rect x="264" y="92" width="16" height="33" fill="#7A2219"/><rect x="180" y="95" width="40" height="30" fill="#7A2219"/><path d="M85 88 Q200 60 315 88 L300 80 Q200 55 100 80Z" fill="#E0A93B"/><rect x="140" y="55" width="120" height="25" fill="#B23A2E"/><path d="M115 58 Q200 32 285 58 L272 50 Q200 28 128 50Z" fill="#E0A93B"/>',
+ wall:'<path d="M0 150 L0 100 Q100 70 200 95 T400 80 L400 150Z" fill="#7FA36B"/><path d="M0 110 L60 92 L120 100 L200 78 L260 88 L330 66 L400 74 L400 84 L330 76 L260 98 L200 88 L120 110 L60 102 L0 120Z" fill="#B3A58C"/><rect x="190" y="58" width="22" height="24" fill="#9A8C73"/><rect x="322" y="46" width="20" height="24" fill="#9A8C73"/><rect x="50" y="76" width="18" height="20" fill="#9A8C73"/>',
+ shop:'<rect x="0" y="120" width="400" height="30" fill="#C9B8B3"/><g fill="#8E5A52"><rect x="20" y="40" width="80" height="80"/><rect x="115" y="25" width="90" height="95"/><rect x="220" y="50" width="70" height="70"/><rect x="305" y="35" width="80" height="85"/></g><g fill="#F3D39B"><rect x="30" y="95" width="60" height="25"/><rect x="125" y="95" width="70" height="25"/><rect x="230" y="95" width="50" height="25"/><rect x="315" y="95" width="60" height="25"/></g><g fill="#E0463A"><rect x="30" y="50" width="30" height="8"/><rect x="125" y="36" width="40" height="8"/><rect x="315" y="46" width="34" height="8"/></g>',
+ sea:'<circle cx="320" cy="40" r="20" fill="#F6E7A8"/><rect x="0" y="80" width="400" height="45" fill="#5B9DC0"/><path d="M0 95 Q25 88 50 95 T100 95 T150 95 T200 95 T250 95 T300 95 T350 95 T400 95" fill="none" stroke="#DDEFF7" stroke-width="3"/><path d="M0 112 Q25 105 50 112 T100 112 T150 112 T200 112 T250 112 T300 112 T350 112 T400 112" fill="none" stroke="#DDEFF7" stroke-width="3"/><path d="M0 125 L400 125 L400 150 L0 150Z" fill="#EBD3A4"/><g fill="#C9483B"><path d="M40 80 L60 62 L80 80Z"/><path d="M85 80 L100 66 L115 80Z"/></g><g fill="#F0E6D8"><rect x="44" y="80" width="32" height="0"/></g><path d="M250 80 L250 60 L262 60 L262 80Z" fill="#7C6A55"/><path d="M180 100 L290 100" stroke="#8A7760" stroke-width="5"/><path d="M286 94 L300 94 L300 106 L286 106Z" fill="#B23A2E"/>',
+  park:'<rect x="0" y="125" width="400" height="25" fill="#9DC08B"/><circle cx="110" cy="75" r="50" fill="none" stroke="#5A6F9A" stroke-width="6"/><g stroke="#5A6F9A" stroke-width="3"><line x1="110" y1="75" x2="110" y2="125"/><line x1="90" y1="125" x2="110" y2="75"/><line x1="130" y1="125" x2="110" y2="75"/></g><path d="M200 125 Q240 40 280 90 Q310 130 360 60 L360 125Z" fill="none" stroke="#D2463B" stroke-width="6"/><rect x="250" y="30" width="16" height="30" fill="#E0A93B"/><path d="M244 32 L258 16 L272 32Z" fill="#B23A2E"/>'}[type]||"";
+ return `<svg viewBox="0 0 400 150" preserveAspectRatio="xMidYMid slice" role="img" aria-label="ภาพประกอบ" style="height:${h||140}px"><rect width="400" height="150" fill="${sky}"/>${g}</svg>`;
+}
+const statusBadge=s=>`<span class="status${s&&s.indexOf("⚠️")<0?" ok":""}">${esc(s||"⚠️ ข้อมูลเบื้องต้น")}</span>`;
+function scoreLine(p){
+ const t=p.team?`<span><span class="star">★</span> <b>${Number(p.team).toFixed(1)}</b> ทีม</span>`:`<span>ทีมยังไม่ให้คะแนน</span>`;
+ const u=p.uCount?`<span><span class="star">★</span> <b>${Number(p.uStars).toFixed(1)}</b> จาก ${p.uCount} คน</span>`:`<span>ยังไม่มีคะแนนผู้ใช้</span>`;
+ return `<div class="scores">${t}${u}</div>`;
+}
+
+
+const TYPE_ICON={"สัตว์":"🐼","ธรรมชาติ":"⛰️","เมือง":"🌃","วัฒนธรรม":"🏮","ประวัติศาสตร์":"🏯","ช้อปปิ้ง":"🛍️","สวนสนุก":"🎡","ทะเล":"🏖️"};
+const thOnly=t=>String(t||"").replace(/[\u3400-\u9fff（）()]+/g,"").trim();
+const clip=(t,n)=>t.length>n?t.slice(0,n-1)+"…":t;
+function trailMap(nodes,segs,title){
+ const n=nodes.length,gap=128,top=104,H=top+(n-1)*gap+96,W=360;
+ const P=nodes.map((_,i)=>({x:i%2?258:102,y:top+i*gap}));
+ let bg=`<rect width="${W}" height="${H}" style="fill:var(--map-bg)"/>`;
+ bg+=`<path d="M0 ${top+gap*0.5+30} C90 ${top+gap*0.5-10} 150 ${top+gap*0.5+70} 240 ${top+gap*0.5+30} S330 ${top+gap*0.5+10} 360 ${top+gap*0.5+40} L360 ${top+gap*0.5+62} C330 ${top+gap*0.5+32} 300 ${top+gap*0.5+56} 240 ${top+gap*0.5+52} S90 ${top+gap*0.5+10} 0 ${top+gap*0.5+52}Z" style="fill:var(--map-water)"/>`;
+ P.forEach((p,i)=>{const ox=p.x<180?300:60;bg+=`<ellipse cx="${ox}" cy="${p.y+6}" rx="46" ry="30" style="fill:var(--map-park)"/>`;
+  [[-14,-4,9],[4,-10,11],[16,4,8],[-4,8,7]].forEach(([dx,dy,r])=>bg+=`<circle cx="${ox+dx}" cy="${p.y+dy}" r="${r}" style="fill:var(--map-tree)"/>`)});
+ for(let i=0;i<n-1;i++){const cy=(P[i].y+P[i+1].y)/2,cx=P[i].x<180?40:320;bg+=`<g style="fill:var(--card)" opacity=".7"><ellipse cx="${cx}" cy="${cy-30}" rx="18" ry="7"/><ellipse cx="${cx+10}" cy="${cy-35}" rx="11" ry="7"/></g>`}
+ bg+=`<g transform="translate(326 30)"><circle r="16" style="fill:var(--card);stroke:var(--line)" stroke-width="1"/><path d="M0 -11 L4 0 L0 -2 L-4 0Z" style="fill:var(--seal)"/><path d="M0 11 L4 0 L0 2 L-4 0Z" style="fill:var(--muted)"/><text y="-19" text-anchor="middle" font-size="9" style="fill:var(--muted)">N</text></g>`;
+ bg+=`<g transform="translate(16 18)"><rect width="${Math.min(250,40+title.length*8)}" height="30" rx="8" style="fill:var(--jade)"/><text x="12" y="20" font-size="14" font-weight="600" font-family="Prompt,sans-serif" style="fill:var(--on-jade)">🗺️ ${esc(clip(title,26))}</text></g>`;
+ let paths="",badges="";
+ for(let i=0;i<n-1;i++){const a=P[i],b=P[i+1],sg=segs[i]||{};const col=sg.color||"var(--jade)";
+  const d=`M${a.x} ${a.y} C${a.x} ${a.y+64} ${b.x} ${b.y-64} ${b.x} ${b.y}`;
+  paths+=`<path d="${d}" fill="none" style="stroke:var(--card)" stroke-width="9" stroke-linecap="round"/><path d="${d}" fill="none" stroke="${esc(col)}" stroke-width="4" stroke-linecap="round" ${sg.solid?"":'stroke-dasharray="2 9"'}/>`;
+  const mx=(a.x+b.x)/2,my=(a.y+b.y)/2,txt=sg.text||"",w=txt?36+txt.length*7:34;
+  badges+=`<g transform="translate(${mx-w/2} ${my-15})"><rect width="${w}" height="30" rx="15" style="fill:var(--card);stroke:var(--line)" stroke-width="1"/><text x="${txt?17:w/2}" y="20" font-size="15" text-anchor="middle">${sg.icon||"•"}</text>${txt?`<text x="30" y="19.5" font-size="12" font-weight="500" style="fill:var(--ink)">${esc(txt)}</text>`:""}</g>`}
+ let pins="";
+ nodes.forEach((nd,i)=>{const p=P[i],end=i===n-1&&n>1,start=i===0;
+  pins+=`<g transform="translate(${p.x} ${p.y})"><ellipse cx="0" cy="26" rx="22" ry="5" style="fill:var(--map-tree)" opacity=".5"/><circle r="28" style="fill:var(--card);stroke:${end?"var(--seal)":"var(--jade)"}" stroke-width="3"/><text y="9" font-size="25" text-anchor="middle">${nd.icon}</text>
+  ${start?`<g transform="translate(-30 -40)"><rect width="38" height="18" rx="9" style="fill:var(--jade)"/><text x="19" y="13" font-size="10" font-weight="600" text-anchor="middle" style="fill:var(--on-jade)">เริ่ม</text></g>`:""}
+  ${end?`<g transform="translate(16 -46)"><line x1="0" y1="0" x2="0" y2="24" style="stroke:var(--ink)" stroke-width="2"/><path d="M0 0 L18 5 L0 11Z" style="fill:var(--seal)"/></g>`:""}
+  ${!start&&!end?`<g transform="translate(18 -30)"><circle r="10" style="fill:var(--jade)"/><text y="4" font-size="11" font-weight="600" text-anchor="middle" style="fill:var(--on-jade)">${i}</text></g>`:""}
+  <text y="48" font-size="13" font-weight="600" text-anchor="middle" font-family="Prompt,sans-serif" style="fill:var(--ink);paint-order:stroke;stroke:var(--map-bg);stroke-width:4px">${esc(clip(nd.label,24))}</text>${nd.sub?`<text y="63" font-size="11" text-anchor="middle" style="fill:var(--muted);paint-order:stroke;stroke:var(--map-bg);stroke-width:3px">${esc(clip(nd.sub,24))}</text>`:""}</g>`});
+ return `<div class="trail"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="แผนที่การเดินทางแบบภาพร่าง ${esc(title)}">${bg}${paths}${badges}${pins}</svg></div>`;
+}
+function routeTrail(r){
+ const to=placeOf(r.to),zn=zoneOf(r.to),nodes=[{label:thOnly(r.from),icon:/สนามบิน/.test(r.from)?"✈️":"🏨",sub:"จุดเริ่มต้น"}],segs=[];
+ r.steps.forEach((st,i)=>{const last=i===r.steps.length-1,nx=r.steps[i+1];
+  const label=last?(to?to.th:zn?zn.name:thOnly(st.alight)):thOnly(st.alight)||thOnly(nx&&nx.board)||st.mode;
+  const icon=last?(to?TYPE_ICON[to.type]||"📍":zn?"🏨":"📍"):(/รถไฟ/.test((nx&&nx.mode)||"")||/รถไฟ/.test(st.mode)?"🚉":"📍");
+  nodes.push({label:icon==="🚉"&&!/^สถานี/.test(label)?"สถานี"+label:label,icon,sub:last?"ถึงแล้ว!":(st.exit?"ทางออก "+st.exit:"")});
+  segs.push({icon:MODE[st.mode]||"•",text:(st.line?st.line+" · ":"")+st.min+" นาที",color:st.color||null,solid:st.mode==="รถไฟใต้ดิน"||st.mode==="รถไฟความเร็วสูง"})});
+ return trailMap(nodes,segs,"ไป"+destName(r.to)); }
+function accessTrail(p){
+ const me={label:"คุณอยู่ตรงนี้",icon:"📍",sub:"Amap นำทางต่อ"},dest={label:p.th,icon:TYPE_ICON[p.type]||"📍",sub:"ถึงแล้ว!"};
+ const mode=/ความเร็วสูง/.test(p.line)?"🚄":/สาย/.test(p.line)?"🚇":/กระเช้า/.test(p.line)?"🚡":/เดิน/.test(p.line)?"🚶":"🚌";
+ if(p.station){
+  const last=p.walkMin?{icon:"🚶",text:p.walkMin+" นาที"}:{icon:"🚕",text:"ต่อรถ"};
+  return trailMap([me,{label:/^สถานี/.test(p.station)?p.station:"สถานี"+p.station,icon:"🚉",sub:(p.stationCn||"")+(p.exit?" · ทางออก "+p.exit:"")},dest],[{icon:mode,text:p.line,color:p.lineColor||null,solid:true},last],"วิธีไป"+p.th);
+ }
+ return trailMap([me,dest],[{icon:"🚕",text:"แท็กซี่ / รถ"}],"วิธีไป"+p.th);
+}
+function dayTrail(day,items){
+ const nodes=items.map(p=>({label:p.th,icon:TYPE_ICON[p.type]||"📍",sub:cityOf(p.c)?cityOf(p.c).th:""}));
+ return trailMap(nodes,items.slice(1).map(()=>({icon:"👣"})),"เส้นทางวันที่ "+day);
+}
+
+
+/* ---------- แพ็กเกจ ---------- */
+const DEMO_CODES={"DEMO-LIFE":{type:"lifetime"},"DEMO-PASS":{type:"pass30"},"DEMO-WEEK":{type:"pass7"}};
+const PASS_DAYS={pass30:30,pass7:7};
+const PASS_NAME={pass30:"พาส 30 วัน",pass7:"พาส 7 วัน"};
+const PRICES=()=>D.prices||EMBED.prices||{};
+function isPremium(){const u=S.unlock;return !!u&&(u.type==="lifetime"||Date.now()<u.expires)}
+function canUse(c){return isPremium()||S.freeCity===c}
+const thDate=t=>new Date(t).toLocaleDateString("th-TH",{day:"numeric",month:"short",year:"numeric"});
+function planText(){
+ if(S.unlock&&S.unlock.type==="lifetime")return"ปลดล็อกทุกเมืองแบบตลอดชีพ";
+ if(isPremium())return(PASS_NAME[S.unlock.type]||"พาส")+" ใช้ได้ถึง "+thDate(S.unlock.expires);
+ if(S.unlock&&PASS_DAYS[S.unlock.type])return"พาสหมดอายุแล้ว · ใช้ฟรีได้เฉพาะ"+(S.freeCity?cityOf(S.freeCity).th:"เมืองที่เลือก");
+ return S.freeCity?"แพ็กเกจฟรี · เมืองฟรีของคุณคือ"+cityOf(S.freeCity).th:"แพ็กเกจฟรี · ยังไม่ได้เลือกเมืองฟรี";
+}
+function lockBadge(c){return isPremium()?"":S.freeCity===c?'<span class="lockb freeb">เมืองฟรี</span>':'<span class="lockb">🔒 ปลดล็อก</span>'}
+function openSheet(h){$("sheet").innerHTML=h;$("sheetBg").hidden=false}
+function closeSheet(){$("sheetBg").hidden=true}
+let pendingGate=null;
+function gate(c,cb){
+ if(canUse(c))return cb();
+ if(!S.freeCity&&!isPremium()){pendingGate={c,cb};const ct=cityOf(c);
+  openSheet(`<h2>ใช้${esc(ct.th)}ฟรีเลยไหม</h2><p class="sub">เลือกได้ 1 เมือง ใช้ครบทุกฟีเจอร์ ไม่จำกัดเวลา เลือกแล้วเปลี่ยนไม่ได้</p>
+  <ul class="perks"><li>ข้อมูลสถานที่ครบทุกที่ในเมือง</li><li>เส้นทางและแผนที่ภาพร่าง</li><li>ปุ่มโชว์คนขับและเปิดใน Amap</li></ul>
+  <button class="primary" data-pick-free="${c}">เลือก${esc(ct.th)}เป็นเมืองฟรี</button><button class="ghost" data-show-plans>ดูแพ็กเกจปลดล็อกทุกเมือง</button><button class="linkish" data-close-sheet>ไว้ก่อน</button>`);return}
+ pendingGate={c,cb};showPlans(c);
+}
+function showPlans(c){
+ const pr=PRICES(),ct=c?cityOf(c):null,n=D.cities.length,np=D.places.length;
+ openSheet(`<h2>ปลดล็อกทุกเมือง</h2><p class="sub">${ct?esc(ct.th)+" ยังล็อกอยู่ · ":""}${esc(planText())}</p>
+ <ul class="perks"><li>ครบ ${n} เมือง ${np} สถานที่ และเพิ่มเมืองใหม่เรื่อย ๆ</li><li>เส้นทางทีละขั้นพร้อมแผนที่ภาพร่าง</li><li>ปุ่มโชว์คนขับ และเปิดนำทางใน Amap</li><li>📷 สแกนตั๋วด้วย AI แปลงเป็นการ์ดตั๋วให้เอง</li><li>ใช้ออฟไลน์ได้ตอนอยู่จีน</li></ul>
+ <div class="plan best" style="margin-bottom:10px;display:flex;justify-content:space-between;align-items:center"><span class="pb">คุ้มสุด</span><div><small>ตลอดชีพ</small><small>จ่ายครั้งเดียว ใช้ทุกทริป</small></div><b>${pr.lifetime?"฿"+pr.lifetime:"—"}</b></div>
+ <div class="plans"><div class="plan"><small>พาส 30 วัน</small><b>${pr.pass30?"฿"+pr.pass30:"—"}</b><small>ทริปยาว หรือเผื่อวางแผน</small></div>
+ <div class="plan"><small>พาส 7 วัน</small><b>${pr.pass7?"฿"+pr.pass7:"—"}</b><small>ทริปสั้นไม่เกินสัปดาห์</small></div></div>
+ <button class="primary" data-buy>ซื้อรหัสผ่าน LINE</button>
+ <div class="sec-h" style="margin-top:18px"><h2 style="font-size:16px">มีรหัสแล้ว</h2></div>
+ <div class="codeRow"><input id="codeIn" placeholder="CHINA-XXXX" autocomplete="off" aria-label="รหัสปลดล็อก"><button data-redeem>ปลดล็อก</button></div>
+ <p class="err" id="codeErr"></p><p class="note">ควรปลดล็อกตั้งแต่อยู่ไทย เพราะการเช็กรหัสต้องต่อเน็ตที่ไม่ผ่านการบล็อกของจีน</p>
+ <button class="linkish" data-close-sheet>ปิด</button>`);
+}
+async function redeem(){
+ const code=($("codeIn").value||"").trim().toUpperCase();$("codeErr").textContent="";
+ if(!/^[A-Z0-9]{3,8}-[A-Z0-9]{3,8}$/.test(code)){$("codeErr").textContent="รูปแบบรหัสไม่ถูกต้อง ตัวอย่าง CHINA-7K2P";return}
+ let res=null;
+ if(API_URL){
+  if(!navigator.onLine){$("codeErr").textContent="ต้องต่ออินเทอร์เน็ตเพื่อเช็กรหัส";return}
+  try{const r=await fetch(API_URL,{method:"POST",headers:{"Content-Type":"text/plain"},body:JSON.stringify({action:"redeem",code,deviceId:S.deviceId})});const j=await r.json();
+   if(!j.ok){$("codeErr").textContent=j.error||"รหัสนี้ใช้ไม่ได้";return}res={type:j.type,expires:j.expires?Date.parse(j.expires):null}}catch(e){$("codeErr").textContent="เช็กรหัสไม่สำเร็จ ลองใหม่อีกครั้ง";return}
+ }else{
+  const d=DEMO_CODES[code];if(!d){$("codeErr").textContent="ไม่พบรหัสนี้ (ต้นแบบนี้ใช้รหัสทดสอบ DEMO-LIFE, DEMO-PASS หรือ DEMO-WEEK)";return}
+  res={type:d.type,expires:PASS_DAYS[d.type]?Date.now()+PASS_DAYS[d.type]*864e5:null};
+ }
+ S.unlock={type:res.type,expires:res.expires,code};save();closeSheet();renderAll();
+ toast(res.type==="lifetime"?"ปลดล็อกตลอดชีพแล้ว":"ปลดล็อก"+(PASS_NAME[res.type]||"พาส")+"แล้ว");
+ if(pendingGate){const g=pendingGate;pendingGate=null;g.cb()}
+}
+
+
+/* ---------- ตั๋ว ---------- */
+const TK_ICON={flight:"✈️",train:"🚄",other:"🎫"},TK_NAME={flight:"เที่ยวบิน",train:"รถไฟ",other:"ตั๋วอื่น ๆ"};
+const idb=(()=>{let p;const db=()=>p||(p=new Promise((res,rej)=>{try{const r=indexedDB.open("paichinkan",1);r.onupgradeneeded=()=>r.result.createObjectStore("img");r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)}catch(e){rej(e)}}));
+ const run=(mode,fn)=>db().then(d=>new Promise((res,rej)=>{const q=fn(d.transaction("img",mode).objectStore("img"));q.onsuccess=()=>res(q.result);q.onerror=()=>rej(q.error)}));
+ return{get:k=>run("readonly",o=>o.get(k)).catch(()=>null),set:(k,v)=>run("readwrite",o=>o.put(v,k)),del:k=>run("readwrite",o=>o.delete(k)).catch(()=>{})}})();
+const todayStr=()=>{const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")};
+const thShort=ds=>new Date(ds+"T00:00:00").toLocaleDateString("th-TH",{weekday:"short",day:"numeric",month:"short"});
+function dayDate(d){if(!S.trip.startDate)return null;const x=new Date(S.trip.startDate+"T00:00:00");x.setDate(x.getDate()+d-1);return x.getFullYear()+"-"+String(x.getMonth()+1).padStart(2,"0")+"-"+String(x.getDate()).padStart(2,"0")}
+function daysUntil(ds){return Math.round((new Date(ds+"T00:00:00")-new Date(todayStr()+"T00:00:00"))/864e5)}
+function sortedTickets(){const t=todayStr();return [...S.tickets].sort((a,b)=>{const pa=a.date<t,pb=b.date<t;if(pa!==pb)return pa?1:-1;return (a.date+(a.dep||"")).localeCompare(b.date+(b.dep||""))})}
+function nextTicket(){const t=todayStr();return sortedTickets().find(x=>x.date>=t)}
+function ticketCard(x){
+ const n=daysUntil(x.date),past=n<0,cd=past?"ผ่านไปแล้ว":n===0?"วันนี้":n===1?"พรุ่งนี้":`อีก ${n} วัน`;
+ const f=[["ที่นั่ง",x.seat],[x.kind==="flight"?"เกต / อาคาร":"ชานชาลา / ประตู",x.gate],["รหัสจอง",x.ref]].filter(a=>a[1]);
+ return `<article class="tk${past?" past":""}" id="tk-${x.id}"><div class="hd"><span>${TK_ICON[x.kind]} <b>${esc(x.no||TK_NAME[x.kind])}</b></span><span class="cd">${cd}</span></div>
+ <div class="main"><div class="pt"><small>${esc(thShort(x.date))}</small><b>${esc(x.from)}</b>${x.fromCn?`<small>${esc(x.fromCn)}</small>`:""}${x.dep?`<b class="tm">${esc(x.dep)}</b>`:""}</div><div class="mid">${x.kind==="flight"?"✈":"→"}</div>
+ <div class="pt r"><small>&nbsp;</small><b>${esc(x.to)}</b>${x.toCn?`<small>${esc(x.toCn)}</small>`:""}${x.arr?`<b class="tm">${esc(x.arr)}</b>`:""}</div></div>
+ ${f.length||x.note?`<div class="cut"></div><div class="ft">${f.map(a=>`<div><span>${a[0]}</span><b>${esc(a[1])}</b></div>`).join("")}${x.note?`<div style="width:100%"><span>หมายเหตุ</span><b>${esc(x.note)}</b></div>`:""}</div>`:""}
+ <div class="acts2">${x.hasImg?`<button data-tk-img="${x.id}">🖼️ ดูรูปตั๋ว</button>`:""}${x.fromCn?`<button data-tk-cn="${x.id}">🚕 โชว์คนขับ</button>`:""}<button data-tk-edit="${x.id}">แก้ไข</button><button data-tk-del="${x.id}">ลบ</button></div></article>`;
+}
+function renderTickets(){
+ const l=sortedTickets();
+ $("seg-tickets").innerHTML=`<button class="primary" style="margin-top:0" data-tk-new>+ เพิ่มตั๋ว</button><p class="note">เก็บในเครื่องนี้เท่านั้น ใช้ออฟไลน์ได้ ไม่ถูกส่งไปที่ไหน</p>`+(l.length?l.map(ticketCard).join(""):'<p class="empty">เพิ่มตั๋วเครื่องบินหรือรถไฟไว้ที่นี่ จะเปิดดูได้แม้ไม่มีเน็ต</p>'+((aff("tickets_flight")||aff("tickets_train"))?`<div class="affrow">${aff("tickets_flight")?`<button class="ghost" style="margin:0;flex:1" data-aff="tickets_flight">✈️ ${esc(aff("tickets_flight").label)}</button>`:""}${aff("tickets_train")?`<button class="ghost" style="margin:0;flex:1" data-aff="tickets_train">🚄 ${esc(aff("tickets_train").label)}</button>`:""}</div><p class="note">ปุ่มด้านบนเป็นลิงก์พันธมิตร</p>`:""));
+}
+function renderHomeNext(){const x=nextTicket();$("homeNext").innerHTML=x?`<button class="nextTk" data-tk-go="${x.id}"><span class="i">${TK_ICON[x.kind]}</span><span style="flex:1"><small>${x.kind==="flight"?"เที่ยวบินถัดไป":"การเดินทางถัดไป"} · ${esc(thShort(x.date))}${x.dep?" "+esc(x.dep):""}</small><b style="font-weight:500">${esc(x.no||"")} ${esc(x.from)} → ${esc(x.to)}</b></span><span style="color:var(--jade)">›</span></button>`:""}
+let tkKind="flight",tkEdit=null,tkImgData=null;
+function ticketForm(id){
+ const x=id?S.tickets.find(t=>t.id===id):null;tkEdit=id||null;tkKind=x?x.kind:"flight";tkImgData=null;
+ const v=k=>x&&x[k]?esc(x[k]):"";
+ openSheet(`<h2>${x?"แก้ไขตั๋ว":"เพิ่มตั๋ว"}</h2>${x?"":`<button class="scanbox" id="scanBtn" data-tk-scan><span class="i">📷</span><span><b>สแกนตั๋วด้วย AI</b><small>แคปหน้าจอตั๋วหรือบอร์ดดิ้งพาส แล้วแอปกรอกให้เอง</small></span>${isPremium()?"":'<span class="pro">ปลดล็อก</span>'}</button><input type="file" id="scanFile" accept="image/*" hidden><p class="note" id="scanNote">รูปจะถูกส่งให้ AI อ่าน แล้วไม่ถูกเก็บไว้ที่ไหน · ตรวจข้อมูลก่อนบันทึกทุกครั้ง</p>`}<div class="tform">
+ <div class="chips" style="margin-top:10px" id="tkKinds">${Object.keys(TK_ICON).map(k=>`<button class="chip" data-tk-kind="${k}" aria-pressed="${k===tkKind}">${TK_ICON[k]} ${TK_NAME[k]}</button>`).join("")}</div>
+ <label>เลขเที่ยวบิน / ขบวนรถ<input id="tNo" value="${v("no")}" placeholder="TG614 หรือ G1234"></label>
+ <div class="two"><label>จาก<input id="tFrom" value="${v("from")}" placeholder="สุวรรณภูมิ"></label><label>ไป<input id="tTo" value="${v("to")}" placeholder="เฉิงตูเทียนฝู่"></label></div>
+ <div class="two"><label>ชื่อจีนต้นทาง<input id="tFromCn" value="${v("fromCn")}" placeholder="成都东站"></label><label>ชื่อจีนปลายทาง<input id="tToCn" value="${v("toCn")}" placeholder="重庆北站"></label></div>
+ <label>วันที่<input id="tDate" type="date" value="${v("date")}"></label>
+ <div class="two"><label>ออก<input id="tDep" type="time" value="${v("dep")}"></label><label>ถึง<input id="tArr" type="time" value="${v("arr")}"></label></div>
+ <div class="two"><label>ที่นั่ง<input id="tSeat" value="${v("seat")}" placeholder="32A หรือ ตู้ 5 ที่ 8F"></label><label>เกต / ชานชาลา<input id="tGate" value="${v("gate")}"></label></div>
+ <label>รหัสจอง<input id="tRef" value="${v("ref")}" placeholder="ABC123" autocapitalize="characters"></label>
+ <label>หมายเหตุ<input id="tNote" value="${v("note")}" placeholder="ต้องใช้พาสปอร์ตตัวจริงขึ้นรถไฟ"></label>
+ <label>รูปตั๋ว / QR (ไม่บังคับ)<input id="tImg" type="file" accept="image/*"></label>${x&&x.hasImg?'<p class="note">มีรูปเดิมอยู่แล้ว เลือกรูปใหม่ถ้าต้องการเปลี่ยน</p>':""}
+ <p class="err" id="tErr"></p><button class="primary" data-tk-save>บันทึกตั๋ว</button><button class="linkish" data-close-sheet>ยกเลิก</button></div>`);
+ if($("scanFile"))$("scanFile").addEventListener("change",e=>{const f=e.target.files[0];e.target.value="";if(f)scanTicket(f)});
+ $("tImg").addEventListener("change",e=>{const f=e.target.files[0];if(!f)return;compressImg(f).then(d=>{tkImgData=d}).catch(()=>{$("tErr").textContent="อ่านรูปไม่ได้ ลองรูปอื่น"})});
+}
+function compressImg(file){return new Promise((res,rej)=>{const r=new FileReader();r.onerror=rej;r.onload=()=>{const im=new Image();im.onerror=rej;im.onload=()=>{const m=1400,k=Math.min(1,m/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext("2d").drawImage(im,0,0,c.width,c.height);res(c.toDataURL("image/jpeg",0.8))};im.src=r.result};r.readAsDataURL(file)})}
+
+async function scanTicket(file){
+ const btn=$("scanBtn"),note=$("scanNote"),err=$("tErr");err.textContent="";
+ btn.classList.add("scanning");btn.querySelector("b").textContent="กำลังอ่านตั๋ว…";
+ const done=()=>{btn.classList.remove("scanning");btn.querySelector("b").textContent="สแกนตั๋วด้วย AI"};
+ let img;try{img=await compressImg(file)}catch(e){done();err.textContent="อ่านรูปไม่ได้ ลองรูปอื่น";return}
+ let t=null;
+ if(API_URL){
+  if(!navigator.onLine){done();err.textContent="ต้องต่ออินเทอร์เน็ตเพื่อสแกนตั๋ว";return}
+  try{const r=await fetch(API_URL,{method:"POST",headers:{"Content-Type":"text/plain"},body:JSON.stringify({action:"scanTicket",code:S.unlock&&S.unlock.code,deviceId:S.deviceId,image:img.split(",")[1]})});const j=await r.json();
+   if(!j.ok){done();err.textContent=j.error||"สแกนไม่สำเร็จ";return}t=j.ticket}catch(e){done();err.textContent="สแกนไม่สำเร็จ ลองใหม่อีกครั้ง หรือกรอกเอง";return}
+ }else{
+  await new Promise(r=>setTimeout(r,1200));
+  t={kind:"train",no:"G8601",from:"เฉิงตูตะวันออก",fromCn:"成都东站",to:"ฉงชิ่งเหนือ",toCn:"重庆北站",date:todayStr(),dep:"10:05",arr:"11:15",seat:"ตู้ 5 ที่ 8F",gate:"",ref:"E12345678",note:"ต้องใช้พาสปอร์ตตัวจริงขึ้นรถไฟ"};
+  note.textContent="โหมดตัวอย่าง: ต้นแบบนี้ยังไม่ได้ต่อ AI จริง ข้อมูลด้านล่างเป็นข้อมูลตัวอย่าง";
+ }
+ done();tkImgData=img;
+ tkKind=t.kind||"other";document.querySelectorAll("[data-tk-kind]").forEach(x=>x.setAttribute("aria-pressed",x.dataset.tkKind===tkKind));
+ const set=(id,v)=>{if(v)$(id).value=v};
+ set("tNo",t.no);set("tFrom",t.from);set("tFromCn",t.fromCn);set("tTo",t.to);set("tToCn",t.toCn);set("tDate",t.date);set("tDep",t.dep);set("tArr",t.arr);set("tSeat",t.seat);set("tGate",t.gate);set("tRef",t.ref);set("tNote",t.note);
+ toast("อ่านตั๋วแล้ว ตรวจข้อมูลก่อนบันทึกนะ");
+}
+async function saveTicket(){
+ const g=id=>$(id).value.trim(),from=g("tFrom"),to=g("tTo"),date=$("tDate").value;
+ if(!from||!to||!date){$("tErr").textContent="กรอกต้นทาง ปลายทาง และวันที่ให้ครบ";return}
+ const id=tkEdit||("t"+Date.now().toString(36));const old=S.tickets.find(t=>t.id===id);
+ const x={id,kind:tkKind,no:g("tNo").toUpperCase(),from,to,fromCn:g("tFromCn"),toCn:g("tToCn"),date,dep:$("tDep").value,arr:$("tArr").value,seat:g("tSeat"),gate:g("tGate"),ref:g("tRef").toUpperCase(),note:g("tNote"),hasImg:old?old.hasImg:false};
+ if(tkImgData){try{await idb.set(id,tkImgData);x.hasImg=true}catch(e){toast("บันทึกรูปไม่สำเร็จ แต่บันทึกตั๋วแล้ว")}}
+ S.tickets=S.tickets.filter(t=>t.id!==id);S.tickets.push(x);save();closeSheet();renderTrip();renderHomeNext();toast("บันทึกตั๋วแล้ว");
+}
+async function showTicketImg(id){const d=await idb.get(id);if(!d){toast("ไม่พบรูปในเครื่องนี้");return}$("imgView").innerHTML=`<img src="${d}" alt="รูปตั๋ว"><button data-img-close>ปิด</button>`;$("imgView").hidden=false}
+function showDriverText(cn,th){$("driver").innerHTML=`<div class="ask">请带我去这里</div><div class="name">${esc(cn)}</div><div class="th">ช่วยพาไปที่นี่หน่อย · ${esc(th)}</div><button data-driver-close>ปิด</button>`;$("driver").hidden=false}
+
+
+/* ---------- ลิงก์พันธมิตร + เช็กลิสต์ ---------- */
+function aff(slot,city){const l=(D.affiliates||[]).filter(a=>a.slot===slot&&a.url);return l.find(a=>city&&a.city===city)||l.find(a=>!a.city)||null}
+function affBtn(slot,city,primary){const a=aff(slot,city);if(!a)return"";return `<div class="affrow"><button class="${primary?"primary":"ghost"}" style="margin:0;flex:1" data-aff="${slot}" data-aff-city="${city||""}">${esc(a.label)}</button><span class="afftag">ลิงก์พันธมิตร</span></div>${a.desc?`<p class="note" style="margin-top:4px">${esc(a.desc)}</p>`:""}`}
+function openAff(slot,city){const a=aff(slot,city);if(a)window.open(a.url,"_blank","noopener")}
+const CHECKS=[
+ {k:"install",i:"📲",t:"ติดตั้งแอปลงหน้าจอโฮม",s:"เปิดครั้งแรกตอนอยู่ไทย ให้แอปเก็บข้อมูลไว้ใช้ออฟไลน์"},
+ {k:"pay",i:"💳",t:"ตั้งค่า Alipay / WeChat Pay",s:"ร้านในจีนแทบไม่รับเงินสดแล้ว",info:true},
+ {k:"esim",i:"📶",t:"eSIM สำหรับจีน",s:"",slot:"checklist_esim"},
+ {k:"insure",i:"🛡️",t:"ประกันเดินทาง",s:"เช็กว่าบัตรเครดิตที่ใช้จองมีประกันแถมไหม ถ้าไม่มีควรซื้อเพิ่ม"},
+ {k:"hotel",i:"🏨",t:"จองที่พัก",s:"",slot:"checklist_hotel"},
+ {k:"train",i:"🚄",t:"จองตั๋วรถไฟ",s:"",slot:"checklist_train"}];
+function isStandalone(){return window.matchMedia("(display-mode: standalone)").matches||navigator.standalone===true}
+function renderChecklist(){
+ if(isStandalone())S.checklist.install=true;
+ const done=CHECKS.filter(c=>S.checklist[c.k]).length;
+ if(done===CHECKS.length&&S.checklist._hide){$("checklist").innerHTML="";return}
+ $("checklist").innerHTML=`<div class="chk"><div class="top2"><b>✅ เตรียมตัวก่อนไปจีน</b><span style="font-size:13px;color:var(--muted)">${done}/${CHECKS.length}</span></div><div class="bar"><i style="width:${done/CHECKS.length*100}%"></i></div>`+
+ CHECKS.map(c=>{const a=c.slot?aff(c.slot,""):null,on=!!S.checklist[c.k],sub=c.s||(a&&a.desc)||"";
+  return `<div class="crow${on?" done":""}"><button class="cbox${on?" on":""}" data-chk="${c.k}" aria-pressed="${on}" aria-label="${esc(c.t)}">${on?"✓":""}</button><div class="tx"><span>${c.i} ${esc(c.t)}</span>${sub?`<small>${esc(sub)}</small>`:""}</div>${c.info?`<button class="alink" data-pay-info>วิธีทำ ›</button>`:a?`<button class="alink" data-aff="${c.slot}">${esc(a.label)} ›</button>`:""}</div>`}).join("")+
+ (CHECKS.some(c=>c.slot&&aff(c.slot,""))?`<p class="note">บางรายการเป็นลิงก์พันธมิตร เราได้ค่าคอมโดยราคาของคุณไม่เพิ่ม</p>`:"")+
+ (done===CHECKS.length?`<button class="linkish" data-chk-hide>เตรียมครบแล้ว ซ่อนเช็กลิสต์</button>`:"")+`</div>`;
+}
+function showPayInfo(){openSheet(`<h2>ตั้งค่าการจ่ายเงินในจีน</h2><p class="sub">ทำตั้งแต่อยู่ไทย ใช้เวลาประมาณ 10–15 นาที</p>
+ <ul class="perks"><li>โหลดแอป Alipay หรือ WeChat สมัครด้วยเบอร์มือถือไทย</li><li>ผูกบัตรเครดิตหรือเดบิต Visa / Mastercard</li><li>ยืนยันตัวตนด้วยพาสปอร์ตตามที่แอปขอ</li><li>ลองเปิดหน้า "จ่ายเงิน" ให้เห็น QR ของตัวเองก่อนเดินทาง</li></ul>
+ <p class="note">รายละเอียดและค่าธรรมเนียมอาจเปลี่ยนได้ เช็กในแอปอีกครั้ง · พกเงินสดหยวนติดตัวไว้เล็กน้อยเผื่อฉุกเฉิน</p><button class="primary" data-close-sheet>เข้าใจแล้ว</button>`)}
+
+/* ---------- home ---------- */
+function totals(){const spent=S.expenses.reduce((a,e)=>a+e.cny,0)*rate();return{spent,left:S.trip.budget-spent}}
+function sealHtml(left){return left>=0?"อยู่<br>ในงบ":"เกิน<br>งบ"}
+function renderHome(){renderHomeNext();renderChecklist();
+ $("ratePill").innerHTML=`¥1 = <b>฿${rate().toFixed(2)}</b>`;
+ const t=totals();
+ $("homeTrip").textContent=S.trip.name+" · เหลือใช้ได้";
+ $("homeLeft").textContent=t.left<0?"-"+fmt(-t.left):fmt(t.left);
+ $("homeMeter").style.width=Math.min(100,S.trip.budget?t.spent/S.trip.budget*100:0)+"%";
+ $("homeSpent").textContent="ใช้ไป "+fmt(t.spent)+" จาก "+fmt(S.trip.budget);
+ $("homeSeal").innerHTML=sealHtml(t.left);
+ $("cityCount").textContent=D.cities.length+" เมือง";
+ $("planBanner").innerHTML=isPremium()?`<span>✨ <b>${esc(planText())}</b></span><span></span>`:S.freeCity?`<span>เมืองฟรีของคุณ: <b>${esc(cityOf(S.freeCity).th)}</b></span><span>ปลดล็อกทุกเมือง ›</span>`:`<span>🎁 <b>เลือกได้ 1 เมือง</b> ใช้ฟรีไม่จำกัดเวลา</span><span>ดูแพ็กเกจ ›</span>`;
+ $("cityList").innerHTML=D.cities.map(c=>{const n=D.places.filter(p=>p.c===c.id).length;return `<button class="city-card" data-city-go="${c.id}">${art(CITY_ART[c.id]||"city",120)}<div class="b"><div><h3>${esc(c.th)}<span class="cn">${esc(c.cn)}</span></h3><p>${esc(c.desc)}</p></div><span style="text-align:right">${lockBadge(c.id)}<br><span class="n">${n} ที่ ›</span></span></div></button>`}).join("");
+}
+
+/* ---------- places ---------- */
+function renderPlaces(){
+ const c=cityOf(city);
+ $("pTitle").textContent="ที่เที่ยว"+(c?" "+c.th:"");
+ $("pSub").textContent=c?c.style+" · เหมาะช่วง"+c.season:"";
+ $("pCities").innerHTML=D.cities.map(x=>`<button class="chip" data-pcity="${x.id}" aria-pressed="${x.id===city}">${esc(x.th)}</button>`).join("");
+ const types=["ทั้งหมด",...new Set(D.places.filter(p=>p.c===city).map(p=>p.type))];
+ if(!types.includes(ptype))ptype="ทั้งหมด";
+ $("pTypes").innerHTML=types.map(x=>`<button class="chip" data-ptype="${x}" aria-pressed="${x===ptype}">${x}</button>`).join("");
+ let list=D.places.filter(p=>p.c===city&&(ptype==="ทั้งหมด"||p.type===ptype)&&(!$("fFree").checked||p.free)&&(!$("fFav").checked||S.fav.includes(p.id)));
+ const so=$("sort").value;
+ list.sort(so==="name"?(a,b)=>a.th.localeCompare(b.th,"th"):so==="users"?(a,b)=>(b.uStars||0)-(a.uStars||0):(a,b)=>(b.team||0)-(a.team||0));
+ $("found").innerHTML=`พบ ${list.length} ที่ `+lockBadge(city);
+ $("placeList").innerHTML=list.length?list.map(p=>{const fv=S.fav.includes(p.id);const lk=!canUse(p.c);return `<article class="place${lk?" locked":""}"><button class="fav" data-fav="${p.id}" aria-pressed="${fv}" aria-label="${fv?"เอาออกจากที่อยากไป":"ใส่ในที่อยากไป"}">${fv?"♥":"♡"}</button><button class="open" data-open="${p.id}">${art(p.art)}<div class="b"><h3>${esc(p.th)}<span class="tag">${esc(p.type)}</span></h3><div class="cn">${esc(p.cn)}</div><div class="m">${esc(p.price)}</div>${scoreLine(p)}<div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap">${statusBadge(p.status)}${lk?'<span class="lockb">🔒 ดูรายละเอียด</span>':""}</div></div></button></article>`}).join(""):'<p class="empty">ไม่มีที่ตรงกับตัวกรอง ลองเอาตัวกรองออกบางอัน</p>';
+}
+
+/* ---------- detail ---------- */
+function openDetail(id){
+ const p=placeOf(id);if(!p)return;
+ const c=cityOf(p.c),my=S.myRate[p.id]||0,inPlan=S.plan.find(x=>x.pid===p.id),route=D.routes.find(r=>r.to===p.id);
+ const opts=Array.from({length:S.trip.days},(_,i)=>`<option value="${i+1}"${inPlan&&inPlan.day===i+1?" selected":""}>วันที่ ${i+1}</option>`).join("");
+ const amap="https://uri.amap.com/search?keyword="+encodeURIComponent(p.cn.split("/")[0].trim());
+ $("detail").innerHTML=`<div class="hero">${art(p.art,220)}<button class="close" data-close aria-label="ปิด">‹</button><button class="fav" data-fav="${p.id}" aria-label="ที่อยากไป">${S.fav.includes(p.id)?"♥":"♡"}</button></div>
+ <div class="in"><h1 style="font-size:24px">${esc(p.th)}</h1><p style="margin:4px 0 8px;color:var(--muted)">${esc(p.en)} · ${esc(c?c.th:"")}</p>${statusBadge(p.status)}
+ <div class="cnbox"><div><div style="font-size:12px;color:var(--muted)">ชื่อจีน</div><div class="big">${esc(p.cn)}</div></div><button class="small-btn" data-driver="${p.id}">โชว์คนขับ</button></div>
+ <p style="margin:14px 0 0">${esc(p.desc)}</p>
+ <div class="info"><div><span>ค่าเข้า</span><span>${esc(p.price)}</span></div><div><span>การจอง</span><span>${esc(p.booking)}</span></div><div><span>เวลาเปิด</span><span>${esc(p.hours||"ยังไม่มีข้อมูล")}</span></div>${p.note?`<div><span>หมายเหตุ</span><span>${esc(p.note)}</span></div>`:""}</div>${/จอง/.test(p.booking||"")&&!/ไม่จำเป็น/.test(p.booking||"")?affBtn("place_booking",p.c,true):""}
+ <div class="sec-h"><h2>วิธีไปถึง</h2></div><div class="getthere">${p.station||p.access?accessTrail(p):""}
+ ${p.station?`<p><span class="ln" style="display:inline-block;color:#fff;font-size:12px;font-weight:500;border-radius:6px;padding:2px 8px;margin-right:6px;background:${esc(p.lineColor||"#555")}">${esc(p.line)}</span>ลงสถานี<b>${esc(p.station)}</b> ${esc(p.stationCn)}${p.exit?" ทางออก "+esc(p.exit):""}${p.walkMin?` แล้วเดินต่อ ${p.walkMin} นาที`:""}</p>`:""}
+ ${p.access?`<p class="muted">${esc(p.access)}</p>`:""}${!p.station&&!p.access?'<p class="muted">ยังไม่มีข้อมูลการเดินทาง ใช้ปุ่มเปิดใน Amap ด้านล่างได้เลย</p>':""}</div>
+ <div class="sec-h"><h2>คะแนน</h2></div>${scoreLine(p)}
+ <div class="card" style="margin-top:10px"><div style="font-size:14px;color:var(--muted);margin-bottom:6px">คะแนนของคุณ</div><div class="mine" aria-label="ให้คะแนน">${[1,2,3,4,5].map(n=>`<button class="${n<=my?"on":""}" data-rate="${p.id}" data-n="${n}" aria-label="ให้ ${n} ดาว">★</button>`).join("")}</div></div>
+ <div class="sec-h"><h2>เพิ่มลงแผน</h2></div>
+ <div class="add"><select class="sel" id="dDay" aria-label="เลือกวัน">${opts}</select><button class="primary" style="margin:0" data-add="${p.id}">${inPlan?"ย้ายไปวันนี้":"เพิ่มลงแผน"}</button></div>
+ ${inPlan?`<p class="note">อยู่ในแผนวันที่ ${inPlan.day} แล้ว</p>`:""}
+ <div class="acts"><a href="${amap}" target="_blank" rel="noopener">🧭 นำทางใน Amap (高德地图)</a>${route?`<button class="ghost" style="margin:0" data-route="${route.id}">วิธีไปที่นี่ · ${route.min} นาที</button>`:""}</div>
+ </div>`;
+ $("detail").hidden=false;$("detail").scrollTop=0;document.body.style.overflow="hidden";
+}
+function closeDetail(){$("detail").hidden=true;document.body.style.overflow=""}
+function showDriver(id){const p=placeOf(id);$("driver").innerHTML=`<div class="ask">请带我去这里</div><div class="name">${esc(p.cn.split("/")[0].trim())}</div><div class="th">ช่วยพาไปที่นี่หน่อย · ${esc(p.th)}</div><button data-driver-close>ปิด</button>`;$("driver").hidden=false}
+
+/* ---------- routes ---------- */
+function renderRoutes(){
+ $("rCities").innerHTML=D.cities.map(x=>`<button class="chip" data-rcity="${x.id}" aria-pressed="${x.id===rCity}">${esc(x.th)}</button>`).join("");
+ const list=D.routes.filter(r=>r.c===rCity),zs=(D.zones||[]).filter(z=>z.c===rCity);
+ const zHtml=zs.length?`<div class="sec-h"><h2>ที่พักยอดฮิต</h2><span>${zs.length} โซน</span></div>`+zs.map(z=>`<div class="zone"><h3>🏨 ${esc(z.name)}<span class="cn">${esc(z.cn)}</span></h3><p><span class="ln" style="background:${esc(z.lineColor||"#555")}">${esc(z.line)}</span>สถานี${esc(z.station)} ${esc(z.stationCn)}</p><p>${esc(z.desc)}</p><p>เหมาะกับ: ${esc(z.goodFor)}</p><div style="margin-top:8px">${statusBadge(z.status)}</div>${affBtn("zone_hotel",z.c)}</div>`).join(""):"";
+ $("routeList").innerHTML=zHtml+`<div class="sec-h"><h2>เส้นทางแนะนำ</h2><span>${list.length} เส้นทาง</span></div>`+(list.length?list.map(r=>{return `<button class="route" data-route="${r.id}"><div class="ft">${/สนามบิน/.test(r.from)?"✈️ ":""}${esc(r.from)} <span>→</span> ${esc(destName(r.to))}</div><div class="meta"><span>⏱ ${r.min} นาที</span><span>💴 ${fy(r.cny)} · ~${fmt(r.cny*rate())}</span><span>${r.steps.length} ขั้น</span></div><div style="margin-top:8px;display:flex;gap:8px">${statusBadge(r.status)}${canUse(r.c)?"":'<span class="lockb">🔒</span>'}</div></button>`}).join(""):'<p class="empty">ยังไม่มีเส้นทางของเมืองนี้ ทีมกำลังเพิ่มอยู่</p>');
+ if(openRoute){const r=D.routes.find(x=>x.id===openRoute);if(r&&canUse(r.c)){$("routeListWrap").hidden=true;$("routeDetail").hidden=false;const to=placeOf(r.to);
+  $("routeDetail").innerHTML=`<button class="back" data-rback>‹ เส้นทางทั้งหมด</button><h1 style="font-size:22px">${esc(r.from)} → ${esc(destName(r.to))}</h1><div style="margin-top:8px">${statusBadge(r.status)}</div>
+  <div class="sum"><div><small>ใช้เวลาประมาณ</small><b>${r.min} นาที</b></div><div><small>ค่าเดินทางรวม</small><b>${fy(r.cny)}</b><small>~${fmt(r.cny*rate())}</small></div></div>
+  ${routeTrail(r)}<div class="tl">${r.steps.map(s=>`<div class="step"><div class="ico">${MODE[s.mode]||"•"}</div><div class="tx"><p>${s.line?`<span class="ln" style="background:${esc(s.color||"#555")}">${esc(s.line)}</span>`:""}${esc(s.text)}</p>${s.board||s.alight?`<small>${s.board?"ขึ้น "+esc(s.board):""}${s.board&&s.alight?" → ":""}${s.alight?"ลง "+esc(s.alight):""}${s.exit?" · ทางออก "+esc(s.exit):""}</small>`:""}<small>${s.min} นาที${s.cny?" · "+fy(s.cny):""}</small></div></div>`).join("")}</div>
+  ${to?`<button class="ghost" data-open="${to.id}">ดูข้อมูล${esc(to.th)}</button>`:""}${/สนามบิน/.test(r.from)?affBtn("airport_transfer",r.c):""}<p class="note">ข้อมูลเส้นทางอาจเปลี่ยนได้ ควรเปิด Amap เช็กอีกครั้งก่อนเดินทาง</p>`;return}}
+ $("routeListWrap").hidden=false;$("routeDetail").hidden=true;
+}
+
+/* ---------- trip ---------- */
+function renderTrip(){
+ const t=S.trip,{spent,left}=totals();
+ $("tripName").textContent=t.name;$("tripMeta").textContent=`${t.days} วัน · ${S.expenses.length} รายการ · ${S.plan.length} ที่ในแผน`;
+ document.querySelectorAll("[data-seg]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.seg===seg));
+ ["budget","plan","tickets","fav"].forEach(k=>$("seg-"+k).hidden=k!==seg);
+ $("planInfo").textContent="แพ็กเกจ: "+planText();$("openPlans").textContent=isPremium()?"กรอกรหัสใหม่":"ดูแพ็กเกจ / กรอกรหัส";
+ $("dataInfo").textContent=`ข้อมูลเวอร์ชัน ${D.dataVersion} · อัปเดต ${D.lastUpdated} · เก็บในเครื่องแล้ว ใช้ออฟไลน์ได้`;
+ if(seg==="budget"){
+  $("left").textContent=left<0?"-"+fmt(-left):fmt(left);$("spent").textContent=fmt(spent);$("budget").textContent=fmt(t.budget);
+  $("meter").style.width=Math.min(100,t.budget?spent/t.budget*100:0)+"%";
+  const du=Math.max(1,...S.expenses.map(e=>e.day)),rem=Math.max(1,t.days-du+1);
+  $("perDay").textContent=left>0?`ใช้ได้วันละ ${fmt(left/rem)}`:"ควรลดค่าใช้จ่าย";
+  $("rateTxt").textContent=`¥1 = ฿${rate().toFixed(2)}${t.rateOverride?" (เรทของฉัน)":""}`;
+  $("seal").innerHTML=sealHtml(left);
+  $("cats").innerHTML=CATS.map(c=>`<button class="chip" data-cat="${c.k}" aria-pressed="${c.k===cat}">${c.i} ${c.n}</button>`).join("");
+  const ds=$("daySel").value;$("daySel").innerHTML=Array.from({length:t.days},(_,i)=>`<option value="${i+1}">วันที่ ${i+1}</option>`).join("");if(ds&&ds<=t.days)$("daySel").value=ds;
+  const tot=CATS.map(c=>({c,v:S.expenses.filter(e=>e.cat===c.k).reduce((a,e)=>a+e.cny,0)*rate()})).filter(x=>x.v>0).sort((a,b)=>b.v-a.v),mx=Math.max(1,...tot.map(x=>x.v));
+  $("bars").innerHTML=tot.length?tot.map(x=>`<div><span>${x.c.i} ${x.c.n}</span><span class="tr"><i style="width:${x.v/mx*100}%"></i></span><span>${fmt(x.v)}</span></div>`).join(""):'<p class="empty">ยังไม่มีค่าใช้จ่าย</p>';
+  $("count").textContent=S.expenses.length+" รายการ";
+  const l=[...S.expenses].sort((a,b)=>b.id-a.id);
+  $("list").innerHTML=l.length?l.map(e=>{const c=CATS.find(x=>x.k===e.cat)||CATS[0];return `<div class="exp"><div class="ic">${c.i}</div><div class="t"><p>${esc(e.note||c.n)}</p><small>วันที่ ${e.day} · ${c.n}</small></div><div class="amt">${fmt(e.cny*rate())}<small>${fy(e.cny)}</small></div><button class="del" data-del="${e.id}" aria-label="ลบรายการ">×</button></div>`}).join(""):'<p class="empty">เริ่มจดค่าใช้จ่ายแรกได้เลย</p>';
+  updThb();
+ }else if(seg==="plan"){
+  let h="";for(let d=1;d<=t.days;d++){const items=S.plan.filter(x=>x.day===d).map(x=>placeOf(x.pid)).filter(Boolean);
+   const ds=dayDate(d),dt=ds?S.tickets.filter(x=>x.date===ds).sort((a,b)=>(a.dep||"").localeCompare(b.dep||"")):[];
+   h+=`<div class="sec-h" style="margin-top:${d===1?0:18}px"><h2>วันที่ ${d}${ds?` <span style="font-size:14px;color:var(--muted);font-weight:400">${thShort(ds)}</span>`:""}</h2><span>${items.length} ที่</span></div>${dt.map(x=>`<button class="dtk" data-tk-go="${x.id}"><span style="font-size:20px">${TK_ICON[x.kind]}</span><span><b>${esc(x.no||TK_NAME[x.kind])}</b> ${esc(x.from)} → ${esc(x.to)}${x.dep?" · "+esc(x.dep):""}</span></button>`).join("")}${items.length>1?dayTrail(d,items):""}${items.length?items.map(p=>`<div class="item"><span class="dot"></span><button class="go" data-open="${p.id}">${esc(p.th)}<small>${esc(cityOf(p.c)?cityOf(p.c).th:"")} · ${esc(p.price)}</small></button><button class="del" data-rm="${p.id}" aria-label="เอาออกจากแผน">×</button></div>`).join(""):'<p class="empty">ยังว่าง ไปเลือกที่เที่ยวได้เลย</p>'}`}
+  $("seg-plan").innerHTML=h;
+ }else if(seg==="tickets"){renderTickets();
+ }else{
+  const f=S.fav.map(placeOf).filter(Boolean);
+  $("seg-fav").innerHTML=f.length?f.map(p=>`<div class="item"><span class="dot" style="background:var(--seal)"></span><button class="go" data-open="${p.id}">${esc(p.th)}<small>${esc(cityOf(p.c)?cityOf(p.c).th:"")} · ${esc(p.type)}</small></button><button class="del" data-fav="${p.id}" aria-label="เอาออก">×</button></div>`).join(""):'<p class="empty">กดหัวใจที่การ์ดสถานที่ เพื่อเก็บไว้ดูตรงนี้</p>';
+ }
+}
+function updThb(){const v=parseFloat($("cny").value);$("thb").textContent=isNaN(v)?"฿0":"฿"+(Math.round(v*rate()*100)/100).toLocaleString("th-TH")}
+
+function renderAll(){renderHome();renderPlaces();renderRoutes();renderTrip()}
+function go(t){tab=t;document.querySelectorAll(".view").forEach(v=>v.classList.toggle("on",v.id==="v-"+t));document.querySelectorAll("nav button").forEach(n=>n.removeAttribute("aria-current"));document.querySelector(`nav [data-tab="${t}"]`).setAttribute("aria-current","page");window.scrollTo(0,0)}
+function toast(m){const t=$("toast");t.textContent=m;t.classList.add("on");clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove("on"),1800)}
+
+document.addEventListener("click",e=>{
+ const b=e.target.closest("button");if(!b)return;const d=b.dataset;
+ if(d.tab){closeDetail();if(d.tab==="routes"){openRoute=null;renderRoutes()}go(d.tab)}
+ else if(d.cityGo){city=d.cityGo;rCity=d.cityGo;ptype="ทั้งหมด";renderPlaces();go("places")}
+ else if(b.id==="homeTicket"){seg="budget";renderTrip();go("trip")}
+ else if(d.pcity){city=d.pcity;ptype="ทั้งหมด";renderPlaces()}
+ else if(d.ptype){ptype=d.ptype;renderPlaces()}
+ else if(d.fav){const i=d.fav;S.fav=S.fav.includes(i)?S.fav.filter(x=>x!==i):[...S.fav,i];save();renderPlaces();renderTrip();if(!$("detail").hidden)openDetail(i);toast(S.fav.includes(i)?"เก็บไว้ในที่อยากไปแล้ว":"เอาออกจากที่อยากไปแล้ว")}
+ else if(d.open){const p=placeOf(d.open);if(p)gate(p.c,()=>openDetail(p.id))}
+ else if(d.pickFree){S.freeCity=d.pickFree;save();closeSheet();renderAll();toast("ตั้ง"+cityOf(d.pickFree).th+"เป็นเมืองฟรีแล้ว");if(pendingGate){const g=pendingGate;pendingGate=null;g.cb()}}
+ else if(d.showPlans!==undefined){const c=pendingGate&&pendingGate.c;showPlans(c)}
+ else if(d.closeSheet!==undefined){closeSheet();pendingGate=null}
+ else if(d.redeem!==undefined){redeem()}
+ else if(d.buy!==undefined){const u=(D.buyUrl||EMBED.buyUrl);if(u)window.open(u,"_blank","noopener");else toast("ยังไม่ได้ตั้งลิงก์ LINE ในหลังบ้าน")}
+ else if(b.id==="planBanner"){if(!isPremium())showPlans(null)}
+ else if(b.id==="openPlans"){showPlans(null)}
+ else if(d.close!==undefined){closeDetail()}
+ else if(d.driver){showDriver(d.driver)}
+ else if(d.driverClose!==undefined){$("driver").hidden=true}
+ else if(d.rate){const n=+d.n,cur=S.myRate[d.rate];S.myRate[d.rate]=cur===n?0:n;S.pending=S.pending.filter(x=>x.placeId!==d.rate);if(S.myRate[d.rate])S.pending.push({placeId:d.rate,stars:n});save();openDetail(d.rate);toast(S.myRate[d.rate]?`ให้ ${n} ดาวแล้ว`:"ยกเลิกคะแนนแล้ว");flushRatings()}
+ else if(d.add){const day=parseInt($("dDay").value)||1;S.plan=S.plan.filter(x=>x.pid!==d.add);S.plan.push({pid:d.add,day});save();openDetail(d.add);renderTrip();toast(`เพิ่มลงแผนวันที่ ${day} แล้ว`)}
+ else if(d.rm){S.plan=S.plan.filter(x=>x.pid!==d.rm);save();renderTrip()}
+ else if(d.route){const r=D.routes.find(x=>x.id===d.route);if(!r)return;gate(r.c,()=>{closeDetail();openRoute=r.id;rCity=r.c;renderRoutes();go("routes")})}
+ else if(d.rback!==undefined){openRoute=null;renderRoutes();window.scrollTo(0,0)}
+ else if(d.rcity){rCity=d.rcity;renderRoutes()}
+ else if(d.seg){seg=d.seg;renderTrip()}
+ else if(d.tkNew!==undefined){ticketForm(null)}
+ else if(d.aff){openAff(d.aff,d.affCity||"")}
+ else if(d.chk){S.checklist[d.chk]=!S.checklist[d.chk];save();renderChecklist()}
+ else if(d.chkHide!==undefined){S.checklist._hide=true;save();renderChecklist()}
+ else if(d.payInfo!==undefined){showPayInfo()}
+ else if(d.tkKind){tkKind=d.tkKind;document.querySelectorAll("[data-tk-kind]").forEach(x=>x.setAttribute("aria-pressed",x.dataset.tkKind===tkKind))}
+ else if(d.tkSave!==undefined){saveTicket()}
+ else if(d.tkScan!==undefined){if(!isPremium()){closeSheet();pendingGate={c:null,cb:()=>{seg="tickets";renderTrip();ticketForm(null)}};showPlans(null);return}$("scanFile").click()}
+ else if(d.tkEdit){ticketForm(d.tkEdit)}
+ else if(d.tkDel){if(confirm("ลบตั๋วนี้?")){S.tickets=S.tickets.filter(t=>t.id!==d.tkDel);idb.del(d.tkDel);save();renderTrip();renderHomeNext();toast("ลบตั๋วแล้ว")}}
+ else if(d.tkImg){showTicketImg(d.tkImg)}
+ else if(d.imgClose!==undefined){$("imgView").hidden=true}
+ else if(d.tkCn){const x=S.tickets.find(t=>t.id===d.tkCn);if(x)showDriverText(x.fromCn,x.from)}
+ else if(d.tkGo){seg="tickets";renderTrip();go("trip");setTimeout(()=>{const el=$("tk-"+d.tkGo);if(el)el.scrollIntoView({block:"center"})},50)}
+ else if(d.cat){cat=d.cat;renderTrip()}
+ else if(d.del){S.expenses=S.expenses.filter(x=>x.id!=d.del);save();renderTrip();renderHome()}
+});
+["fFree","fFav","sort"].forEach(id=>$(id).addEventListener("change",renderPlaces));
+$("cny").addEventListener("input",()=>{updThb();$("err").textContent=""});
+$("addExp").addEventListener("click",()=>{
+ const v=parseFloat($("cny").value);
+ if(isNaN(v)||v<=0){$("err").textContent="ใส่จำนวนเงินหยวนก่อนบันทึก";return}
+ S.expenses.push({id:Date.now(),cny:v,cat,note:$("note").value.trim(),day:parseInt($("daySel").value)||1});
+ save();$("cny").value="";$("note").value="";renderTrip();renderHome();
+ const s=$("seal");s.classList.add("pop");setTimeout(()=>s.classList.remove("pop"),300);toast("บันทึกแล้ว");
+});
+$("gear").addEventListener("click",()=>{const st=$("settings");st.classList.toggle("open");if(st.classList.contains("open")){$("sName").value=S.trip.name;$("sBudget").value=S.trip.budget;$("sDays").value=S.trip.days;$("sRate").value=S.trip.rateOverride||"";$("sStart").value=S.trip.startDate||""}});
+$("sSave").addEventListener("click",()=>{
+ const b=parseFloat($("sBudget").value),dd=parseInt($("sDays").value),rv=$("sRate").value.trim(),r=rv?parseFloat(rv):null;
+ if(!$("sName").value.trim()||isNaN(b)||b<=0||isNaN(dd)||dd<1||dd>30||(rv&&(isNaN(r)||r<=0))){$("sErr").textContent="กรอกชื่อทริป งบ และจำนวนวัน (1–30) ให้ครบ เรทต้องเป็นตัวเลขหรือเว้นว่าง";return}
+ $("sErr").textContent="";S.trip={name:$("sName").value.trim(),budget:b,days:dd,rateOverride:r,startDate:$("sStart").value||null};
+ S.expenses.forEach(x=>{if(x.day>dd)x.day=dd});S.plan=S.plan.filter(x=>x.day<=dd);
+ save();$("settings").classList.remove("open");renderAll();toast("บันทึกการตั้งค่าแล้ว");
+});
+$("reset").addEventListener("click",()=>{if(!confirm("ล้างงบ แผน ตั๋ว และที่อยากไปทั้งหมด?"))return;S.tickets.forEach(t=>idb.del(t.id));S.expenses=[];S.plan=[];S.fav=[];S.tickets=[];save();$("settings").classList.remove("open");renderAll();toast("ล้างข้อมูลทริปแล้ว")});
+$("sheetBg").addEventListener("click",e=>{if(e.target.id==="sheetBg"){closeSheet();pendingGate=null}});
+document.addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.id==="codeIn")redeem();if(e.key==="Escape"){if(!$("imgView").hidden){$("imgView").hidden=true;return}if(!$("sheetBg").hidden){closeSheet();return}if(!$("driver").hidden)$("driver").hidden=true;else if(!$("detail").hidden)closeDetail()}});
+
+/* ---------- sync กับหลังบ้าน (ทำงานเมื่อใส่ API_URL) ---------- */
+async function syncData(){
+ if(!API_URL||!navigator.onLine)return;
+ const age=S.cache?Date.now()-S.cache.fetchedAt:Infinity;
+ if(age<(D.cacheHours||24)*3600e3)return;
+ try{const r=await fetch(API_URL+"?action=all");const j=await r.json();if(j.ok){S.cache={fetchedAt:Date.now(),payload:normalize(j)};D=S.cache.payload;save();renderAll()}}catch(e){}
+}
+function normalize(j){return{affiliates:j.affiliates||[],prices:j.prices||EMBED.prices,buyUrl:j.buyUrl||"",dataVersion:j.dataVersion,lastUpdated:j.lastUpdated,rate:j.rate||EMBED.rate,cacheHours:j.cacheHours,cities:j.cities.map(c=>({id:c.id,th:c.nameTh,en:c.nameEn,cn:c.nameCn,desc:c.desc,style:c.style,season:c.season,image:c.image})),
+ places:j.places.map(p=>{const old=EMBED.places.find(x=>x.id===p.id);return{id:p.id,c:p.id.slice(0,2),th:p.nameTh,en:p.nameEn,cn:p.nameCn,type:p.type,price:p.price,free:p.free,booking:p.booking,desc:p.desc,status:p.status,note:p.note||"",hours:p.hours,team:p.teamStars,uStars:p.userStars,uCount:p.userCount,image:p.image,art:old?old.art:"city",station:p.station||"",stationCn:p.stationCn||"",line:p.line||"",lineColor:p.lineColor||"",exit:p.exit||"",walkMin:p.walkMin||0,access:p.access||""}}),
+ zones:(j.zones||[]).map(z=>({id:z.id,c:z.id.slice(0,2),name:z.name,cn:z.nameCn,station:z.station,stationCn:z.stationCn,line:z.line,lineColor:z.lineColor,goodFor:z.goodFor,desc:z.desc,status:z.status})),
+ routes:j.routes.map(r=>({id:r.id,c:r.id.slice(0,2),from:r.from,to:r.toPlaceId,min:r.totalMin,cny:r.totalCny,status:r.status,steps:r.steps}))}}
+async function flushRatings(){
+ if(!API_URL||!navigator.onLine||!S.pending.length)return;
+ const q=[...S.pending];
+ for(const it of q){try{const r=await fetch(API_URL,{method:"POST",headers:{"Content-Type":"text/plain"},body:JSON.stringify({placeId:it.placeId,deviceId:S.deviceId,stars:it.stars})});const j=await r.json();if(j.ok){S.pending=S.pending.filter(x=>x!==it&&!(x.placeId===it.placeId&&x.stars===it.stars));const p=placeOf(it.placeId);if(p){p.uStars=j.userStars;p.uCount=j.userCount}}}catch(e){break}}
+ save();
+}
+window.addEventListener("online",()=>{syncData();flushRatings()});
+save();renderAll();syncData();flushRatings();
+/* ---------- PWA: ติดตั้งและออฟไลน์ ---------- */
+if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}))}
+(function(){
+ const box=$("installBox");let dismissed=false;try{dismissed=localStorage.getItem("installHidden")==="1"}catch(e){}
+ const standalone=window.matchMedia("(display-mode: standalone)").matches||navigator.standalone===true;
+ if(standalone||dismissed)return;
+ const ios=/iphone|ipad|ipod/i.test(navigator.userAgent)||(/Macintosh/.test(navigator.userAgent)&&navigator.maxTouchPoints>1);
+ const hide=()=>{box.hidden=true;try{localStorage.setItem("installHidden","1")}catch(e){}};
+ if(ios){box.innerHTML='<b>📲 ติดตั้งเป็นแอป</b> ใช้ออฟไลน์ได้ตอนอยู่จีน<br>ใน Safari กดปุ่มแชร์ <b>⬆︎</b> แล้วเลือก <b>"เพิ่มไปยังหน้าจอโฮม"</b><div class="row"><button id="instHide">ไม่ต้องแสดงอีก</button><span></span></div>';box.hidden=false;$("instHide").onclick=hide;return}
+ window.addEventListener("beforeinstallprompt",ev=>{ev.preventDefault();const p=ev;
+  box.innerHTML='<b>📲 ติดตั้งเป็นแอป</b> ใช้ออฟไลน์ได้ตอนอยู่จีน<div class="row"><button id="instHide">ไม่ต้องแสดงอีก</button><button class="go" id="instGo">ติดตั้ง</button></div>';box.hidden=false;
+  $("instHide").onclick=hide;$("instGo").onclick=async()=>{p.prompt();try{await p.userChoice}catch(e){}hide()}});
+})();
+
+
+
+
+
+
+</script>
+</body>
+</html>

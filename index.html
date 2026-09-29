@@ -274,6 +274,7 @@ nav button[aria-current="page"]{color:var(--jade);font-weight:500}
   <button class="primary" id="sSave">บันทึกการตั้งค่า</button>
   <button class="ghost" id="reset">ล้างข้อมูลทริปทั้งหมด</button>
   <p class="note" id="planInfo" style="font-size:14px;color:var(--ink)"></p><button class="ghost" id="openPlans">ดูแพ็กเกจ / กรอกรหัส</button>
+  <button class="ghost" id="syncNow">🔄 อัปเดตข้อมูลตอนนี้</button>
   <p class="note" id="dataInfo"></p>
  </div>
  <div class="seg" role="group" aria-label="เลือกส่วน">
@@ -764,6 +765,11 @@ $("addExp").addEventListener("click",()=>{
  save();$("cny").value="";$("note").value="";renderTrip();renderHome();
  const s=$("seal");s.classList.add("pop");setTimeout(()=>s.classList.remove("pop"),300);toast("บันทึกแล้ว");
 });
+$("syncNow").addEventListener("click",async()=>{
+ if(!API_URL){toast("ยังไม่ได้เชื่อมหลังบ้าน (ตรวจ config.js)");return}
+ if(!navigator.onLine){toast("ต้องต่ออินเทอร์เน็ตก่อน");return}
+ toast("กำลังอัปเดตข้อมูล…");const ok=await syncData(true);toast(ok?"อัปเดตข้อมูลล่าสุดแล้ว":"อัปเดตไม่สำเร็จ ลองใหม่อีกครั้ง");
+});
 $("gear").addEventListener("click",()=>{const st=$("settings");st.classList.toggle("open");if(st.classList.contains("open")){$("sName").value=S.trip.name;$("sBudget").value=S.trip.budget;$("sDays").value=S.trip.days;$("sRate").value=S.trip.rateOverride||"";$("sStart").value=S.trip.startDate||""}});
 $("sSave").addEventListener("click",()=>{
  const b=parseFloat($("sBudget").value),dd=parseInt($("sDays").value),rv=$("sRate").value.trim(),r=rv?parseFloat(rv):null;
@@ -777,13 +783,20 @@ $("sheetBg").addEventListener("click",e=>{if(e.target.id==="sheetBg"){closeSheet
 document.addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.id==="codeIn")redeem();if(e.key==="Escape"){if(!$("imgView").hidden){$("imgView").hidden=true;return}if(!$("sheetBg").hidden){closeSheet();return}if(!$("driver").hidden)$("driver").hidden=true;else if(!$("detail").hidden)closeDetail()}});
 
 /* ---------- sync กับหลังบ้าน (ทำงานเมื่อใส่ API_URL) ---------- */
-async function syncData(){
- if(!API_URL||!navigator.onLine)return;
- const age=S.cache?Date.now()-S.cache.fetchedAt:Infinity;
- if(age<(D.cacheHours||24)*3600e3)return;
- try{const r=await fetch(API_URL+"?action=all");const j=await r.json();if(j.ok){S.cache={fetchedAt:Date.now(),payload:normalize(j)};D=S.cache.payload;save();renderAll()}}catch(e){}
+async function syncData(force){
+ if(!API_URL||!navigator.onLine)return false;
+ try{
+  const cur=S.cache&&S.cache.payload,age=S.cache?Date.now()-S.cache.fetchedAt:Infinity;
+  let need=force||!cur||age>(D.cacheHours||24)*3600e3;
+  if(!need){const v=await (await fetch(API_URL+"?action=version")).json();
+   need=v.ok&&(Number(v.dataStamp||0)!==Number(cur.dataStamp||0)||Number(v.dataVersion)!==Number(cur.dataVersion))}
+  if(!need)return false;
+  const j=await (await fetch(API_URL+"?action=all")).json();
+  if(j.ok){S.cache={fetchedAt:Date.now(),payload:normalize(j)};D=S.cache.payload;save();renderAll();return true}
+ }catch(e){}
+ return false;
 }
-function normalize(j){return{affiliates:j.affiliates||[],prices:j.prices||EMBED.prices,buyUrl:j.buyUrl||"",dataVersion:j.dataVersion,lastUpdated:j.lastUpdated,rate:j.rate||EMBED.rate,cacheHours:j.cacheHours,cities:j.cities.map(c=>({id:c.id,th:c.nameTh,en:c.nameEn,cn:c.nameCn,desc:c.desc,style:c.style,season:c.season,image:String(c.image||"").split("\n")[0]||""})),
+function normalize(j){return{dataStamp:Number(j.dataStamp||0),affiliates:j.affiliates||[],prices:j.prices||EMBED.prices,buyUrl:j.buyUrl||"",dataVersion:j.dataVersion,lastUpdated:j.lastUpdated,rate:j.rate||EMBED.rate,cacheHours:j.cacheHours,cities:j.cities.map(c=>({id:c.id,th:c.nameTh,en:c.nameEn,cn:c.nameCn,desc:c.desc,style:c.style,season:c.season,image:String(c.image||"").split("\n")[0]||""})),
  places:j.places.map(p=>{const old=EMBED.places.find(x=>x.id===p.id);return{id:p.id,c:p.id.slice(0,2),th:p.nameTh,en:p.nameEn,cn:p.nameCn,type:p.type,price:p.price,free:p.free,booking:p.booking,desc:p.desc,status:p.status,note:p.note||"",hours:p.hours,team:p.teamStars,uStars:p.userStars,uCount:p.userCount,images:p.images||(p.image?String(p.image).split("\n").filter(Boolean):[]),imageCredits:p.imageCredits||[],art:old?old.art:"city",station:p.station||"",stationCn:p.stationCn||"",line:p.line||"",lineColor:p.lineColor||"",exit:p.exit||"",walkMin:p.walkMin||0,access:p.access||""}}),
  zones:(j.zones||[]).map(z=>({id:z.id,c:z.id.slice(0,2),name:z.name,cn:z.nameCn,station:z.station,stationCn:z.stationCn,line:z.line,lineColor:z.lineColor,goodFor:z.goodFor,desc:z.desc,status:z.status})),
  routes:j.routes.map(r=>({id:r.id,c:r.id.slice(0,2),from:r.from,to:r.toPlaceId,min:r.totalMin,cny:r.totalCny,status:r.status,steps:r.steps}))}}
@@ -794,6 +807,7 @@ async function flushRatings(){
  save();
 }
 window.addEventListener("online",()=>{syncData();flushRatings()});
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){syncData();flushRatings()}});
 save();renderAll();syncData();flushRatings();
 /* ---------- PWA: ติดตั้งและออฟไลน์ ---------- */
 if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}))}
@@ -808,6 +822,7 @@ if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.se
   box.innerHTML='<b>📲 ติดตั้งเป็นแอป</b> ใช้ออฟไลน์ได้ตอนอยู่จีน<div class="row"><button id="instHide">ไม่ต้องแสดงอีก</button><button class="go" id="instGo">ติดตั้ง</button></div>';box.hidden=false;
   $("instHide").onclick=hide;$("instGo").onclick=async()=>{p.prompt();try{await p.userChoice}catch(e){}hide()}});
 })();
+
 
 
 

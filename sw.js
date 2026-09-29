@@ -3,6 +3,7 @@
 const VERSION = 'v1';
 const CORE = `core-${VERSION}`;
 const RUNTIME = 'runtime-v1';
+const IMAGES = 'images-v1';
 const CORE_FILES = ['./', 'index.html', 'config.js', 'manifest.webmanifest',
   'icon-192.png', 'icon-512.png', 'icon-maskable-512.png', 'apple-touch-icon.png'];
 
@@ -30,6 +31,17 @@ self.addEventListener('fetch', e => {
       const hit = await c.match(req);
       if (hit) return hit;
       try { const res = await fetch(req); c.put(req, res.clone()); return res; }
+      catch (err) { return new Response('', { status: 504 }); }
+    }));
+    return;
+  }
+
+  // รูปสถานที่ (โฟลเดอร์ images/ และรูปจาก Wikimedia): ใช้ของในเครื่องก่อน ประหยัดเน็ตและใช้ออฟไลน์ได้
+  if ((url.origin === self.location.origin && url.pathname.includes('/images/')) || url.hostname === 'upload.wikimedia.org') {
+    e.respondWith(caches.open(IMAGES).then(async c => {
+      const hit = await c.match(req);
+      if (hit) return hit;
+      try { const res = await fetch(req); if (res.ok || res.type === 'opaque') c.put(req, res.clone()); return res; }
       catch (err) { return new Response('', { status: 504 }); }
     }));
     return;

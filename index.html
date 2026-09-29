@@ -203,6 +203,13 @@ nav button[aria-current="page"]{color:var(--jade);font-weight:500}
 .alink{border:none;background:none;color:var(--jade);font-size:13px;font-weight:500;white-space:nowrap;padding:4px 0}
 .affrow{display:flex;align-items:center;gap:8px;margin-top:10px}.affrow .ghost{margin:0;flex:1}
 .afftag{font-size:11px;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:1px 8px;white-space:nowrap}
+.photo{display:block;width:100%;height:140px;object-fit:cover;background:var(--jade-soft)}
+.gal{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;background:var(--jade-soft)}
+.gal::-webkit-scrollbar{display:none}
+.gal figure{flex:0 0 100%;margin:0;scroll-snap-align:start;position:relative}
+.gal img{display:block;width:100%;height:240px;object-fit:cover}
+.gal figcaption{position:absolute;left:8px;bottom:8px;right:8px;font-size:10px;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.8);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gcount{position:absolute;right:12px;bottom:12px;background:rgba(0,0,0,.55);color:#fff;font-size:12px;border-radius:999px;padding:2px 9px;pointer-events:none}
 .install{background:var(--card);border:1px dashed var(--jade);border-radius:14px;padding:12px 14px;margin-bottom:14px;font-size:14px}.install b{font-weight:500}.install .row{align-items:center;margin-top:8px}.install button{border:none;background:none;color:var(--muted);font-size:13px;padding:4px 0}.install .go{border:none;border-radius:10px;background:var(--jade);color:var(--on-jade);padding:8px 14px;font-weight:500;font-size:14px}
 .view{display:none}.view.on{display:block}
 .toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:10px 16px;border-radius:10px;font-size:14px;z-index:40;opacity:0;pointer-events:none;transition:opacity .2s}
@@ -359,6 +366,9 @@ function art(type,h){
   park:'<rect x="0" y="125" width="400" height="25" fill="#9DC08B"/><circle cx="110" cy="75" r="50" fill="none" stroke="#5A6F9A" stroke-width="6"/><g stroke="#5A6F9A" stroke-width="3"><line x1="110" y1="75" x2="110" y2="125"/><line x1="90" y1="125" x2="110" y2="75"/><line x1="130" y1="125" x2="110" y2="75"/></g><path d="M200 125 Q240 40 280 90 Q310 130 360 60 L360 125Z" fill="none" stroke="#D2463B" stroke-width="6"/><rect x="250" y="30" width="16" height="30" fill="#E0A93B"/><path d="M244 32 L258 16 L272 32Z" fill="#B23A2E"/>'}[type]||"";
  return `<svg viewBox="0 0 400 150" preserveAspectRatio="xMidYMid slice" role="img" aria-label="ภาพประกอบ" style="height:${h||140}px"><rect width="400" height="150" fill="${sky}"/>${g}</svg>`;
 }
+function pic(p,h){const im=(p.images||[])[0];return im?`<img class="photo" src="${esc(im)}" alt="${esc(p.th||p.name||"")}" loading="lazy" style="height:${h||140}px" onerror="this.outerHTML=''">`:art(p.art,h)}
+function gallery(p){const ims=p.images||[];if(!ims.length)return art(p.art,220);const cr=p.imageCredits||[];
+ return `<div class="gal" id="gal">${ims.map((u,i)=>`<figure><img src="${esc(u)}" alt="${esc(p.th)} รูปที่ ${i+1}" loading="${i?"lazy":"eager"}">${cr[i]?`<figcaption>📷 ${esc(cr[i])}</figcaption>`:""}</figure>`).join("")}</div>${ims.length>1?`<span class="gcount" id="gcount">1/${ims.length}</span>`:""}`}
 const statusBadge=s=>`<span class="status${s&&s.indexOf("⚠️")<0?" ok":""}">${esc(s||"⚠️ ข้อมูลเบื้องต้น")}</span>`;
 function scoreLine(p){
  const t=p.team?`<span><span class="star">★</span> <b>${Number(p.team).toFixed(1)}</b> ทีม</span>`:`<span>ทีมยังไม่ให้คะแนน</span>`;
@@ -542,6 +552,13 @@ async function scanTicket(file){
  set("tNo",t.no);set("tFrom",t.from);set("tFromCn",t.fromCn);set("tTo",t.to);set("tToCn",t.toCn);set("tDate",t.date);set("tDep",t.dep);set("tArr",t.arr);set("tSeat",t.seat);set("tGate",t.gate);set("tRef",t.ref);set("tNote",t.note);
  toast("อ่านตั๋วแล้ว ตรวจข้อมูลก่อนบันทึกนะ");
 }
+async function dlCity(c){
+ const urls=[...new Set(D.places.filter(p=>p.c===c).flatMap(p=>p.images||[]).concat((cityOf(c)||{}).image||[]))];
+ if(!urls.length)return;if(!navigator.onLine){toast("ต้องต่อเน็ตก่อนเก็บรูป");return}
+ let ok=0;toast(`กำลังเก็บรูป 0/${urls.length}`);
+ for(let i=0;i<urls.length;i+=4){await Promise.all(urls.slice(i,i+4).map(u=>fetch(u,{mode:"no-cors"}).then(()=>ok++).catch(()=>{})));toast(`กำลังเก็บรูป ${ok}/${urls.length}`)}
+ toast(`เก็บรูป${cityOf(c).th}ไว้ในเครื่องแล้ว ${ok} รูป`);
+}
 async function saveTicket(){
  const g=id=>$(id).value.trim(),from=g("tFrom"),to=g("tTo"),date=$("tDate").value;
  if(!from||!to||!date){$("tErr").textContent="กรอกต้นทาง ปลายทาง และวันที่ให้ครบ";return}
@@ -593,7 +610,7 @@ function renderHome(){renderHomeNext();renderChecklist();
  $("homeSeal").innerHTML=sealHtml(t.left);
  $("cityCount").textContent=D.cities.length+" เมือง";
  $("planBanner").innerHTML=isPremium()?`<span>✨ <b>${esc(planText())}</b></span><span></span>`:S.freeCity?`<span>เมืองฟรีของคุณ: <b>${esc(cityOf(S.freeCity).th)}</b></span><span>ปลดล็อกทุกเมือง ›</span>`:`<span>🎁 <b>เลือกได้ 1 เมือง</b> ใช้ฟรีไม่จำกัดเวลา</span><span>ดูแพ็กเกจ ›</span>`;
- $("cityList").innerHTML=D.cities.map(c=>{const n=D.places.filter(p=>p.c===c.id).length;return `<button class="city-card" data-city-go="${c.id}">${art(CITY_ART[c.id]||"city",120)}<div class="b"><div><h3>${esc(c.th)}<span class="cn">${esc(c.cn)}</span></h3><p>${esc(c.desc)}</p></div><span style="text-align:right">${lockBadge(c.id)}<br><span class="n">${n} ที่ ›</span></span></div></button>`}).join("");
+ $("cityList").innerHTML=D.cities.map(c=>{const n=D.places.filter(p=>p.c===c.id).length;return `<button class="city-card" data-city-go="${c.id}">${c.image?`<img class="photo" src="${esc(c.image)}" alt="${esc(c.th)}" loading="lazy" style="height:120px">`:art(CITY_ART[c.id]||"city",120)}<div class="b"><div><h3>${esc(c.th)}<span class="cn">${esc(c.cn)}</span></h3><p>${esc(c.desc)}</p></div><span style="text-align:right">${lockBadge(c.id)}<br><span class="n">${n} ที่ ›</span></span></div></button>`}).join("");
 }
 
 /* ---------- places ---------- */
@@ -608,8 +625,9 @@ function renderPlaces(){
  let list=D.places.filter(p=>p.c===city&&(ptype==="ทั้งหมด"||p.type===ptype)&&(!$("fFree").checked||p.free)&&(!$("fFav").checked||S.fav.includes(p.id)));
  const so=$("sort").value;
  list.sort(so==="name"?(a,b)=>a.th.localeCompare(b.th,"th"):so==="users"?(a,b)=>(b.uStars||0)-(a.uStars||0):(a,b)=>(b.team||0)-(a.team||0));
- $("found").innerHTML=`พบ ${list.length} ที่ `+lockBadge(city);
- $("placeList").innerHTML=list.length?list.map(p=>{const fv=S.fav.includes(p.id);const lk=!canUse(p.c);return `<article class="place${lk?" locked":""}"><button class="fav" data-fav="${p.id}" aria-pressed="${fv}" aria-label="${fv?"เอาออกจากที่อยากไป":"ใส่ในที่อยากไป"}">${fv?"♥":"♡"}</button><button class="open" data-open="${p.id}">${art(p.art)}<div class="b"><h3>${esc(p.th)}<span class="tag">${esc(p.type)}</span></h3><div class="cn">${esc(p.cn)}</div><div class="m">${esc(p.price)}</div>${scoreLine(p)}<div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap">${statusBadge(p.status)}${lk?'<span class="lockb">🔒 ดูรายละเอียด</span>':""}</div></div></button></article>`}).join(""):'<p class="empty">ไม่มีที่ตรงกับตัวกรอง ลองเอาตัวกรองออกบางอัน</p>';
+ const nImg=D.places.filter(p=>p.c===city).reduce((a,p)=>a+(p.images||[]).length,0);
+ $("found").innerHTML=`พบ ${list.length} ที่ `+lockBadge(city)+(nImg&&canUse(city)?` <button class="alink" data-dl-city="${city}" style="margin-left:6px">⬇️ เก็บรูป${esc(cityOf(city).th)}ไว้ใช้ออฟไลน์</button>`:"");
+ $("placeList").innerHTML=list.length?list.map(p=>{const fv=S.fav.includes(p.id);const lk=!canUse(p.c);return `<article class="place${lk?" locked":""}"><button class="fav" data-fav="${p.id}" aria-pressed="${fv}" aria-label="${fv?"เอาออกจากที่อยากไป":"ใส่ในที่อยากไป"}">${fv?"♥":"♡"}</button><button class="open" data-open="${p.id}">${pic(p)}<div class="b"><h3>${esc(p.th)}<span class="tag">${esc(p.type)}</span></h3><div class="cn">${esc(p.cn)}</div><div class="m">${esc(p.price)}</div>${scoreLine(p)}<div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap">${statusBadge(p.status)}${lk?'<span class="lockb">🔒 ดูรายละเอียด</span>':""}</div></div></button></article>`}).join(""):'<p class="empty">ไม่มีที่ตรงกับตัวกรอง ลองเอาตัวกรองออกบางอัน</p>';
 }
 
 /* ---------- detail ---------- */
@@ -618,7 +636,7 @@ function openDetail(id){
  const c=cityOf(p.c),my=S.myRate[p.id]||0,inPlan=S.plan.find(x=>x.pid===p.id),route=D.routes.find(r=>r.to===p.id);
  const opts=Array.from({length:S.trip.days},(_,i)=>`<option value="${i+1}"${inPlan&&inPlan.day===i+1?" selected":""}>วันที่ ${i+1}</option>`).join("");
  const amap="https://uri.amap.com/search?keyword="+encodeURIComponent(p.cn.split("/")[0].trim());
- $("detail").innerHTML=`<div class="hero">${art(p.art,220)}<button class="close" data-close aria-label="ปิด">‹</button><button class="fav" data-fav="${p.id}" aria-label="ที่อยากไป">${S.fav.includes(p.id)?"♥":"♡"}</button></div>
+ $("detail").innerHTML=`<div class="hero">${gallery(p)}<button class="close" data-close aria-label="ปิด">‹</button><button class="fav" data-fav="${p.id}" aria-label="ที่อยากไป">${S.fav.includes(p.id)?"♥":"♡"}</button></div>
  <div class="in"><h1 style="font-size:24px">${esc(p.th)}</h1><p style="margin:4px 0 8px;color:var(--muted)">${esc(p.en)} · ${esc(c?c.th:"")}</p>${statusBadge(p.status)}
  <div class="cnbox"><div><div style="font-size:12px;color:var(--muted)">ชื่อจีน</div><div class="big">${esc(p.cn)}</div></div><button class="small-btn" data-driver="${p.id}">โชว์คนขับ</button></div>
  <p style="margin:14px 0 0">${esc(p.desc)}</p>
@@ -634,6 +652,7 @@ function openDetail(id){
  <div class="acts"><a href="${amap}" target="_blank" rel="noopener">🧭 นำทางใน Amap (高德地图)</a>${route?`<button class="ghost" style="margin:0" data-route="${route.id}">วิธีไปที่นี่ · ${route.min} นาที</button>`:""}</div>
  </div>`;
  $("detail").hidden=false;$("detail").scrollTop=0;document.body.style.overflow="hidden";
+ const g=$("gal"),gc=$("gcount");if(g&&gc)g.addEventListener("scroll",()=>{gc.textContent=(Math.round(g.scrollLeft/g.clientWidth)+1)+"/"+(p.images||[]).length},{passive:true});
 }
 function closeDetail(){$("detail").hidden=true;document.body.style.overflow=""}
 function showDriver(id){const p=placeOf(id);$("driver").innerHTML=`<div class="ask">请带我去这里</div><div class="name">${esc(p.cn.split("/")[0].trim())}</div><div class="th">ช่วยพาไปที่นี่หน่อย · ${esc(p.th)}</div><button data-driver-close>ปิด</button>`;$("driver").hidden=false}
@@ -720,6 +739,7 @@ document.addEventListener("click",e=>{
  else if(d.seg){seg=d.seg;renderTrip()}
  else if(d.tkNew!==undefined){ticketForm(null)}
  else if(d.aff){openAff(d.aff,d.affCity||"")}
+ else if(d.dlCity){dlCity(d.dlCity)}
  else if(d.chk){S.checklist[d.chk]=!S.checklist[d.chk];save();renderChecklist()}
  else if(d.chkHide!==undefined){S.checklist._hide=true;save();renderChecklist()}
  else if(d.payInfo!==undefined){showPayInfo()}
@@ -763,8 +783,8 @@ async function syncData(){
  if(age<(D.cacheHours||24)*3600e3)return;
  try{const r=await fetch(API_URL+"?action=all");const j=await r.json();if(j.ok){S.cache={fetchedAt:Date.now(),payload:normalize(j)};D=S.cache.payload;save();renderAll()}}catch(e){}
 }
-function normalize(j){return{affiliates:j.affiliates||[],prices:j.prices||EMBED.prices,buyUrl:j.buyUrl||"",dataVersion:j.dataVersion,lastUpdated:j.lastUpdated,rate:j.rate||EMBED.rate,cacheHours:j.cacheHours,cities:j.cities.map(c=>({id:c.id,th:c.nameTh,en:c.nameEn,cn:c.nameCn,desc:c.desc,style:c.style,season:c.season,image:c.image})),
- places:j.places.map(p=>{const old=EMBED.places.find(x=>x.id===p.id);return{id:p.id,c:p.id.slice(0,2),th:p.nameTh,en:p.nameEn,cn:p.nameCn,type:p.type,price:p.price,free:p.free,booking:p.booking,desc:p.desc,status:p.status,note:p.note||"",hours:p.hours,team:p.teamStars,uStars:p.userStars,uCount:p.userCount,image:p.image,art:old?old.art:"city",station:p.station||"",stationCn:p.stationCn||"",line:p.line||"",lineColor:p.lineColor||"",exit:p.exit||"",walkMin:p.walkMin||0,access:p.access||""}}),
+function normalize(j){return{affiliates:j.affiliates||[],prices:j.prices||EMBED.prices,buyUrl:j.buyUrl||"",dataVersion:j.dataVersion,lastUpdated:j.lastUpdated,rate:j.rate||EMBED.rate,cacheHours:j.cacheHours,cities:j.cities.map(c=>({id:c.id,th:c.nameTh,en:c.nameEn,cn:c.nameCn,desc:c.desc,style:c.style,season:c.season,image:String(c.image||"").split("\n")[0]||""})),
+ places:j.places.map(p=>{const old=EMBED.places.find(x=>x.id===p.id);return{id:p.id,c:p.id.slice(0,2),th:p.nameTh,en:p.nameEn,cn:p.nameCn,type:p.type,price:p.price,free:p.free,booking:p.booking,desc:p.desc,status:p.status,note:p.note||"",hours:p.hours,team:p.teamStars,uStars:p.userStars,uCount:p.userCount,images:p.images||(p.image?String(p.image).split("\n").filter(Boolean):[]),imageCredits:p.imageCredits||[],art:old?old.art:"city",station:p.station||"",stationCn:p.stationCn||"",line:p.line||"",lineColor:p.lineColor||"",exit:p.exit||"",walkMin:p.walkMin||0,access:p.access||""}}),
  zones:(j.zones||[]).map(z=>({id:z.id,c:z.id.slice(0,2),name:z.name,cn:z.nameCn,station:z.station,stationCn:z.stationCn,line:z.line,lineColor:z.lineColor,goodFor:z.goodFor,desc:z.desc,status:z.status})),
  routes:j.routes.map(r=>({id:r.id,c:r.id.slice(0,2),from:r.from,to:r.toPlaceId,min:r.totalMin,cny:r.totalCny,status:r.status,steps:r.steps}))}}
 async function flushRatings(){
@@ -788,6 +808,7 @@ if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.se
   box.innerHTML='<b>📲 ติดตั้งเป็นแอป</b> ใช้ออฟไลน์ได้ตอนอยู่จีน<div class="row"><button id="instHide">ไม่ต้องแสดงอีก</button><button class="go" id="instGo">ติดตั้ง</button></div>';box.hidden=false;
   $("instHide").onclick=hide;$("instGo").onclick=async()=>{p.prompt();try{await p.userChoice}catch(e){}hide()}});
 })();
+
 
 
 

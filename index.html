@@ -210,6 +210,12 @@ nav button[aria-current="page"]{color:var(--jade);font-weight:500}
 .gal img{display:block;width:100%;height:240px;object-fit:cover}
 .gal figcaption{position:absolute;left:8px;bottom:8px;right:8px;font-size:10px;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.8);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .gcount{position:absolute;right:12px;bottom:12px;background:rgba(0,0,0,.55);color:#fff;font-size:12px;border-radius:999px;padding:2px 9px;pointer-events:none}
+.kind{display:grid;grid-template-columns:1fr 1fr;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:4px;margin-bottom:10px}
+.kind button{border:none;background:transparent;border-radius:9px;padding:9px;font-size:15px;color:var(--muted)}
+.kind button[aria-pressed="true"]{background:var(--jade);color:var(--on-jade);font-weight:500}
+.dish{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
+.dish:last-child{border-bottom:none}.dish .t{flex:1}.dish .t b{font-weight:500;display:block}.dish .t span{font-size:18px}
+.kbadge{display:inline-block;font-size:12px;border-radius:6px;padding:2px 8px;background:var(--jade-soft);color:var(--jade);margin-left:6px}
 .install{background:var(--card);border:1px dashed var(--jade);border-radius:14px;padding:12px 14px;margin-bottom:14px;font-size:14px}.install b{font-weight:500}.install .row{align-items:center;margin-top:8px}.install button{border:none;background:none;color:var(--muted);font-size:13px;padding:4px 0}.install .go{border:none;border-radius:10px;background:var(--jade);color:var(--on-jade);padding:8px 14px;font-weight:500;font-size:14px}
 .view{display:none}.view.on{display:block}
 .toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:10px 16px;border-radius:10px;font-size:14px;z-index:40;opacity:0;pointer-events:none;transition:opacity .2s}
@@ -240,6 +246,7 @@ nav button[aria-current="page"]{color:var(--jade);font-weight:500}
 
 <section class="view" id="v-places" aria-label="ที่เที่ยว">
  <div class="top"><div><h1 id="pTitle">ที่เที่ยว</h1><small id="pSub"></small></div></div>
+ <div class="kind" role="group" aria-label="ประเภท"><button data-pkind="sight" aria-pressed="true">📍 ที่เที่ยว</button><button data-pkind="food" aria-pressed="false">🍜 ร้านอาหาร</button></div>
  <div class="scroll" id="pCities" role="group" aria-label="เลือกเมือง"></div>
  <div class="scroll" id="pTypes" role="group" aria-label="เลือกประเภท" style="margin-top:8px"></div>
  <div class="filters"><label class="tog"><input type="checkbox" id="fFree"> เข้าฟรี</label><label class="tog"><input type="checkbox" id="fFav"> ที่อยากไป</label>
@@ -348,10 +355,11 @@ const cityOf=id=>D.cities.find(c=>c.id===id);
 const placeOf=id=>D.places.find(p=>p.id===id);
 const zoneOf=id=>(D.zones||[]).find(z=>z.id===id);
 const destName=id=>{const p=placeOf(id);if(p)return p.th;const z=zoneOf(id);return z?z.name:id};
+let pKind="sight";
 let tab="home",city="CD",ptype="ทั้งหมด",seg="budget",cat="food",rCity="CD",openRoute=null;
 
 function art(type,h){
- const sky={forest:"#CFE6D8",street:"#F2D6B3",mountain:"#D4E3EE",city:"#2D3A5C",train:"#E8DCCB",river:"#C9DCE6",garden:"#DDE8CF",temple:"#F3E3C8",wall:"#DCE6D2",shop:"#F1D9D4",park:"#D8E4F4",sea:"#CFE6F2"}[type]||"#DDE";
+ const sky={forest:"#CFE6D8",street:"#F2D6B3",mountain:"#D4E3EE",city:"#2D3A5C",train:"#E8DCCB",river:"#C9DCE6",garden:"#DDE8CF",temple:"#F3E3C8",wall:"#DCE6D2",shop:"#F1D9D4",park:"#D8E4F4",sea:"#CFE6F2",food:"#F6E3CF"}[type]||"#DDE";
  const g={
  forest:'<circle cx="310" cy="45" r="22" fill="#F6E7A8"/><path d="M0 150 L0 95 Q60 60 120 95 T240 90 T400 85 L400 150Z" fill="#6FA884"/><path d="M0 150 L0 115 Q80 90 160 118 T400 110 L400 150Z" fill="#3E7D5A"/><g fill="#2B5E43"><path d="M70 150 L90 85 L110 150Z"/><path d="M300 150 L322 78 L344 150Z"/><path d="M200 150 L215 100 L230 150Z"/></g>',
  street:'<rect x="0" y="120" width="400" height="30" fill="#B98A5E"/><g fill="#7A4B2E"><rect x="20" y="55" width="110" height="70"/><rect x="150" y="45" width="100" height="80"/><rect x="270" y="60" width="120" height="65"/></g><g fill="#4A2C1B"><path d="M10 58 L75 30 L140 58Z"/><path d="M140 48 L200 18 L260 48Z"/><path d="M260 63 L330 35 L400 63Z"/></g><g fill="#E0463A"><circle cx="55" cy="75" r="7"/><circle cx="100" cy="75" r="7"/><circle cx="180" cy="68" r="7"/><circle cx="225" cy="68" r="7"/><circle cx="310" cy="80" r="7"/><circle cx="355" cy="80" r="7"/></g>',
@@ -364,6 +372,7 @@ function art(type,h){
  wall:'<path d="M0 150 L0 100 Q100 70 200 95 T400 80 L400 150Z" fill="#7FA36B"/><path d="M0 110 L60 92 L120 100 L200 78 L260 88 L330 66 L400 74 L400 84 L330 76 L260 98 L200 88 L120 110 L60 102 L0 120Z" fill="#B3A58C"/><rect x="190" y="58" width="22" height="24" fill="#9A8C73"/><rect x="322" y="46" width="20" height="24" fill="#9A8C73"/><rect x="50" y="76" width="18" height="20" fill="#9A8C73"/>',
  shop:'<rect x="0" y="120" width="400" height="30" fill="#C9B8B3"/><g fill="#8E5A52"><rect x="20" y="40" width="80" height="80"/><rect x="115" y="25" width="90" height="95"/><rect x="220" y="50" width="70" height="70"/><rect x="305" y="35" width="80" height="85"/></g><g fill="#F3D39B"><rect x="30" y="95" width="60" height="25"/><rect x="125" y="95" width="70" height="25"/><rect x="230" y="95" width="50" height="25"/><rect x="315" y="95" width="60" height="25"/></g><g fill="#E0463A"><rect x="30" y="50" width="30" height="8"/><rect x="125" y="36" width="40" height="8"/><rect x="315" y="46" width="34" height="8"/></g>',
  sea:'<circle cx="320" cy="40" r="20" fill="#F6E7A8"/><rect x="0" y="80" width="400" height="45" fill="#5B9DC0"/><path d="M0 95 Q25 88 50 95 T100 95 T150 95 T200 95 T250 95 T300 95 T350 95 T400 95" fill="none" stroke="#DDEFF7" stroke-width="3"/><path d="M0 112 Q25 105 50 112 T100 112 T150 112 T200 112 T250 112 T300 112 T350 112 T400 112" fill="none" stroke="#DDEFF7" stroke-width="3"/><path d="M0 125 L400 125 L400 150 L0 150Z" fill="#EBD3A4"/><g fill="#C9483B"><path d="M40 80 L60 62 L80 80Z"/><path d="M85 80 L100 66 L115 80Z"/></g><g fill="#F0E6D8"><rect x="44" y="80" width="32" height="0"/></g><path d="M250 80 L250 60 L262 60 L262 80Z" fill="#7C6A55"/><path d="M180 100 L290 100" stroke="#8A7760" stroke-width="5"/><path d="M286 94 L300 94 L300 106 L286 106Z" fill="#B23A2E"/>',
+  food:'<rect x="0" y="118" width="400" height="32" fill="#C98F5A"/><ellipse cx="200" cy="112" rx="120" ry="16" fill="#8E4A2E"/><path d="M90 100 Q200 170 310 100Z" fill="#B23A2E"/><ellipse cx="200" cy="100" rx="110" ry="14" fill="#D8573F"/><g fill="#F3C54D"><circle cx="160" cy="96" r="7"/><circle cx="215" cy="98" r="6"/><circle cx="245" cy="94" r="5"/></g><g fill="#5E9B4F"><ellipse cx="185" cy="93" rx="9" ry="4"/><ellipse cx="232" cy="99" rx="8" ry="4"/></g><g stroke="#FFFFFF" stroke-width="3" fill="none" opacity=".7"><path d="M170 70 q-8 -12 0 -24"/><path d="M200 66 q-8 -12 0 -24"/><path d="M230 70 q-8 -12 0 -24"/></g><g stroke="#6B3B2A" stroke-width="5" stroke-linecap="round"><line x1="290" y1="40" x2="240" y2="96"/><line x1="305" y1="46" x2="252" y2="100"/></g>',
   park:'<rect x="0" y="125" width="400" height="25" fill="#9DC08B"/><circle cx="110" cy="75" r="50" fill="none" stroke="#5A6F9A" stroke-width="6"/><g stroke="#5A6F9A" stroke-width="3"><line x1="110" y1="75" x2="110" y2="125"/><line x1="90" y1="125" x2="110" y2="75"/><line x1="130" y1="125" x2="110" y2="75"/></g><path d="M200 125 Q240 40 280 90 Q310 130 360 60 L360 125Z" fill="none" stroke="#D2463B" stroke-width="6"/><rect x="250" y="30" width="16" height="30" fill="#E0A93B"/><path d="M244 32 L258 16 L272 32Z" fill="#B23A2E"/>'}[type]||"";
  return `<svg viewBox="0 0 400 150" preserveAspectRatio="xMidYMid slice" role="img" aria-label="ภาพประกอบ" style="height:${h||140}px"><rect width="400" height="150" fill="${sky}"/>${g}</svg>`;
 }
@@ -378,7 +387,7 @@ function scoreLine(p){
 }
 
 
-const TYPE_ICON={"สัตว์":"🐼","ธรรมชาติ":"⛰️","เมือง":"🌃","วัฒนธรรม":"🏮","ประวัติศาสตร์":"🏯","ช้อปปิ้ง":"🛍️","สวนสนุก":"🎡","ทะเล":"🏖️"};
+const TYPE_ICON={"สัตว์":"🐼","ธรรมชาติ":"⛰️","เมือง":"🌃","วัฒนธรรม":"🏮","ประวัติศาสตร์":"🏯","ช้อปปิ้ง":"🛍️","สวนสนุก":"🎡","ทะเล":"🏖️","ร้านอาหาร":"🍜"};
 const thOnly=t=>String(t||"").replace(/[\u3400-\u9fff（）()]+/g,"").trim();
 const clip=(t,n)=>t.length>n?t.slice(0,n-1)+"…":t;
 function trailMap(nodes,segs,title){
@@ -611,26 +620,31 @@ function renderHome(){renderHomeNext();renderChecklist();
  $("homeSeal").innerHTML=sealHtml(t.left);
  $("cityCount").textContent=D.cities.length+" เมือง";
  $("planBanner").innerHTML=isPremium()?`<span>✨ <b>${esc(planText())}</b></span><span></span>`:S.freeCity?`<span>เมืองฟรีของคุณ: <b>${esc(cityOf(S.freeCity).th)}</b></span><span>ปลดล็อกทุกเมือง ›</span>`:`<span>🎁 <b>เลือกได้ 1 เมือง</b> ใช้ฟรีไม่จำกัดเวลา</span><span>ดูแพ็กเกจ ›</span>`;
- $("cityList").innerHTML=D.cities.map(c=>{const n=D.places.filter(p=>p.c===c.id).length;return `<button class="city-card" data-city-go="${c.id}">${c.image?`<img class="photo" src="${esc(c.image)}" alt="${esc(c.th)}" loading="lazy" style="height:120px">`:art(CITY_ART[c.id]||"city",120)}<div class="b"><div><h3>${esc(c.th)}<span class="cn">${esc(c.cn)}</span></h3><p>${esc(c.desc)}</p></div><span style="text-align:right">${lockBadge(c.id)}<br><span class="n">${n} ที่ ›</span></span></div></button>`}).join("");
+ $("cityList").innerHTML=D.cities.map(c=>{const n=D.places.filter(p=>p.c===c.id&&!isFood(p)).length,nf=D.places.filter(p=>p.c===c.id&&isFood(p)).length;return `<button class="city-card" data-city-go="${c.id}">${c.image?`<img class="photo" src="${esc(c.image)}" alt="${esc(c.th)}" loading="lazy" style="height:120px">`:art(CITY_ART[c.id]||"city",120)}<div class="b"><div><h3>${esc(c.th)}<span class="cn">${esc(c.cn)}</span></h3><p>${esc(c.desc)}</p></div><span style="text-align:right">${lockBadge(c.id)}<br><span class="n">${n} ที่ · ${nf} ร้าน ›</span></span></div></button>`}).join("");
 }
 
 /* ---------- places ---------- */
+const isFood=p=>p.type==="ร้านอาหาร";
 function renderPlaces(){
- const c=cityOf(city);
- $("pTitle").textContent="ที่เที่ยว"+(c?" "+c.th:"");
+ const c=cityOf(city),food=pKind==="food";
+ document.querySelectorAll("[data-pkind]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.pkind===pKind));
+ $("pTitle").textContent=(food?"ร้านอาหาร":"ที่เที่ยว")+(c?" "+c.th:"");
  $("pSub").textContent=c?c.style+" · เหมาะช่วง"+c.season:"";
  $("pCities").innerHTML=D.cities.map(x=>`<button class="chip" data-pcity="${x.id}" aria-pressed="${x.id===city}">${esc(x.th)}</button>`).join("");
- const types=["ทั้งหมด",...new Set(D.places.filter(p=>p.c===city).map(p=>p.type))];
+ const inCity=D.places.filter(p=>p.c===city&&isFood(p)===food);
+ const key=p=>food?(p.cuisine||"อื่น ๆ"):p.type;
+ const types=["ทั้งหมด",...new Set(inCity.map(key))];
  if(!types.includes(ptype))ptype="ทั้งหมด";
- $("pTypes").innerHTML=types.map(x=>`<button class="chip" data-ptype="${x}" aria-pressed="${x===ptype}">${x}</button>`).join("");
- let list=D.places.filter(p=>p.c===city&&(ptype==="ทั้งหมด"||p.type===ptype)&&(!$("fFree").checked||p.free)&&(!$("fFav").checked||S.fav.includes(p.id)));
+ $("pTypes").innerHTML=types.map(x=>`<button class="chip" data-ptype="${esc(x)}" aria-pressed="${x===ptype}">${esc(x)}</button>`).join("");
+ $("fFree").parentElement.style.display=food?"none":"";
+ let list=inCity.filter(p=>(ptype==="ทั้งหมด"||key(p)===ptype)&&(food||!$("fFree").checked||p.free)&&(!$("fFav").checked||S.fav.includes(p.id)));
  const so=$("sort").value;
  list.sort(so==="name"?(a,b)=>a.th.localeCompare(b.th,"th"):so==="users"?(a,b)=>(b.uStars||0)-(a.uStars||0):(a,b)=>(b.team||0)-(a.team||0));
  const nImg=D.places.filter(p=>p.c===city).reduce((a,p)=>a+(p.images||[]).length,0);
- $("found").innerHTML=`พบ ${list.length} ที่ `+lockBadge(city)+(nImg&&canUse(city)?` <button class="alink" data-dl-city="${city}" style="margin-left:6px">⬇️ เก็บรูป${esc(cityOf(city).th)}ไว้ใช้ออฟไลน์</button>`:"");
- $("placeList").innerHTML=list.length?list.map(p=>{const fv=S.fav.includes(p.id);const lk=!canUse(p.c);return `<article class="place${lk?" locked":""}"><button class="fav" data-fav="${p.id}" aria-pressed="${fv}" aria-label="${fv?"เอาออกจากที่อยากไป":"ใส่ในที่อยากไป"}">${fv?"♥":"♡"}</button><button class="open" data-open="${p.id}">${pic(p)}<div class="b"><h3>${esc(p.th)}<span class="tag">${esc(p.type)}</span></h3><div class="cn">${esc(p.cn)}</div><div class="m">${esc(p.price)}</div>${scoreLine(p)}<div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap">${statusBadge(p.status)}${lk?'<span class="lockb">🔒 ดูรายละเอียด</span>':""}</div></div></button></article>`}).join(""):'<p class="empty">ไม่มีที่ตรงกับตัวกรอง ลองเอาตัวกรองออกบางอัน</p>';
+ $("found").innerHTML=`พบ ${list.length} ${food?"ร้าน":"ที่"} `+lockBadge(city)+(nImg&&canUse(city)?` <button class="alink" data-dl-city="${city}" style="margin-left:6px">⬇️ เก็บรูป${esc(cityOf(city).th)}ไว้ใช้ออฟไลน์</button>`:"");
+ $("placeList").innerHTML=list.length?list.map(p=>{const fv=S.fav.includes(p.id),lk=!canUse(p.c);
+  return `<article class="place${lk?" locked":""}"><button class="fav" data-fav="${p.id}" aria-pressed="${fv}" aria-label="${fv?"เอาออกจากที่อยากไป":"ใส่ในที่อยากไป"}">${fv?"♥":"♡"}</button><button class="open" data-open="${p.id}">${pic(p)}<div class="b"><h3>${esc(p.th)}<span class="tag">${esc(food?(p.cuisine||"ร้านอาหาร"):p.type)}</span></h3><div class="cn">${esc(p.cn)}</div><div class="m">${food?"💴 ":""}${esc(p.price)}${food&&p.shopKind?`<span class="kbadge">${esc(p.shopKind)}</span>`:""}</div>${food&&(p.dishes||[]).length?`<div class="m" style="margin-top:-4px">เมนูเด็ด: ${esc(p.dishes.map(d=>d.th).join(" · "))}</div>`:""}${scoreLine(p)}<div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap">${statusBadge(p.status)}${lk?'<span class="lockb">🔒 ดูรายละเอียด</span>':""}</div></div></button></article>`}).join(""):`<p class="empty">${food?"ยังไม่มีร้านในหมวดนี้":"ไม่มีที่ตรงกับตัวกรอง ลองเอาตัวกรองออกบางอัน"}</p>`;
 }
-
 /* ---------- detail ---------- */
 function openDetail(id){
  const p=placeOf(id);if(!p)return;
@@ -641,7 +655,8 @@ function openDetail(id){
  <div class="in"><h1 style="font-size:24px">${esc(p.th)}</h1><p style="margin:4px 0 8px;color:var(--muted)">${esc(p.en)} · ${esc(c?c.th:"")}</p>${statusBadge(p.status)}
  <div class="cnbox"><div><div style="font-size:12px;color:var(--muted)">ชื่อจีน</div><div class="big">${esc(p.cn)}</div></div><button class="small-btn" data-driver="${p.id}">โชว์คนขับ</button></div>
  <p style="margin:14px 0 0">${esc(p.desc)}</p>
- <div class="info"><div><span>ค่าเข้า</span><span>${esc(p.price)}</span></div><div><span>การจอง</span><span>${esc(p.booking)}</span></div><div><span>เวลาเปิด</span><span>${esc(p.hours||"ยังไม่มีข้อมูล")}</span></div>${p.note?`<div><span>หมายเหตุ</span><span>${esc(p.note)}</span></div>`:""}</div>${/จอง/.test(p.booking||"")&&!/ไม่จำเป็น/.test(p.booking||"")?affBtn("place_booking",p.c,true):""}
+ <div class="info">${isFood(p)?`<div><span>ราคาต่อคน</span><span>${esc(p.price)}</span></div><div><span>แนวอาหาร</span><span>${esc(p.cuisine||"-")}</span></div><div><span>ประเภทร้าน</span><span>${esc(p.shopKind||"-")}</span></div>`:`<div><span>ค่าเข้า</span><span>${esc(p.price)}</span></div>`}<div><span>การจอง</span><span>${esc(p.booking)}</span></div><div><span>เวลาเปิด</span><span>${esc(p.hours||"ยังไม่มีข้อมูล")}</span></div>${p.note?`<div><span>หมายเหตุ</span><span>${esc(p.note)}</span></div>`:""}</div>${/จอง/.test(p.booking||"")&&!/ไม่จำเป็น/.test(p.booking||"")?affBtn("place_booking",p.c,true):""}
+ ${isFood(p)&&(p.dishes||[]).length?`<div class="sec-h"><h2>เมนูเด็ด</h2><span>กดชี้สั่งได้</span></div><div class="card" style="margin-top:0;padding-top:4px;padding-bottom:4px">${p.dishes.map((d,i)=>`<div class="dish"><div class="t"><b>${esc(d.th)}</b><span>${esc(d.cn)}</span></div><button class="small-btn" data-dish="${p.id}" data-i="${i}">👉 ชี้สั่ง</button></div>`).join("")}</div>`:""}
  <div class="sec-h"><h2>วิธีไปถึง</h2></div><div class="getthere">${p.station||p.access?accessTrail(p):""}
  ${p.station?`<p><span class="ln" style="display:inline-block;color:#fff;font-size:12px;font-weight:500;border-radius:6px;padding:2px 8px;margin-right:6px;background:${esc(p.lineColor||"#555")}">${esc(p.line)}</span>ลงสถานี<b>${esc(p.station)}</b> ${esc(p.stationCn)}${p.exit?" ทางออก "+esc(p.exit):""}${p.walkMin?` แล้วเดินต่อ ${p.walkMin} นาที`:""}</p>`:""}
  ${p.access?`<p class="muted">${esc(p.access)}</p>`:""}${!p.station&&!p.access?'<p class="muted">ยังไม่มีข้อมูลการเดินทาง ใช้ปุ่มเปิดใน Amap ด้านล่างได้เลย</p>':""}</div>
@@ -715,7 +730,7 @@ function toast(m){const t=$("toast");t.textContent=m;t.classList.add("on");clear
 document.addEventListener("click",e=>{
  const b=e.target.closest("button");if(!b)return;const d=b.dataset;
  if(d.tab){closeDetail();if(d.tab==="routes"){openRoute=null;renderRoutes()}go(d.tab)}
- else if(d.cityGo){city=d.cityGo;rCity=d.cityGo;ptype="ทั้งหมด";renderPlaces();go("places")}
+ else if(d.cityGo){city=d.cityGo;rCity=d.cityGo;ptype="ทั้งหมด";pKind="sight";renderPlaces();go("places")}
  else if(b.id==="homeTicket"){seg="budget";renderTrip();go("trip")}
  else if(d.pcity){city=d.pcity;ptype="ทั้งหมด";renderPlaces()}
  else if(d.ptype){ptype=d.ptype;renderPlaces()}
@@ -741,6 +756,8 @@ document.addEventListener("click",e=>{
  else if(d.tkNew!==undefined){ticketForm(null)}
  else if(d.aff){openAff(d.aff,d.affCity||"")}
  else if(d.dlCity){dlCity(d.dlCity)}
+ else if(d.pkind){pKind=d.pkind;ptype="ทั้งหมด";renderPlaces();window.scrollTo(0,0)}
+ else if(d.dish){const p=placeOf(d.dish),x=p&&p.dishes[+d.i];if(x){$("driver").innerHTML=`<div class="ask">我想点这个 · 请给我这个</div><div class="name">${esc(x.cn)}</div><div class="th">ขออันนี้ครับ/ค่ะ · ${esc(x.th)}</div><button data-driver-close>ปิด</button>`;$("driver").hidden=false}}
  else if(d.chk){S.checklist[d.chk]=!S.checklist[d.chk];save();renderChecklist()}
  else if(d.chkHide!==undefined){S.checklist._hide=true;save();renderChecklist()}
  else if(d.payInfo!==undefined){showPayInfo()}
@@ -797,7 +814,7 @@ async function syncData(force){
  return false;
 }
 function normalize(j){return{dataStamp:Number(j.dataStamp||0),affiliates:j.affiliates||[],prices:j.prices||EMBED.prices,buyUrl:j.buyUrl||"",dataVersion:j.dataVersion,lastUpdated:j.lastUpdated,rate:j.rate||EMBED.rate,cacheHours:j.cacheHours,cities:j.cities.map(c=>({id:c.id,th:c.nameTh,en:c.nameEn,cn:c.nameCn,desc:c.desc,style:c.style,season:c.season,image:String(c.image||"").split("\n")[0]||""})),
- places:j.places.map(p=>{const old=EMBED.places.find(x=>x.id===p.id);return{id:p.id,c:p.id.slice(0,2),th:p.nameTh,en:p.nameEn,cn:p.nameCn,type:p.type,price:p.price,free:p.free,booking:p.booking,desc:p.desc,status:p.status,note:p.note||"",hours:p.hours,team:p.teamStars,uStars:p.userStars,uCount:p.userCount,images:p.images||(p.image?String(p.image).split("\n").filter(Boolean):[]),imageCredits:p.imageCredits||[],art:old?old.art:"city",station:p.station||"",stationCn:p.stationCn||"",line:p.line||"",lineColor:p.lineColor||"",exit:p.exit||"",walkMin:p.walkMin||0,access:p.access||""}}),
+ places:j.places.map(p=>{const old=EMBED.places.find(x=>x.id===p.id);return{id:p.id,c:p.id.slice(0,2),th:p.nameTh,en:p.nameEn,cn:p.nameCn,type:p.type,price:p.price,free:p.free,booking:p.booking,desc:p.desc,status:p.status,note:p.note||"",hours:p.hours,team:p.teamStars,uStars:p.userStars,uCount:p.userCount,images:p.images||(p.image?String(p.image).split("\n").filter(Boolean):[]),imageCredits:p.imageCredits||[],art:old?old.art:"city",station:p.station||"",stationCn:p.stationCn||"",line:p.line||"",lineColor:p.lineColor||"",exit:p.exit||"",walkMin:p.walkMin||0,access:p.access||"",cuisine:p.cuisine||"",shopKind:p.shopKind||"",dishes:p.dishes||[]}}),
  zones:(j.zones||[]).map(z=>({id:z.id,c:z.id.slice(0,2),name:z.name,cn:z.nameCn,station:z.station,stationCn:z.stationCn,line:z.line,lineColor:z.lineColor,goodFor:z.goodFor,desc:z.desc,status:z.status})),
  routes:j.routes.map(r=>({id:r.id,c:r.id.slice(0,2),from:r.from,to:r.toPlaceId,min:r.totalMin,cny:r.totalCny,status:r.status,steps:r.steps}))}}
 async function flushRatings(){
@@ -822,6 +839,7 @@ if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.se
   box.innerHTML='<b>📲 ติดตั้งเป็นแอป</b> ใช้ออฟไลน์ได้ตอนอยู่จีน<div class="row"><button id="instHide">ไม่ต้องแสดงอีก</button><button class="go" id="instGo">ติดตั้ง</button></div>';box.hidden=false;
   $("instHide").onclick=hide;$("instGo").onclick=async()=>{p.prompt();try{await p.userChoice}catch(e){}hide()}});
 })();
+
 
 
 

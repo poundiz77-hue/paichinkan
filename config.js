@@ -4,5 +4,5 @@
  * ถ้าเว้นว่าง แอปจะใช้ข้อมูลที่ฝังในตัวแอป และใช้รหัสทดสอบ DEMO-LIFE / DEMO-PASS / DEMO-WEEK ได้
  */
 window.APP_CONFIG = {
-  API_URL: "https://script.google.com/macros/s/AKfycbyXgNCsgVDRJ_SohynZ8vzRSNMDDGDj-gxzhRl-R4--IhjekZ4VqwQqhkN0jOePJT3U/exec"
+  API_URL: "https://script.google.com/macros/s/AKfycbySY4f0y9ybwbMl8G_DFs0sxR3qQF1FT6vpCS-qcnbsihBOkzCbr09DWL4dEvqqAWcN/exec"
 };

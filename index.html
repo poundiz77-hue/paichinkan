@@ -234,6 +234,9 @@ nav button[aria-current="page"]{color:var(--jade);font-weight:500}
 .ta .tabar{display:flex;justify-content:space-between;align-items:center;margin-top:8px;font-size:13px}
 .ta .tabar a{color:var(--jade);font-weight:500;text-decoration:none}
 .tabadge{display:inline-block;font-size:11px;font-weight:600;color:#00AA6C;border:1px solid #00AA6C;border-radius:999px;padding:1px 8px;margin-left:6px}
+.tacredit{position:absolute;right:12px;bottom:12px;background:rgba(0,0,0,.6);color:#fff;font-size:11px;font-weight:600;border-radius:999px;padding:3px 10px;text-decoration:none;z-index:2}
+.heroload{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);background:rgba(0,0,0,.55);color:#fff;font-size:12px;border-radius:999px;padding:4px 12px}
+.detail .hero .gcount{right:auto;left:50%;bottom:auto;top:18px;transform:translateX(-50%)}
 .install{background:var(--card);border:1px dashed var(--jade);border-radius:14px;padding:12px 14px;margin-bottom:14px;font-size:14px}.install b{font-weight:500}.install .row{align-items:center;margin-top:8px}.install button{border:none;background:none;color:var(--muted);font-size:13px;padding:4px 0}.install .go{border:none;border-radius:10px;background:var(--jade);color:var(--on-jade);padding:8px 14px;font-weight:500;font-size:14px}
 .view{display:none}.view.on{display:block}
 .toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:10px 16px;border-radius:10px;font-size:14px;z-index:40;opacity:0;pointer-events:none;transition:opacity .2s}
@@ -362,6 +365,7 @@ const CATS=[{k:"food",n:"อาหาร",i:"🍜"},{k:"stay",n:"ที่พั
 const MODE={"เดิน":"🚶","รถไฟใต้ดิน":"🚇","รถบัส":"🚌","แท็กซี่":"🚕","รถไฟความเร็วสูง":"🚄","เปลี่ยนสาย":"🔁","กระเช้า":"🚡","เรือ":"⛴️"};
 const CITY_ART={BJ:"wall",SH:"city",CD:"forest",CQ:"river",ZJ:"mountain",QD:"sea",WH:"temple"};
 
+const TA_MEM={};
 let S;
 try{S=JSON.parse(localStorage.getItem("chinaTrip2"))}catch(e){S=null}
 if(!S||!S.trip)S={trip:{name:"ทริปเฉิงตู–ฉงชิ่ง",budget:20000,days:5,rateOverride:null},expenses:[],plan:[],fav:[],myRate:{},pending:[],deviceId:null,cache:null};
@@ -395,7 +399,7 @@ function art(type,h){
   park:'<rect x="0" y="125" width="400" height="25" fill="#9DC08B"/><circle cx="110" cy="75" r="50" fill="none" stroke="#5A6F9A" stroke-width="6"/><g stroke="#5A6F9A" stroke-width="3"><line x1="110" y1="75" x2="110" y2="125"/><line x1="90" y1="125" x2="110" y2="75"/><line x1="130" y1="125" x2="110" y2="75"/></g><path d="M200 125 Q240 40 280 90 Q310 130 360 60 L360 125Z" fill="none" stroke="#D2463B" stroke-width="6"/><rect x="250" y="30" width="16" height="30" fill="#E0A93B"/><path d="M244 32 L258 16 L272 32Z" fill="#B23A2E"/>'}[type]||"";
  return `<svg viewBox="0 0 400 150" preserveAspectRatio="xMidYMid slice" role="img" aria-label="ภาพประกอบ" style="height:${h||140}px"><rect width="400" height="150" fill="${sky}"/>${g}</svg>`;
 }
-function pic(p,h){const im=(p.images||[])[0];return im?`<img class="photo" src="${esc(im)}" alt="${esc(p.th||p.name||"")}" loading="lazy" style="height:${h||140}px" onerror="this.outerHTML=''">`:art(p.art,h)}
+function pic(p,h){const ta=TA_MEM[p.id]&&TA_MEM[p.id].photos&&TA_MEM[p.id].photos[0];if(ta)return `<img class="photo" src="${esc(ta.url)}" alt="${esc(p.th)}" loading="lazy" referrerpolicy="no-referrer" style="height:${h||140}px">`;const im=(p.images||[])[0];return im?`<img class="photo" src="${esc(im)}" alt="${esc(p.th||p.name||"")}" loading="lazy" style="height:${h||140}px" onerror="this.outerHTML=''">`:art(p.art,h)}
 function gallery(p){const ims=p.images||[];if(!ims.length)return art(p.art,220);const cr=p.imageCredits||[];
  return `<div class="gal" id="gal">${ims.map((u,i)=>`<figure data-pv="${esc(p.id)}" data-i="${i}"><img src="${esc(u)}" alt="${esc(p.th)} รูปที่ ${i+1}" loading="${i?"lazy":"eager"}">${cr[i]?`<figcaption>📷 ${esc(cr[i])}</figcaption>`:""}</figure>`).join("")}</div>${ims.length>1?`<span class="gcount" id="gcount">1/${ims.length}</span>`:""}`}
 const statusBadge=s=>`<span class="status${s&&s.indexOf("⚠️")<0?" ok":""}">${esc(s||"⚠️ ข้อมูลเบื้องต้น")}</span>`;
@@ -670,13 +674,13 @@ function openDetail(id){
  const c=cityOf(p.c),my=S.myRate[p.id]||0,inPlan=S.plan.find(x=>x.pid===p.id),route=D.routes.find(r=>r.to===p.id);
  const opts=Array.from({length:S.trip.days},(_,i)=>`<option value="${i+1}"${inPlan&&inPlan.day===i+1?" selected":""}>วันที่ ${i+1}</option>`).join("");
  const amap="https://uri.amap.com/search?keyword="+encodeURIComponent(p.cn.split("/")[0].trim());
- $("detail").innerHTML=`<div class="hero">${gallery(p)}<button class="close" data-close aria-label="ปิด">‹</button><button class="fav" data-fav="${p.id}" aria-label="ที่อยากไป">${S.fav.includes(p.id)?"♥":"♡"}</button></div>
+ $("detail").innerHTML=`<div class="hero"><div id="heroMedia">${gallery(p)}</div><button class="close" data-close aria-label="ปิด">‹</button><button class="fav" data-fav="${p.id}" aria-label="ที่อยากไป">${S.fav.includes(p.id)?"♥":"♡"}</button></div>
  <div class="in"><h1 style="font-size:24px">${esc(p.th)}</h1><p style="margin:4px 0 8px;color:var(--muted)">${esc(p.en)} · ${esc(c?c.th:"")}</p>${statusBadge(p.status)}
  <div class="cnbox"><div><div style="font-size:12px;color:var(--muted)">ชื่อจีน</div><div class="big">${esc(p.cn)}</div></div><button class="small-btn" data-driver="${p.id}">โชว์คนขับ</button></div>
  <p style="margin:14px 0 0">${esc(p.desc)}</p>
  <div class="info">${isFood(p)?`<div><span>ราคาต่อคน</span><span>${esc(p.price)}</span></div><div><span>แนวอาหาร</span><span>${esc(p.cuisine||"-")}</span></div><div><span>ประเภทร้าน</span><span>${esc(p.shopKind||"-")}</span></div>`:`<div><span>ค่าเข้า</span><span>${esc(p.price)}</span></div>`}<div><span>การจอง</span><span>${esc(p.booking)}</span></div><div><span>เวลาเปิด</span><span>${esc(p.hours||"ยังไม่มีข้อมูล")}</span></div>${p.note?`<div><span>หมายเหตุ</span><span>${esc(p.note)}</span></div>`:""}</div>${/จอง/.test(p.booking||"")&&!/ไม่จำเป็น/.test(p.booking||"")?affBtn("place_booking",p.c,true):""}
  ${isFood(p)&&(p.dishes||[]).length?`<div class="sec-h"><h2>เมนูเด็ด</h2><span>กดชี้สั่งได้</span></div><div class="card" style="margin-top:0;padding-top:4px;padding-bottom:4px">${p.dishes.map((d,i)=>`<div class="dish"><div class="t"><b>${esc(d.th)}</b><span>${esc(d.cn)}</span></div><button class="small-btn" data-dish="${p.id}" data-i="${i}">👉 ชี้สั่ง</button></div>`).join("")}</div>`:""}
- ${p.taId?`<div class="ta" id="taBox"><div class="sec-h" style="margin-top:22px"><h2>รูปจากนักท่องเที่ยว<span class="tabadge">Tripadvisor</span></h2></div><button class="ghost" style="margin:0" data-ta="${p.id}">📷 ดูรูปจากนักท่องเที่ยว</button></div>`:""}
+ ${p.taId?(isPremium()?`<div class="ta" id="taBox"></div>`:`<div class="ta" id="taBox"><button class="ghost" style="margin:14px 0 0" data-ta="${p.id}">📷 ปลดล็อกเพื่อดูรูปร้านจริงจาก Tripadvisor</button></div>`):""}
  <div class="sec-h"><h2>วิธีไปถึง</h2></div><div class="getthere">${p.station||p.access?accessTrail(p):""}
  ${p.station?`<p><span class="ln" style="display:inline-block;color:#fff;font-size:12px;font-weight:500;border-radius:6px;padding:2px 8px;margin-right:6px;background:${esc(p.lineColor||"#555")}">${esc(p.line)}</span>ลงสถานี<b>${esc(p.station)}</b> ${esc(p.stationCn)}${p.exit?" ทางออก "+esc(p.exit):""}${p.walkMin?` แล้วเดินต่อ ${p.walkMin} นาที`:""}</p>`:""}
  ${p.access?`<p class="muted">${esc(p.access)}</p>`:""}${!p.station&&!p.access?'<p class="muted">ยังไม่มีข้อมูลการเดินทาง ใช้ปุ่มเปิดใน Amap ด้านล่างได้เลย</p>':""}</div>
@@ -688,7 +692,7 @@ function openDetail(id){
  <div class="acts"><a href="${amap}" target="_blank" rel="noopener">🧭 นำทางใน Amap (高德地图)</a><a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(p.cn.split("/")[0].trim()+" "+(cityOf(p.c)?cityOf(p.c).cn:""))}" target="_blank" rel="noopener">📷 ดูรูปจริงและรีวิวใน Google Maps</a>${route?`<button class="ghost" style="margin:0" data-route="${route.id}">วิธีไปที่นี่ · ${route.min} นาที</button>`:""}</div>
  </div>`;
  $("detail").hidden=false;$("detail").scrollTop=0;document.body.style.overflow="hidden";
- if(TA_MEM[p.id])taRender(p,TA_MEM[p.id]);
+ if(p.taId&&isPremium())autoTA(p);
  const g=$("gal"),gc=$("gcount");if(g&&gc)g.addEventListener("scroll",()=>{gc.textContent=(Math.round(g.scrollLeft/g.clientWidth)+1)+"/"+(p.images||[]).length},{passive:true});
 }
 
@@ -703,7 +707,6 @@ function openPhotos(id,start){
 }
 
 /* ---------- รูปจาก Tripadvisor (ไม่เก็บลงเครื่อง จำไว้เฉพาะตอนเปิดแอป) ---------- */
-const TA_MEM={};
 function taRender(p,r){
  const box=$("taBox");if(!box)return;
  const head=`<div class="sec-h" style="margin-top:22px"><h2>รูปจากนักท่องเที่ยว<span class="tabadge">Tripadvisor</span></h2></div>`;
@@ -714,6 +717,7 @@ function taRender(p,r){
 async function loadTA(id){
  const p=placeOf(id);if(!p)return;
  if(!isPremium()){closeDetail();pendingGate={c:null,cb:()=>openDetail(id)};showPlans(null);return}
+ return autoTA(p);
  if(TA_MEM[id]){taRender(p,TA_MEM[id]);return}
  const box=$("taBox");
  if(!API_URL){box.querySelector("button").outerHTML='<p class="note">โหมดตัวอย่าง: ต้นแบบนี้ยังไม่ได้ต่อ Tripadvisor จริง พอขึ้นเว็บและต่อหลังบ้านแล้ว รูปจากนักท่องเที่ยวจะแสดงตรงนี้</p>';return}
@@ -723,6 +727,26 @@ async function loadTA(id){
   if(!j.ok){if(btn){btn.disabled=false;btn.textContent="📷 ดูรูปจากนักท่องเที่ยว"}const g="https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(p.cn.split("/")[0].trim());box.insertAdjacentHTML("beforeend",`<p class="note">${esc(j.error||"โหลดไม่สำเร็จ")}${j.limit?` · <a href="${g}" target="_blank" rel="noopener">เปิด Google Maps</a>`:""}</p>`);return}
   TA_MEM[id]=j;taRender(p,j);
  }catch(e){if(btn){btn.disabled=false;btn.textContent="📷 ดูรูปจากนักท่องเที่ยว"}toast("โหลดรูปไม่สำเร็จ ลองใหม่อีกครั้ง")}
+}
+
+function heroTA(p,r){
+ const m=$("heroMedia");if(!m||!r.photos.length)return;
+ const n=r.photos.length;
+ m.innerHTML=`<div class="gal" id="gal">${r.photos.map((x,i)=>`<figure data-tapv="${esc(p.id)}" data-i="${i}"><img src="${esc(x.url)}" alt="${esc(p.th)} รูปที่ ${i+1}" referrerpolicy="no-referrer"${i?' loading="lazy"':''}><figcaption>📷 ${x.source==="Management"?"รูปจากร้าน":"โดย "+esc(x.user||"นักท่องเที่ยว")}</figcaption></figure>`).join("")}</div>${n>1?`<span class="gcount" id="gcount">1/${n}</span>`:""}<a class="tacredit" href="${esc(r.taUrl)}" target="_blank" rel="noopener">Tripadvisor ›</a>`;
+ const g=$("gal"),gc=$("gcount");if(g&&gc)g.addEventListener("scroll",()=>{gc.textContent=(Math.round(g.scrollLeft/g.clientWidth)+1)+"/"+n},{passive:true});
+ const box=$("taBox");if(box)box.innerHTML=`<div class="tabar" style="margin-top:12px"><span style="color:var(--muted)">รูปปกจาก Tripadvisor</span><a href="${esc(r.taUrl)}" target="_blank" rel="noopener">ดูรูปและรีวิวทั้งหมดบน Tripadvisor ›</a></div>`;
+}
+async function autoTA(p){
+ if(TA_MEM[p.id]){heroTA(p,TA_MEM[p.id]);return}
+ if(!API_URL||!navigator.onLine)return;
+ const m=$("heroMedia");if(m)m.insertAdjacentHTML("beforeend",'<span class="heroload" id="heroLoad">กำลังโหลดรูปร้าน…</span>');
+ try{
+  const r=await fetch(API_URL,{method:"POST",headers:{"Content-Type":"text/plain"},body:JSON.stringify({action:"taPhotos",placeId:p.id,code:S.unlock&&S.unlock.code,deviceId:S.deviceId})});const j=await r.json();
+  const l=$("heroLoad");if(l)l.remove();
+  if($("detail").hidden||!$("heroMedia"))return;
+  if(j.ok){TA_MEM[p.id]=j;heroTA(p,j);renderPlaces()}
+  else if(j.limit){const box=$("taBox");if(box)box.innerHTML=`<p class="note" style="margin-top:12px">${esc(j.error)}</p>`}
+ }catch(e){const l=$("heroLoad");if(l)l.remove()}
 }
 function openTAPhotos(id,start){
  const r=TA_MEM[id],p=placeOf(id);if(!r)return;const n=r.photos.length;
@@ -902,6 +926,8 @@ if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.se
   box.innerHTML='<b>📲 ติดตั้งเป็นแอป</b> ใช้ออฟไลน์ได้ตอนอยู่จีน<div class="row"><button id="instHide">ไม่ต้องแสดงอีก</button><button class="go" id="instGo">ติดตั้ง</button></div>';box.hidden=false;
   $("instHide").onclick=hide;$("instGo").onclick=async()=>{p.prompt();try{await p.userChoice}catch(e){}hide()}});
 })();
+
+
 
 
 

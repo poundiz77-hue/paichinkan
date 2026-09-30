@@ -216,6 +216,17 @@ nav button[aria-current="page"]{color:var(--jade);font-weight:500}
 .dish{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
 .dish:last-child{border-bottom:none}.dish .t{flex:1}.dish .t b{font-weight:500;display:block}.dish .t span{font-size:18px}
 .kbadge{display:inline-block;font-size:12px;border-radius:6px;padding:2px 8px;background:var(--jade-soft);color:var(--jade);margin-left:6px}
+.detail .hero{max-width:460px;margin:0 auto}
+.gal figure{cursor:zoom-in}
+.gal img{height:auto!important;aspect-ratio:4/3}
+.pv{position:fixed;inset:0;z-index:36;background:#0b0f0e;display:flex;flex-direction:column}
+.pv .strip{flex:1;display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}
+.pv .strip::-webkit-scrollbar{display:none}
+.pv figure{flex:0 0 100%;margin:0;scroll-snap-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:12px}
+.pv img{max-width:100%;max-height:calc(100vh - 150px);object-fit:contain;border-radius:6px}
+.pv figcaption{color:#cfd8d4;font-size:12px;margin-top:10px;text-align:center}
+.pv .bar{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;padding-top:calc(12px + env(safe-area-inset-top,0px));color:#fff;font-size:14px}
+.pv .bar button{border:1px solid rgba(255,255,255,.4);background:none;color:#fff;border-radius:10px;padding:8px 16px;font-size:15px}
 .install{background:var(--card);border:1px dashed var(--jade);border-radius:14px;padding:12px 14px;margin-bottom:14px;font-size:14px}.install b{font-weight:500}.install .row{align-items:center;margin-top:8px}.install button{border:none;background:none;color:var(--muted);font-size:13px;padding:4px 0}.install .go{border:none;border-radius:10px;background:var(--jade);color:var(--on-jade);padding:8px 14px;font-weight:500;font-size:14px}
 .view{display:none}.view.on{display:block}
 .toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:10px 16px;border-radius:10px;font-size:14px;z-index:40;opacity:0;pointer-events:none;transition:opacity .2s}
@@ -322,6 +333,7 @@ nav button[aria-current="page"]{color:var(--jade);font-weight:500}
 <div class="driver" id="driver" hidden></div>
 <div class="sheet-bg" id="sheetBg" hidden><div class="sheet" id="sheet" role="dialog" aria-modal="true"></div></div>
 <div class="imgview" id="imgView" hidden></div>
+<div class="pv" id="photoView" hidden></div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <nav><div>
@@ -378,7 +390,7 @@ function art(type,h){
 }
 function pic(p,h){const im=(p.images||[])[0];return im?`<img class="photo" src="${esc(im)}" alt="${esc(p.th||p.name||"")}" loading="lazy" style="height:${h||140}px" onerror="this.outerHTML=''">`:art(p.art,h)}
 function gallery(p){const ims=p.images||[];if(!ims.length)return art(p.art,220);const cr=p.imageCredits||[];
- return `<div class="gal" id="gal">${ims.map((u,i)=>`<figure><img src="${esc(u)}" alt="${esc(p.th)} รูปที่ ${i+1}" loading="${i?"lazy":"eager"}">${cr[i]?`<figcaption>📷 ${esc(cr[i])}</figcaption>`:""}</figure>`).join("")}</div>${ims.length>1?`<span class="gcount" id="gcount">1/${ims.length}</span>`:""}`}
+ return `<div class="gal" id="gal">${ims.map((u,i)=>`<figure data-pv="${esc(p.id)}" data-i="${i}"><img src="${esc(u)}" alt="${esc(p.th)} รูปที่ ${i+1}" loading="${i?"lazy":"eager"}">${cr[i]?`<figcaption>📷 ${esc(cr[i])}</figcaption>`:""}</figure>`).join("")}</div>${ims.length>1?`<span class="gcount" id="gcount">1/${ims.length}</span>`:""}`}
 const statusBadge=s=>`<span class="status${s&&s.indexOf("⚠️")<0?" ok":""}">${esc(s||"⚠️ ข้อมูลเบื้องต้น")}</span>`;
 function scoreLine(p){
  const t=p.team?`<span><span class="star">★</span> <b>${Number(p.team).toFixed(1)}</b> ทีม</span>`:`<span>ทีมยังไม่ให้คะแนน</span>`;
@@ -665,10 +677,20 @@ function openDetail(id){
  <div class="sec-h"><h2>เพิ่มลงแผน</h2></div>
  <div class="add"><select class="sel" id="dDay" aria-label="เลือกวัน">${opts}</select><button class="primary" style="margin:0" data-add="${p.id}">${inPlan?"ย้ายไปวันนี้":"เพิ่มลงแผน"}</button></div>
  ${inPlan?`<p class="note">อยู่ในแผนวันที่ ${inPlan.day} แล้ว</p>`:""}
- <div class="acts"><a href="${amap}" target="_blank" rel="noopener">🧭 นำทางใน Amap (高德地图)</a>${route?`<button class="ghost" style="margin:0" data-route="${route.id}">วิธีไปที่นี่ · ${route.min} นาที</button>`:""}</div>
+ <div class="acts"><a href="${amap}" target="_blank" rel="noopener">🧭 นำทางใน Amap (高德地图)</a><a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(p.cn.split("/")[0].trim()+" "+(cityOf(p.c)?cityOf(p.c).cn:""))}" target="_blank" rel="noopener">📷 ดูรูปจริงและรีวิวใน Google Maps</a>${route?`<button class="ghost" style="margin:0" data-route="${route.id}">วิธีไปที่นี่ · ${route.min} นาที</button>`:""}</div>
  </div>`;
  $("detail").hidden=false;$("detail").scrollTop=0;document.body.style.overflow="hidden";
  const g=$("gal"),gc=$("gcount");if(g&&gc)g.addEventListener("scroll",()=>{gc.textContent=(Math.round(g.scrollLeft/g.clientWidth)+1)+"/"+(p.images||[]).length},{passive:true});
+}
+
+function openPhotos(id,start){
+ const p=placeOf(id);if(!p||!(p.images||[]).length)return;const cr=p.imageCredits||[],n=p.images.length;
+ $("photoView").innerHTML=`<div class="bar"><span id="pvCount">${start+1}/${n}</span><span style="flex:1;text-align:center;opacity:.8">${esc(p.th)}</span><button data-pv-close>ปิด</button></div>
+ <div class="strip" id="pvStrip">${p.images.map((u,i)=>`<figure><img src="${esc(u)}" alt="${esc(p.th)} รูปที่ ${i+1}">${cr[i]?`<figcaption>📷 ${esc(cr[i])}</figcaption>`:""}</figure>`).join("")}</div>
+ <p style="color:#8fa39c;font-size:12px;text-align:center;margin:0 0 calc(14px + env(safe-area-inset-bottom,0px))">ปัดซ้ายขวาเพื่อดูรูปถัดไป · ถ่างนิ้วเพื่อซูม</p>`;
+ $("photoView").hidden=false;const st=$("pvStrip");
+ requestAnimationFrame(()=>{st.scrollLeft=st.clientWidth*start});
+ st.addEventListener("scroll",()=>{$("pvCount").textContent=(Math.round(st.scrollLeft/st.clientWidth)+1)+"/"+n},{passive:true});
 }
 function closeDetail(){$("detail").hidden=true;document.body.style.overflow=""}
 function showDriver(id){const p=placeOf(id);$("driver").innerHTML=`<div class="ask">请带我去这里</div><div class="name">${esc(p.cn.split("/")[0].trim())}</div><div class="th">ช่วยพาไปที่นี่หน่อย · ${esc(p.th)}</div><button data-driver-close>ปิด</button>`;$("driver").hidden=false}
@@ -796,8 +818,9 @@ $("sSave").addEventListener("click",()=>{
  save();$("settings").classList.remove("open");renderAll();toast("บันทึกการตั้งค่าแล้ว");
 });
 $("reset").addEventListener("click",()=>{if(!confirm("ล้างงบ แผน ตั๋ว และที่อยากไปทั้งหมด?"))return;S.tickets.forEach(t=>idb.del(t.id));S.expenses=[];S.plan=[];S.fav=[];S.tickets=[];save();$("settings").classList.remove("open");renderAll();toast("ล้างข้อมูลทริปแล้ว")});
+document.addEventListener("click",e=>{const f=e.target.closest("[data-pv]");if(f)openPhotos(f.dataset.pv,+f.dataset.i||0);if(e.target.closest("[data-pv-close]"))$("photoView").hidden=true});
 $("sheetBg").addEventListener("click",e=>{if(e.target.id==="sheetBg"){closeSheet();pendingGate=null}});
-document.addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.id==="codeIn")redeem();if(e.key==="Escape"){if(!$("imgView").hidden){$("imgView").hidden=true;return}if(!$("sheetBg").hidden){closeSheet();return}if(!$("driver").hidden)$("driver").hidden=true;else if(!$("detail").hidden)closeDetail()}});
+document.addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.id==="codeIn")redeem();if(e.key==="Escape"){if(!$("photoView").hidden){$("photoView").hidden=true;return}if(!$("imgView").hidden){$("imgView").hidden=true;return}if(!$("sheetBg").hidden){closeSheet();return}if(!$("driver").hidden)$("driver").hidden=true;else if(!$("detail").hidden)closeDetail()}});
 
 /* ---------- sync กับหลังบ้าน (ทำงานเมื่อใส่ API_URL) ---------- */
 async function syncData(force){
@@ -839,6 +862,8 @@ if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.se
   box.innerHTML='<b>📲 ติดตั้งเป็นแอป</b> ใช้ออฟไลน์ได้ตอนอยู่จีน<div class="row"><button id="instHide">ไม่ต้องแสดงอีก</button><button class="go" id="instGo">ติดตั้ง</button></div>';box.hidden=false;
   $("instHide").onclick=hide;$("instGo").onclick=async()=>{p.prompt();try{await p.userChoice}catch(e){}hide()}});
 })();
+
+
 
 
 

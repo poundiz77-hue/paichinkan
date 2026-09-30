@@ -14,6 +14,8 @@
 <link rel="icon" type="image/png" href="icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://dynamic-media-cdn.tripadvisor.com" crossorigin>
+<link rel="dns-prefetch" href="https://media-cdn.tripadvisor.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500&family=Prompt:wght@500;600&display=swap" rel="stylesheet">
 <style>
 :root{--paper:#F3F6F4;--card:#FFFFFF;--ink:#17211F;--muted:#5C6B67;--jade:#0F5A4F;--jade-soft:#DDEDE7;--seal:#C2362B;--line:#DCE3E0;--on-jade:#FFFFFF;--gold:#C98F12;--warn-bg:#FFF4D6;--warn:#7A5300;--map-bg:#EAF3EC;--map-park:#D3E8DC;--map-water:#CFE3EE;--map-tree:#8FC2A4;
@@ -237,6 +239,8 @@ nav button[aria-current="page"]{color:var(--jade);font-weight:500}
 .tacredit{position:absolute;right:12px;bottom:12px;background:rgba(0,0,0,.6);color:#fff;font-size:11px;font-weight:600;border-radius:999px;padding:3px 10px;text-decoration:none;z-index:2}
 .heroload{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);background:rgba(0,0,0,.55);color:#fff;font-size:12px;border-radius:999px;padding:4px 12px}
 .detail .hero .gcount{right:auto;left:50%;bottom:auto;top:18px;transform:translateX(-50%)}
+@keyframes taPulse{0%,100%{opacity:1}50%{opacity:.55}}
+.taloading{animation:taPulse 1.2s ease-in-out infinite}
 .install{background:var(--card);border:1px dashed var(--jade);border-radius:14px;padding:12px 14px;margin-bottom:14px;font-size:14px}.install b{font-weight:500}.install .row{align-items:center;margin-top:8px}.install button{border:none;background:none;color:var(--muted);font-size:13px;padding:4px 0}.install .go{border:none;border-radius:10px;background:var(--jade);color:var(--on-jade);padding:8px 14px;font-weight:500;font-size:14px}
 .view{display:none}.view.on{display:block}
 .toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:10px 16px;border-radius:10px;font-size:14px;z-index:40;opacity:0;pointer-events:none;transition:opacity .2s}
@@ -399,7 +403,7 @@ function art(type,h){
   park:'<rect x="0" y="125" width="400" height="25" fill="#9DC08B"/><circle cx="110" cy="75" r="50" fill="none" stroke="#5A6F9A" stroke-width="6"/><g stroke="#5A6F9A" stroke-width="3"><line x1="110" y1="75" x2="110" y2="125"/><line x1="90" y1="125" x2="110" y2="75"/><line x1="130" y1="125" x2="110" y2="75"/></g><path d="M200 125 Q240 40 280 90 Q310 130 360 60 L360 125Z" fill="none" stroke="#D2463B" stroke-width="6"/><rect x="250" y="30" width="16" height="30" fill="#E0A93B"/><path d="M244 32 L258 16 L272 32Z" fill="#B23A2E"/>'}[type]||"";
  return `<svg viewBox="0 0 400 150" preserveAspectRatio="xMidYMid slice" role="img" aria-label="ภาพประกอบ" style="height:${h||140}px"><rect width="400" height="150" fill="${sky}"/>${g}</svg>`;
 }
-function pic(p,h){const ta=TA_MEM[p.id]&&TA_MEM[p.id].photos&&TA_MEM[p.id].photos[0];if(ta)return `<img class="photo" src="${esc(ta.url)}" alt="${esc(p.th)}" loading="lazy" referrerpolicy="no-referrer" style="height:${h||140}px">`;const im=(p.images||[])[0];return im?`<img class="photo" src="${esc(im)}" alt="${esc(p.th||p.name||"")}" loading="lazy" style="height:${h||140}px" onerror="this.outerHTML=''">`:art(p.art,h)}
+function pic(p,h){const ta=TA_MEM[p.id]&&TA_MEM[p.id].photos&&TA_MEM[p.id].photos[0];if(ta)return taImgTag(ta.url,640,`class="photo" alt="${esc(p.th)}" loading="lazy" style="height:${h||140}px"`);const im=(p.images||[])[0];return im?`<img class="photo" src="${esc(im)}" alt="${esc(p.th||p.name||"")}" loading="lazy" style="height:${h||140}px" onerror="this.outerHTML=''">`:art(p.art,h)}
 function gallery(p){const ims=p.images||[];if(!ims.length)return art(p.art,220);const cr=p.imageCredits||[];
  return `<div class="gal" id="gal">${ims.map((u,i)=>`<figure data-pv="${esc(p.id)}" data-i="${i}"><img src="${esc(u)}" alt="${esc(p.th)} รูปที่ ${i+1}" loading="${i?"lazy":"eager"}">${cr[i]?`<figcaption>📷 ${esc(cr[i])}</figcaption>`:""}</figure>`).join("")}</div>${ims.length>1?`<span class="gcount" id="gcount">1/${ims.length}</span>`:""}`}
 const statusBadge=s=>`<span class="status${s&&s.indexOf("⚠️")<0?" ok":""}">${esc(s||"⚠️ ข้อมูลเบื้องต้น")}</span>`;
@@ -712,7 +716,7 @@ function taRender(p,r){
  const box=$("taBox");if(!box)return;
  const head=`<div class="sec-h" style="margin-top:22px"><h2>รูปจากนักท่องเที่ยว<span class="tabadge">Tripadvisor</span></h2></div>`;
  if(!r.photos.length){box.innerHTML=head+`<p class="note">ยังไม่มีรูปบน Tripadvisor</p><div class="tabar"><span></span><a href="${esc(r.taUrl)}" target="_blank" rel="noopener">ดูบน Tripadvisor ›</a></div>`;return}
- box.innerHTML=head+`<div class="strip">${r.photos.map((x,i)=>`<figure data-tapv="${esc(p.id)}" data-i="${i}"><img src="${esc(x.url)}" alt="รูปจากนักท่องเที่ยว ${i+1}" loading="lazy" referrerpolicy="no-referrer"><figcaption>${x.source==="Management"?"รูปจากร้าน":"โดย "+esc(x.user||"นักท่องเที่ยว")}${x.date?" · "+esc(x.date):""}</figcaption></figure>`).join("")}</div>
+ box.innerHTML=head+`<div class="strip">${r.photos.map((x,i)=>`<figure data-tapv="${esc(p.id)}" data-i="${i}">${taImgTag(x.url,640,`alt="รูปจากนักท่องเที่ยว ${i+1}" loading="lazy"`)}<figcaption>${x.source==="Management"?"รูปจากร้าน":"โดย "+esc(x.user||"นักท่องเที่ยว")}${x.date?" · "+esc(x.date):""}</figcaption></figure>`).join("")}</div>
  <div class="tabar"><span style="color:var(--muted)">ภาพจาก Tripadvisor</span><a href="${esc(r.taUrl)}" target="_blank" rel="noopener">ดูรูปและรีวิวทั้งหมดบน Tripadvisor ›</a></div>`;
 }
 async function loadTA(id){
@@ -731,6 +735,13 @@ async function loadTA(id){
 }
 
 
+
+// ขอรูปขนาดที่ใช้จริงจาก CDN ของ Tripadvisor (ตามเอกสาร) ถ้าโหลดไม่ได้จะถอยไปใช้ลิงก์เดิม
+function taImg(url,w){
+ if(!/tripadvisor\.com/.test(url||""))return url;
+ try{const u=new URL(url);u.searchParams.set("w",String(w));u.searchParams.set("h","-1");u.searchParams.set("s","1");return u.toString()}catch(e){return url}
+}
+function taImgTag(url,w,extra){return `<img src="${esc(taImg(url,w))}" data-orig="${esc(url)}" onerror="if(this.dataset.orig&&this.src!==this.dataset.orig){this.src=this.dataset.orig}" decoding="async" referrerpolicy="no-referrer" ${extra||""}>`}
 const TA_INFLIGHT={};let TA_ACTIVE=0;const TA_QUEUE=[];
 function taFetch(id){
  if(TA_MEM[id])return Promise.resolve(TA_MEM[id]);
@@ -739,7 +750,7 @@ function taFetch(id){
  return TA_INFLIGHT[id];
 }
 function taPump(){
- while(TA_ACTIVE<2&&TA_QUEUE.length){const {id,res}=TA_QUEUE.shift();TA_ACTIVE++;
+ while(TA_ACTIVE<4&&TA_QUEUE.length){const {id,res}=TA_QUEUE.shift();TA_ACTIVE++;
   fetch(API_URL,{method:"POST",headers:{"Content-Type":"text/plain"},body:JSON.stringify({action:"taPhotos",placeId:id,code:S.unlock&&S.unlock.code,deviceId:S.deviceId})})
    .then(r=>r.json()).then(j=>{if(j.ok)TA_MEM[id]=j;res(j)}).catch(()=>res({ok:false}))
    .finally(()=>{TA_ACTIVE--;delete TA_INFLIGHT[id];taPump()});}
@@ -750,13 +761,15 @@ function taWatchCards(){
  if(!API_URL||!isPremium()||D.taInList===false||!("IntersectionObserver" in window))return;
  TA_OBS=new IntersectionObserver(es=>{es.forEach(e=>{if(!e.isIntersecting)return;TA_OBS.unobserve(e.target);
   const id=e.target.dataset.pid;if(!navigator.onLine)return;
-  taFetch(id).then(j=>{if(j&&j.ok&&j.photos&&j.photos[0]){const card=document.querySelector(`article.place[data-pid="${id}"]`);const old=card&&card.querySelector(".open > svg, .open > img.photo");if(old)old.outerHTML=`<img class="photo" src="${esc(j.photos[0].url)}" alt="" loading="lazy" referrerpolicy="no-referrer" style="height:140px">`}})})},{rootMargin:"120px"});
+  const ph=e.target.querySelector(".open > svg, .open > img.photo");if(ph)ph.classList.add("taloading");
+  taFetch(id).then(j=>{const card=document.querySelector(`article.place[data-pid="${id}"]`);const old=card&&card.querySelector(".open > svg, .open > img.photo");if(!old)return;old.classList.remove("taloading");
+   if(j&&j.ok&&j.photos&&j.photos[0])old.outerHTML=taImgTag(j.photos[0].url,640,'class="photo" alt="" style="height:140px"')})})},{rootMargin:"600px 0px"});
  document.querySelectorAll("article.place[data-pid]").forEach(el=>{const p=placeOf(el.dataset.pid);if(p&&p.taId&&!TA_MEM[p.id])TA_OBS.observe(el)});
 }
 function heroTA(p,r){
  const m=$("heroMedia");if(!m||!r.photos.length)return;
  const n=r.photos.length;
- m.innerHTML=`<div class="gal" id="gal">${r.photos.map((x,i)=>`<figure data-tapv="${esc(p.id)}" data-i="${i}"><img src="${esc(x.url)}" alt="${esc(p.th)} รูปที่ ${i+1}" referrerpolicy="no-referrer"${i?' loading="lazy"':''}><figcaption>📷 ${x.source==="Management"?"รูปจากร้าน":"โดย "+esc(x.user||"นักท่องเที่ยว")}</figcaption></figure>`).join("")}</div>${n>1?`<span class="gcount" id="gcount">1/${n}</span>`:""}<a class="tacredit" href="${esc(r.taUrl)}" target="_blank" rel="noopener">Tripadvisor ›</a>`;
+ m.innerHTML=`<div class="gal" id="gal">${r.photos.map((x,i)=>`<figure data-tapv="${esc(p.id)}" data-i="${i}">${taImgTag(x.url,960,`alt="${esc(p.th)} รูปที่ ${i+1}"${i?' loading="lazy"':''}`)}<figcaption>📷 ${x.source==="Management"?"รูปจากร้าน":"โดย "+esc(x.user||"นักท่องเที่ยว")}</figcaption></figure>`).join("")}</div>${n>1?`<span class="gcount" id="gcount">1/${n}</span>`:""}<a class="tacredit" href="${esc(r.taUrl)}" target="_blank" rel="noopener">Tripadvisor ›</a>`;
  const g=$("gal"),gc=$("gcount");if(g&&gc)g.addEventListener("scroll",()=>{gc.textContent=(Math.round(g.scrollLeft/g.clientWidth)+1)+"/"+n},{passive:true});
  const box=$("taBox");if(box)box.innerHTML=`<div class="tabar" style="margin-top:12px"><span style="color:var(--muted)">รูปปกจาก Tripadvisor</span><a href="${esc(r.taUrl)}" target="_blank" rel="noopener">ดูรูปและรีวิวทั้งหมดบน Tripadvisor ›</a></div>`;
 }
@@ -772,7 +785,7 @@ async function autoTA(p){
 function openTAPhotos(id,start){
  const r=TA_MEM[id],p=placeOf(id);if(!r)return;const n=r.photos.length;
  $("photoView").innerHTML=`<div class="bar"><span id="pvCount">${start+1}/${n}</span><span style="flex:1;text-align:center;opacity:.8">${esc(p.th)} · Tripadvisor</span><button data-pv-close>ปิด</button></div>
- <div class="strip" id="pvStrip">${r.photos.map((x,i)=>`<figure><img src="${esc(x.url)}" alt="รูปที่ ${i+1}" referrerpolicy="no-referrer"><figcaption>${x.source==="Management"?"รูปจากร้าน":"โดย "+esc(x.user||"นักท่องเที่ยว")}${x.caption?" · "+esc(x.caption):""} · <a href="${esc(r.taUrl)}" target="_blank" rel="noopener" style="color:#7fd6b4">Tripadvisor</a></figcaption></figure>`).join("")}</div>
+ <div class="strip" id="pvStrip">${r.photos.map((x,i)=>`<figure>${taImgTag(x.url,1400,`alt="รูปที่ ${i+1}"`)}<figcaption>${x.source==="Management"?"รูปจากร้าน":"โดย "+esc(x.user||"นักท่องเที่ยว")}${x.caption?" · "+esc(x.caption):""} · <a href="${esc(r.taUrl)}" target="_blank" rel="noopener" style="color:#7fd6b4">Tripadvisor</a></figcaption></figure>`).join("")}</div>
  <p style="color:#8fa39c;font-size:12px;text-align:center;margin:0 0 calc(14px + env(safe-area-inset-bottom,0px))">ปัดซ้ายขวาเพื่อดูรูปถัดไป</p>`;
  $("photoView").hidden=false;const st=$("pvStrip");requestAnimationFrame(()=>{st.scrollLeft=st.clientWidth*start});
  st.addEventListener("scroll",()=>{$("pvCount").textContent=(Math.round(st.scrollLeft/st.clientWidth)+1)+"/"+n},{passive:true});
@@ -933,9 +946,32 @@ async function flushRatings(){
 }
 window.addEventListener("online",()=>{syncData();flushRatings()});
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){syncData();flushRatings()}});
+
+/* ---------- ปุ่มย้อนกลับของโทรศัพท์ (Android) ----------
+   ใส่หน้าคั่นไว้ 1 ชั้น ทุกครั้งที่กดย้อนกลับ จะปิดสิ่งที่เปิดอยู่บนสุดก่อน
+   ถ้าอยู่หน้าแรกและไม่มีอะไรเปิด กดอีกครั้งภายใน 2 วินาทีถึงจะออกจากแอป */
+function handleBack(){
+ if(!$("photoView").hidden){$("photoView").hidden=true;return true}
+ if(!$("imgView").hidden){$("imgView").hidden=true;return true}
+ if(!$("driver").hidden){$("driver").hidden=true;return true}
+ if(!$("sheetBg").hidden){closeSheet();pendingGate=null;return true}
+ if($("settings").classList.contains("open")){$("settings").classList.remove("open");return true}
+ if(!$("detail").hidden){closeDetail();return true}
+ if(tab==="routes"&&openRoute){openRoute=null;renderRoutes();window.scrollTo(0,0);return true}
+ if(tab!=="home"){go("home");return true}
+ return false;
+}
+let backArmed=true;
+try{history.replaceState({base:1},"");history.pushState({guard:1},"")}catch(e){}
+window.addEventListener("popstate",()=>{
+ if(handleBack()){try{history.pushState({guard:1},"")}catch(e){}return}
+ toast("กดย้อนกลับอีกครั้งเพื่อออกจากแอป");
+ backArmed=false;setTimeout(()=>{if(!backArmed){try{history.pushState({guard:1},"")}catch(e){}backArmed=true}},2000);
+});
+
 save();renderAll();syncData();flushRatings();
 /* ---------- PWA: ติดตั้งและออฟไลน์ ---------- */
-if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}))}
+if("serviceWorker" in navigator){const hadCtl=!!navigator.serviceWorker.controller;let reloaded=false;navigator.serviceWorker.addEventListener("controllerchange",()=>{if(!hadCtl||reloaded)return;reloaded=true;toast("อัปเดตแอปเป็นเวอร์ชันล่าสุด");setTimeout(()=>location.reload(),600)});window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js",{updateViaCache:"none"}).then(reg=>{const chk=()=>{if(navigator.onLine)reg.update().catch(()=>{})};chk();document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")chk()});setInterval(chk,30*60*1000)}).catch(()=>{}))}
 (function(){
  const box=$("installBox");let dismissed=false;try{dismissed=localStorage.getItem("installHidden")==="1"}catch(e){}
  const standalone=window.matchMedia("(display-mode: standalone)").matches||navigator.standalone===true;
@@ -947,6 +983,8 @@ if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.se
   box.innerHTML='<b>📲 ติดตั้งเป็นแอป</b> ใช้ออฟไลน์ได้ตอนอยู่จีน<div class="row"><button id="instHide">ไม่ต้องแสดงอีก</button><button class="go" id="instGo">ติดตั้ง</button></div>';box.hidden=false;
   $("instHide").onclick=hide;$("instGo").onclick=async()=>{p.prompt();try{await p.userChoice}catch(e){}hide()}});
 })();
+
+
 
 
 

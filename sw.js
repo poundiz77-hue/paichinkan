@@ -1,6 +1,6 @@
 // ระบบออฟไลน์ของแอป "ไปจีนกัน"
 // เปลี่ยนเลข VERSION เมื่อเปลี่ยนไอคอนหรือไฟล์ manifest (แก้ index.html ไม่ต้องเปลี่ยน)
-const VERSION = 'v1';
+const VERSION = 'v2';
 const CORE = `core-${VERSION}`;
 const RUNTIME = 'runtime-v1';
 const IMAGES = 'images-v1';
@@ -49,7 +49,8 @@ self.addEventListener('fetch', e => {
 
   // ไฟล์ของแอปเอง: ลองโหลดของใหม่ก่อน ถ้าไม่มีเน็ตใช้ของในเครื่อง
   if (url.origin === self.location.origin) {
-    e.respondWith(fetch(req).then(res => {
+    // ขอไฟล์ใหม่จากเว็บเสมอ (ข้ามแคชของเบราว์เซอร์) ลูกค้าจะได้เวอร์ชันล่าสุดทันทีที่มีเน็ต
+    e.respondWith(fetch(req, { cache: 'no-cache' }).then(res => {
       if (res.ok) caches.open(CORE).then(c => c.put(req, res.clone()));
       return res;
     }).catch(async () => (await caches.match(req)) || (await caches.match('index.html'))));
